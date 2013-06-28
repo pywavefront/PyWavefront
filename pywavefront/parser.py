@@ -1,11 +1,11 @@
-import warnings
+import pyglet
 
 class Parser(object):
     """This defines a generalized parse dispatcher; all parse functions
     reside in subclasses."""
 
     def read_file(self, file_name):
-        for line in open(file_name, "r"):
+        for line in pyglet.resource.file(file_name):
             self.parse(line)
 
     def parse(self, line):
@@ -19,10 +19,5 @@ class Parser(object):
         line_type = values[0]
         args = values[1:]
 
-        try:
-            parse_function = getattr(self, 'parse_%s'%line_type)
-        except AttributeError:
-            warnings.warn(
-                    '%s ignored unhandled line: %s'%(type(self), line))
-            return
+        parse_function = getattr(self, 'parse_%s'%line_type)
         parse_function(args)
