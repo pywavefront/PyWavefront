@@ -1,6 +1,9 @@
 from pyglet.gl import *
 
 class Mesh(object):
+    """This is a basic mesh for drawing using OpenGL. Interestingly, it does
+    not contain its own vertices. These are instead drawn via materials."""
+
     def __init__(self, name=''):
         self.name = name
         self.materials = []

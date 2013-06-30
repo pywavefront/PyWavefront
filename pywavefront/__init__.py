@@ -2,14 +2,14 @@
 converts them into pyglet vertex lists."""
 
 # Derived from `contrib/model/examples/obj_test.py` in the pyglet directory
-import os
-import warnings
-
 from pyglet.gl import *
 
 import material
 import mesh
 import parser
+
+class PywavefrontException(Exception):
+    pass
 
 class Wavefront(object):
     """Import a wavefront .obj file."""
@@ -19,10 +19,6 @@ class Wavefront(object):
         self.materials = {}
         self.meshes = {}        # Name mapping
         self.mesh_list = []     # Also includes anonymous meshes
-
-        if path is None:
-            path = os.path.dirname(self.file_name)
-        self.path = path
 
         ObjParser(self, self.file_name)
 
@@ -48,7 +44,7 @@ class ObjParser(parser.Parser):
         self.vertices = [[0., 0., 0.]]
         self.normals = [[0., 0., 0.]]
         self.tex_coords = [[0., 0.]]
-        
+
         self.read_file(file_name)
 
     # methods for parsing types of wavefront lines
@@ -62,15 +58,14 @@ class ObjParser(parser.Parser):
         self.tex_coords.append(map(float, args[0:2]))
 
     def parse_mtllib(self, args):
-        file_path = os.path.join(self.wavefront.path, args[0])
-        materials = material.MaterialParser(file_path).materials
+        materials = material.MaterialParser(args[0]).materials
         for material_name, material_object in materials.iteritems():
             self.wavefront.materials[material_name] = material_object
 
     def parse_usemtl(self, args):
         self.material = self.wavefront.materials.get(args[0], None)
         if self.material is None:
-            warnings.warn('Unknown material: %s' % args[0])
+            raise PywavefrontException, 'Unknown material: %s' % args[0]
         if self.mesh is not None:
             self.mesh.add_material(self.material)
 
@@ -82,8 +77,11 @@ class ObjParser(parser.Parser):
         self.wavefront.add_mesh(self.mesh)
 
     def parse_f(self, args):
-        if len(self.normals) == 1: 
-            warnings.warn('No Normals found: black screen?')
+        if (len(self.tex_coords) > 1) and (len(self.normals) == 1): 
+            # does the spec allow for texture coordinates without normals?
+            # if we allow this condition, the user will get a black screen
+            # which is really confusing
+            raise PywavefrontException, 'Found texture coordinates, but no normals'
 
         if self.mesh is None:
             self.mesh = mesh.Mesh()
