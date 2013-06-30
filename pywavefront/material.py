@@ -55,7 +55,8 @@ class MaterialParser(parser.Parser):
         self.read_file(file_path)
 
     def parse_newmtl(self, args):
-        self.this_material = Material(args[0])
+        [newmtl] = args
+        self.this_material = Material(newmtl)
         self.materials[self.this_material.name] = self.this_material
 
     def parse_Kd(self, args):
@@ -71,13 +72,16 @@ class MaterialParser(parser.Parser):
         self.this_material.emissive = map(float, args[0:])
 
     def parse_Ns(self, args):
-        self.this_material.shininess = float(args[0])
+        [Ns] = args
+        self.this_material.shininess = float(Ns)
 
     def parse_d(self, args):
-        self.this_material.opacity = float(args[0])
+        [d] = args
+        self.this_material.opacity = float(d)
 
     def parse_map_Kd(self, args):
-        self.this_material.set_texture(args[0])
+        [Kd] = args
+        self.this_material.set_texture(Kd)
 
     def parse_Ni(self, args):
         # don't know what this does

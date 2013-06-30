@@ -58,12 +58,14 @@ class ObjParser(parser.Parser):
         self.tex_coords.append(map(float, args[0:2]))
 
     def parse_mtllib(self, args):
-        materials = material.MaterialParser(args[0]).materials
+        [mtllib] = args
+        materials = material.MaterialParser(mtllib).materials
         for material_name, material_object in materials.iteritems():
             self.wavefront.materials[material_name] = material_object
 
     def parse_usemtl(self, args):
-        self.material = self.wavefront.materials.get(args[0], None)
+        [usemtl] = args
+        self.material = self.wavefront.materials.get(usemtl, None)
         if self.material is None:
             raise PywavefrontException, 'Unknown material: %s' % args[0]
         if self.mesh is not None:
@@ -73,7 +75,8 @@ class ObjParser(parser.Parser):
         self.parse_usemtl(args)
 
     def parse_o(self, args):
-        self.mesh = mesh.Mesh(args[0])
+        [o] = args
+        self.mesh = mesh.Mesh(o)
         self.wavefront.add_mesh(self.mesh)
 
     def parse_f(self, args):
