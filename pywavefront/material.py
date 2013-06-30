@@ -6,6 +6,7 @@ import parser
 import texture
 
 class Material(object):
+    # set defaults
     diffuse = [.8, .8, .8]
     ambient = [.2, .2, .2]
     specular = [0., 0., 0.]
@@ -24,20 +25,21 @@ class Material(object):
     def set_texture(self, path):
         self.texture = texture.Texture(path)
 
+    def gl_light(self, lighting):
+        """Return a GLfloat with length 4, containing the 3 lighting values and
+        appending opacity."""
+        return (GLfloat * 4)(*(lighting + [self.opacity]))
+
     def draw(self, face=GL_FRONT_AND_BACK):
         if self.texture:
             self.texture.draw()
         else:
             glDisable(GL_TEXTURE_2D)
 
-        glMaterialfv(face, GL_DIFFUSE,
-            (GLfloat * 4)(*(self.diffuse + [self.opacity])))
-        glMaterialfv(face, GL_AMBIENT,
-            (GLfloat * 4)(*(self.ambient + [self.opacity])))
-        glMaterialfv(face, GL_SPECULAR,
-            (GLfloat * 4)(*(self.specular + [self.opacity])))
-        glMaterialfv(face, GL_EMISSION,
-            (GLfloat * 4)(*(self.emission + [self.opacity])))
+        glMaterialfv(face, GL_DIFFUSE, self.gl_light(self.diffuse) )
+        glMaterialfv(face, GL_AMBIENT, self.gl_light(self.ambient) )
+        glMaterialfv(face, GL_SPECULAR, self.gl_light(self.specular) )
+        glMaterialfv(face, GL_EMISSION, self.gl_light(self.emission) )
         glMaterialf(face, GL_SHININESS, self.shininess)
 
         if self.gl_floats is None:

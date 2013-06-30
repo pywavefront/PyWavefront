@@ -17,3 +17,7 @@ class TestTexture(unittest.TestCase):
     def testNonPowerOfTwoImage(self):
         "Texture images that have a non-power-of-two dimension should raise an exception."
         self.assertRaises(Exception, pywavefront.texture.Texture, '3x4.png')
+
+    def testMissingFile(self):
+        "Referencing a missing texture file should raise an exception."
+        self.assertRaises(Exception, pywavefront.texture.Texture, 'missing.file.do.not.create')
