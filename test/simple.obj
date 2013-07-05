@@ -13,3 +13,16 @@ vn 0.0 1.0 -0.0
 usemtl Material.simple
 s off
 f 2/3/1 1/2/1 3/1/1
+o SimpleSmooth
+v 1.0 0.0 1.0
+v -1.0 0.0 1.0
+v 1.0 0.0 -1.0
+v -1.0 0.0 -1.0
+vt 0.0 1.0
+vt 0.0 0.0
+vt 1.0 0.0
+vt 1.0 1.0
+vn 0.0 1.0 -0.0
+usemtl Material2.simple
+s 1
+f 2/3/1 1/2/1 3/1/1
