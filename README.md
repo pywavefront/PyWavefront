@@ -59,6 +59,16 @@ All tests can be found in the `test` directory. To run the tests:
 * Change to the top-level directory, e.g. `PyWavefront`, the directory that contains this `README` file.
 * Run `nosetests`
 
+ChangeLog
+---------
+
+## 0.1.1
+* Add material setters.
+* Add lighting in example.
+
+## 0.1
+* Initial release.
+
 License
 -------
 
