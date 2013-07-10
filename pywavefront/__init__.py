@@ -43,7 +43,7 @@ class PywavefrontException(Exception):
 
 class Wavefront(object):
     """Import a wavefront .obj file."""
-    def __init__(self, file_name, path=None):
+    def __init__(self, file_name):
         self.file_name = file_name
 
         self.materials = {}

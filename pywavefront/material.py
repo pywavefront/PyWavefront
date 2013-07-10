@@ -38,17 +38,15 @@ import parser
 import texture
 
 class Material(object):
-    # set defaults
-    diffuse = [.8, .8, .8]
-    ambient = [.2, .2, .2]
-    specular = [0., 0., 0.]
-    emission = [0., 0., 0.]
-    shininess = 0.
-    opacity = 1.
-    texture = None
-
     def __init__(self, name):
         self.name = name
+
+        self.diffuse = [.8, .8, .8, 1.]
+        self.ambient = [.2, .2, .2, 1.]
+        self.specular = [0., 0., 0., 1.]
+        self.emissive = [0., 0., 0., 1.]
+        self.shininess = 0.
+        self.texture = None
 
         # Interleaved array of floats in GL_T2F_N3F_V3F format
         self.vertices = []
