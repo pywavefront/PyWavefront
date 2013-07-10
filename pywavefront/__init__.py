@@ -150,5 +150,5 @@ class ObjParser(parser.Parser):
             vlast = vertex
 
     def parse_s(self, args):
-        # don't know what this does
+        # unimplemented
         return

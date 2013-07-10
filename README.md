@@ -5,6 +5,10 @@ This python module allows you to read Wavefront 3D object files
 (`something.obj` and `something.mtl`) and use them as Python objects.
 Currently Pyglet is required to render and display these objects.
 
+Currently, only a subset of [the defined
+specification](https://en.wikipedia.org/wiki/Wavefront_.obj_file) has
+been implemented.
+
 Requirements
 ------------
 

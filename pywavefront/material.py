@@ -118,9 +118,9 @@ class MaterialParser(parser.Parser):
         self.this_material.set_texture(Kd)
 
     def parse_Ni(self, args):
-        # don't know what this does
+        # unimplemented
         return
 
     def parse_illum(self, args):
-        # don't know what this does
+        # unimplemented
         return
