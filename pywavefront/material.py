@@ -52,13 +52,43 @@ class Material(object):
         self.vertices = []
         self.gl_floats = None
 
+    def pad_light(self, values):
+        """Accept an array of up to 4 values, and return an array of 4 values.
+        If the input array is less than length 4, pad it with zeroes until it
+        is length 4. Also ensure each value is a float"""
+        while len(values) < 4:
+            values.append(0.)
+        return map(float, values)
+
+    def set_alpha(self, alpha):
+        """Set alpha/last value on all four lighting attributes."""
+        alpha = float(alpha)
+        self.diffuse[3] = alpha
+        self.ambient[3] = alpha
+        self.specular[3] = alpha
+        self.emissive[3] = alpha
+
+    def set_diffuse(self, values=[]):
+        self.diffuse = self.pad_light(values)
+
+    def set_ambient(self, values=[]):
+        self.ambient = self.pad_light(values)
+
+    def set_specular(self, values=[]):
+        self.specular = self.pad_light(values)
+
+    def set_emissive(self, values=[]):
+        self.emissive = self.pad_light(values)
+
     def set_texture(self, path):
         self.texture = texture.Texture(path)
 
+    def unset_texture(self):
+        self.texture = None
+
     def gl_light(self, lighting):
-        """Return a GLfloat with length 4, containing the 3 lighting values and
-        appending opacity."""
-        return (GLfloat * 4)(*(lighting + [self.opacity]))
+        """Return a GLfloat with length 4, containing the 4 lighting values."""
+        return (GLfloat * 4)(*(lighting))
 
     def draw(self, face=GL_FRONT_AND_BACK):
         if self.texture:
@@ -69,7 +99,7 @@ class Material(object):
         glMaterialfv(face, GL_DIFFUSE, self.gl_light(self.diffuse) )
         glMaterialfv(face, GL_AMBIENT, self.gl_light(self.ambient) )
         glMaterialfv(face, GL_SPECULAR, self.gl_light(self.specular) )
-        glMaterialfv(face, GL_EMISSION, self.gl_light(self.emission) )
+        glMaterialfv(face, GL_EMISSION, self.gl_light(self.emissive) )
         glMaterialf(face, GL_SHININESS, self.shininess)
 
         if self.gl_floats is None:
@@ -92,16 +122,16 @@ class MaterialParser(parser.Parser):
         self.materials[self.this_material.name] = self.this_material
 
     def parse_Kd(self, args):
-        self.this_material.diffuse = map(float, args[0:])
+        self.this_material.set_diffuse(args)
 
     def parse_Ka(self, args):
-        self.this_material.ambient = map(float, args[0:])
+        self.this_material.set_ambient(args)
 
     def parse_Ks(self, args):
-        self.this_material.specular = map(float, args[0:])
+        self.this_material.set_specular(args)
 
     def parse_Ke(self, args):
-        self.this_material.emissive = map(float, args[0:])
+        self.this_material.set_emissive(args)
 
     def parse_Ns(self, args):
         [Ns] = args
@@ -109,7 +139,7 @@ class MaterialParser(parser.Parser):
 
     def parse_d(self, args):
         [d] = args
-        self.this_material.opacity = float(d)
+        self.this_material.set_alpha(d)
 
     def parse_map_Kd(self, args):
         [Kd] = args
