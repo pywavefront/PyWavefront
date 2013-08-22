@@ -62,7 +62,7 @@ class Texture(object):
             div_float = float(value) / 2.0
             div_int = int(div_float)
             if not (div_float == div_int):
-                raise Exception, 'image %s is %d, which is not a power of 2'%(
-                        dimension, self.image.__getattribute__(dimension) )
+                raise Exception( 'image %s is %d, which is not a power of 2'%(
+                        dimension, self.image.__getattribute__(dimension) ))
             value = div_int
 

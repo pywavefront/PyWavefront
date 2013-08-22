@@ -34,9 +34,9 @@
 
 from pyglet.gl import *
 
-import material
-import mesh
-import parser
+import pywavefront.material
+import pywavefront.mesh
+import pywavefront.parser
 
 class PywavefrontException(Exception):
     pass
@@ -90,14 +90,14 @@ class ObjParser(parser.Parser):
     def parse_mtllib(self, args):
         [mtllib] = args
         materials = material.MaterialParser(mtllib).materials
-        for material_name, material_object in materials.iteritems():
+        for material_name, material_object in materials.items():
             self.wavefront.materials[material_name] = material_object
 
     def parse_usemtl(self, args):
         [usemtl] = args
         self.material = self.wavefront.materials.get(usemtl, None)
         if self.material is None:
-            raise PywavefrontException, 'Unknown material: %s' % args[0]
+            raise PywavefrontException( 'Unknown material: %s' % args[0])
         if self.mesh is not None:
             self.mesh.add_material(self.material)
 
@@ -114,7 +114,7 @@ class ObjParser(parser.Parser):
             # does the spec allow for texture coordinates without normals?
             # if we allow this condition, the user will get a black screen
             # which is really confusing
-            raise PywavefrontException, 'Found texture coordinates, but no normals'
+            raise PywavefrontException( 'Found texture coordinates, but no normals')
 
         if self.mesh is None:
             self.mesh = mesh.Mesh()
@@ -128,17 +128,19 @@ class ObjParser(parser.Parser):
         vlast = None
         points = []
         for i, v in enumerate(args[0:]):
+            if type(v) is bytes:
+                v = v.decode()
             v_index, t_index, n_index = \
-                (map(int, [j or 0 for j in v.split('/')]) + [0, 0])[:3]
+                (list(map(int, [j or 0 for j in (v.split('/'))])) + [0, 0])[:3]
             if v_index < 0:
                 v_index += len(self.vertices) - 1
             if t_index < 0:
                 t_index += len(self.tex_coords) - 1
             if n_index < 0:
                 n_index += len(self.normals) - 1
-            vertex = self.tex_coords[t_index] + \
-                     self.normals[n_index] + \
-                     self.vertices[v_index] 
+            vertex = list(self.tex_coords[t_index]) + \
+                     list(self.normals[n_index]) + \
+                     list(self.vertices[v_index])
 
             if i >= 3:
                 # Triangulate

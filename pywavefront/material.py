@@ -34,8 +34,8 @@
 
 from pyglet.gl import *
 
-import parser
-import texture
+import pywavefront.parser as parser
+import pywavefront.texture as texture
 
 class Material(object):
     def __init__(self, name):
@@ -58,7 +58,7 @@ class Material(object):
         is length 4. Also ensure each value is a float"""
         while len(values) < 4:
             values.append(0.)
-        return map(float, values)
+        return list(map(float, values))
 
     def set_alpha(self, alpha):
         """Set alpha/last value on all four lighting attributes."""
@@ -106,7 +106,7 @@ class Material(object):
             self.gl_floats = (GLfloat * len(self.vertices))(*self.vertices)
             self.triangle_count = len(self.vertices) / 8
         glInterleavedArrays(GL_T2F_N3F_V3F, 0, self.gl_floats)
-        glDrawArrays(GL_TRIANGLES, 0, self.triangle_count)
+        glDrawArrays(GL_TRIANGLES, 0, int(self.triangle_count))
 
 class MaterialParser(parser.Parser):
     """Object to parse lines of a materials definition file."""
@@ -139,7 +139,9 @@ class MaterialParser(parser.Parser):
 
     def parse_d(self, args):
         [d] = args
+        print("d is ",d)
         self.this_material.set_alpha(d)
+        pass
 
     def parse_map_Kd(self, args):
         [Kd] = args
