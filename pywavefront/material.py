@@ -58,7 +58,7 @@ class Material(object):
         is length 4. Also ensure each value is a float"""
         while len(values) < 4:
             values.append(0.)
-        return map(float, values)
+        return list(map(float, values))
 
     def set_alpha(self, alpha):
         """Set alpha/last value on all four lighting attributes."""
@@ -138,8 +138,9 @@ class MaterialParser(parser.Parser):
         self.this_material.shininess = float(Ns)
 
     def parse_d(self, args):
-        #[d] = args
-        #self.this_material.set_alpha(d)
+        [d] = args
+        print("d is ",d)
+        self.this_material.set_alpha(d)
         pass
 
     def parse_map_Kd(self, args):
