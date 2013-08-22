@@ -34,8 +34,8 @@
 
 from pyglet.gl import *
 
-import parser
-import texture
+import pywavefront.parser as parser
+import pywavefront.texture
 
 class Material(object):
     def __init__(self, name):

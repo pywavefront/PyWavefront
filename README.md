@@ -1,3 +1,5 @@
+Jonas: modified syntax to be python 3 compatible
+
 PyWavefront
 ===========
 

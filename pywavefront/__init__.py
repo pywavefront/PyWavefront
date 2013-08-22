@@ -34,9 +34,9 @@
 
 from pyglet.gl import *
 
-import material
-import mesh
-import parser
+import pywavefront.material
+import pywavefront.mesh
+import pywavefront.parser
 
 class PywavefrontException(Exception):
     pass
@@ -97,7 +97,7 @@ class ObjParser(parser.Parser):
         [usemtl] = args
         self.material = self.wavefront.materials.get(usemtl, None)
         if self.material is None:
-            raise PywavefrontException, 'Unknown material: %s' % args[0]
+            raise PywavefrontException( 'Unknown material: %s' % args[0])
         if self.mesh is not None:
             self.mesh.add_material(self.material)
 
@@ -114,7 +114,7 @@ class ObjParser(parser.Parser):
             # does the spec allow for texture coordinates without normals?
             # if we allow this condition, the user will get a black screen
             # which is really confusing
-            raise PywavefrontException, 'Found texture coordinates, but no normals'
+            raise PywavefrontException( 'Found texture coordinates, but no normals')
 
         if self.mesh is None:
             self.mesh = mesh.Mesh()
