@@ -45,13 +45,19 @@ class Parser(object):
     def parse(self, line):
         """Determine what type of line we are and dispatch
         appropriately."""
-        if line.startswith('#'): return
+        if line.startswith('#'.encode("utf-8")): 
+           return
 
         values = line.split()
-        if len(values) < 2: return
+        if len(values) < 2: 
+           return
 
-        line_type = values[0]
+        line_type = values[0].decode("utf-8")
         args = values[1:]
+        i = 0
+        for arg in args:
+           args[i] = arg.decode("utf-8")
+           i += 1
 
-        parse_function = getattr(self, 'parse_%s'%line_type)
+        parse_function = getattr(self, 'parse_%s' % line_type)
         parse_function(args)
