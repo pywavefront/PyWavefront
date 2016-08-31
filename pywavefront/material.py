@@ -37,6 +37,7 @@ from pyglet.gl import *
 import pywavefront.parser as parser
 import pywavefront.texture as texture
 
+
 class Material(object):
     def __init__(self, name):
         self.name = name
@@ -95,10 +96,10 @@ class Material(object):
         else:
             glDisable(GL_TEXTURE_2D)
 
-        glMaterialfv(face, GL_DIFFUSE, self.gl_light(self.diffuse) )
-        glMaterialfv(face, GL_AMBIENT, self.gl_light(self.ambient) )
-        glMaterialfv(face, GL_SPECULAR, self.gl_light(self.specular) )
-        glMaterialfv(face, GL_EMISSION, self.gl_light(self.emissive) )
+        glMaterialfv(face, GL_DIFFUSE, self.gl_light(self.diffuse))
+        glMaterialfv(face, GL_AMBIENT, self.gl_light(self.ambient))
+        glMaterialfv(face, GL_SPECULAR, self.gl_light(self.specular))
+        glMaterialfv(face, GL_EMISSION, self.gl_light(self.emissive))
         glMaterialf(face, GL_SHININESS, self.shininess)
 
         if self.gl_floats is None:
@@ -106,6 +107,7 @@ class Material(object):
             self.triangle_count = len(self.vertices) / 8
         glInterleavedArrays(GL_T2F_N3F_V3F, 0, self.gl_floats)
         glDrawArrays(GL_TRIANGLES, 0, int(self.triangle_count))
+
 
 class MaterialParser(parser.Parser):
     """Object to parse lines of a materials definition file."""

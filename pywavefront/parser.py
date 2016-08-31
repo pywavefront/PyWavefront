@@ -32,7 +32,9 @@
 # POSSIBILITY OF SUCH DAMAGE.
 # ----------------------------------------------------------------------------
 import os
+
 import pyglet
+
 
 class Parser(object):
     """This defines a generalized parse dispatcher; all parse functions
@@ -46,18 +48,18 @@ class Parser(object):
         """Determine what type of line we are and dispatch
         appropriately."""
         if line.startswith('#'.encode("utf-8")):
-           return
+            return
 
         values = line.split()
         if len(values) < 2:
-           return
+            return
 
         line_type = values[0].decode("utf-8")
         args = values[1:]
         i = 0
         for arg in args:
             if dir and 'mtllib' in line:
-                args[i] = dir + '/' +arg.decode("utf-8")
+                args[i] = dir + '/' + arg.decode("utf-8")
             else:
                 args[i] = arg.decode("utf-8")
             i += 1
