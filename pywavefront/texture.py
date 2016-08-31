@@ -37,12 +37,8 @@ from pyglet.gl import *
 
 class Texture(object):
     def __init__(self, path):
-        # wavefront file has relative paths
-        # we only need the file name, since pyglet takes care of path lookups
-        self.image_name = path.split('/')[-1]
-
+        self.image_name = path
         self.image = pyglet.resource.image(self.image_name).texture
-
         self.verify_dimensions()
 
     def draw(self):

@@ -58,7 +58,7 @@ class Parser(object):
         args = values[1:]
         i = 0
         for arg in args:
-            if dir and 'mtllib' in line:
+            if dir and 'mtllib' in line or 'map_Kd' in line:
                 args[i] = dir + '/' + arg.decode("utf-8")
             else:
                 args[i] = arg.decode("utf-8")
