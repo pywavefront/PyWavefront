@@ -41,7 +41,7 @@ class Parser(object):
     reside in subclasses."""
 
     def read_file(self, file_name):
-        for line in pyglet.resource.file(file_name):
+        for line in open(file_name, 'r'):
             self.parse(line, dir=os.path.dirname(file_name))
 
     def parse(self, line, dir):
