@@ -47,21 +47,19 @@ class Parser(object):
     def parse(self, line, dir):
         """Determine what type of line we are and dispatch
         appropriately."""
-        if line.startswith('#'.encode("utf-8")):
+        if line.startswith('#'):
             return
 
         values = line.split()
         if len(values) < 2:
             return
 
-        line_type = values[0].decode("utf-8")
+        line_type = values[0]
         args = values[1:]
         i = 0
         for arg in args:
             if dir and 'mtllib' in line or 'map_Kd' in line:
-                args[i] = dir + '/' + arg.decode("utf-8")
-            else:
-                args[i] = arg.decode("utf-8")
+                args[i] = dir + '/' + arg
             i += 1
 
         parse_function = getattr(self, 'parse_%s' % line_type)
