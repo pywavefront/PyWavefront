@@ -31,10 +31,9 @@
 # ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 # ----------------------------------------------------------------------------
+
 import os
-
 import pyglet
-
 
 class Parser(object):
     """This defines a generalized parse dispatcher; all parse functions
@@ -47,21 +46,21 @@ class Parser(object):
     def parse(self, line, dir):
         """Determine what type of line we are and dispatch
         appropriately."""
-        if line.startswith('#'.encode("utf-8")):
+        if line.startswith('#'):
             return
 
         values = line.split()
         if len(values) < 2:
             return
 
-        line_type = values[0].decode("utf-8")
+        line_type = values[0]
         args = values[1:]
         i = 0
         for arg in args:
-            if dir and 'mtllib' in line or 'map_Kd' in line:
-                args[i] = dir + '/' + arg.decode("utf-8")
+            if dir != '' and ('mtllib' in line or 'map_Kd' in line):
+                args[i] = dir + '/' + arg
             else:
-                args[i] = arg.decode("utf-8")
+                args[i] = arg
             i += 1
 
         parse_function = getattr(self, 'parse_%s' % line_type)

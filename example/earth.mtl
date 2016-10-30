@@ -10,4 +10,4 @@ Ks 0.500000 0.500000 0.500000
 Ni 1.000000
 d 1.000000
 illum 2
-map_Kd /Users/Jerek/Downloads/39079_blendercyclesearth/2k/earthmap.2k.jpg
+map_Kd earthmap.2k.jpg
