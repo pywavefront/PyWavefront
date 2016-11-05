@@ -25,9 +25,8 @@ Usage
 
 ### Example Script
 
-A pyglet example script with included `.obj` and `.mtl` files is
-included in the `example` directory. To run it, change to the `example`
-directory and run `./pyglet_demo.py`.
+There are two pyglet example scripts with included `.obj` and `.mtl` files in the `example` directory. To run them, change to the `example`
+directory and run either `./pyglet_demo.py` or `.pyglet_demo2.py`.
 
 ### Generating a Wavefront file with Blender
 
