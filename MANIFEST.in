@@ -1,0 +1,10 @@
+# Documentation
+include CHANGELOG.md
+include README.md
+include LICENSE
+
+# Source files
+recursive-include pywavefront *
+
+# Tests
+recursive-include test/test_*
