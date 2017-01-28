@@ -1,5 +1,8 @@
 Change Log
 
+## 0.1.4
+* Include MANIFEST file - PR #12
+
 ## 0.1.3
 * Replace pyglet resource with native open() - PR #7
 * Remove UTF-8 encoding/decoding - PR #9
