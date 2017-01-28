@@ -1,0 +1,12 @@
+include pywavefront/__init__.py
+include pywavefront/material.py
+include pywavefront/mesh.py
+include pywavefront/parser.py
+include pywavefront/texture.py
+include test/test_material.py
+include test/test_mesh.py
+include test/test_parser.py
+include test/test_texture.py
+include test/test_wavefront.py
+include README.md
+include LICENSE
