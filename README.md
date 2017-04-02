@@ -61,6 +61,7 @@ All tests can be found in the `test` directory. To run the tests:
 Contributors
 -------
 
+* dav92lee
 * Jerek Shoemaker
 * Kurt Yoder
 * Zohar Jackson

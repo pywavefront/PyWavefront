@@ -1,5 +1,8 @@
 Change Log
 
+## 0.1.5
+* Support transparency - PR #15
+
 ## 0.1.4
 * Include MANIFEST file - PR #12
 
