@@ -150,6 +150,10 @@ class MaterialParser(parser.Parser):
         # unimplemented
         return
 
+    def parse_Tr(self, args):
+        # unimplemented
+        return
+
     def parse_illum(self, args):
         # unimplemented
         return
