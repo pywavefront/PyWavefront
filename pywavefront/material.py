@@ -160,6 +160,6 @@ class MaterialParser(parser.Parser):
         return
 
     def parse_Tf(self, args):
-        if args != [1, 1, 1]:
+        if args != ['1', '1', '1']:
             stderr.write("Texture Tf (transmission filter) not supported")
         return
