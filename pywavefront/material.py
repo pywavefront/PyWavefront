@@ -32,6 +32,7 @@
 # POSSIBILITY OF SUCH DAMAGE.
 # ----------------------------------------------------------------------------
 
+from sys import stderr
 from pyglet.gl import *
 
 import pywavefront.parser as parser
@@ -156,4 +157,9 @@ class MaterialParser(parser.Parser):
 
     def parse_illum(self, args):
         # unimplemented
+        return
+
+    def parse_Tf(self, args):
+        if args != [1, 1, 1]:
+            stderr.write("Texture Tf (transmission filter) not supported")
         return
