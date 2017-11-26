@@ -32,12 +32,14 @@
 # POSSIBILITY OF SUCH DAMAGE.
 # ----------------------------------------------------------------------------
 
+import os
 from pyglet.gl import *
 
 
 class Texture(object):
     def __init__(self, path):
-        self.image_name = path
+        self.image_name = os.path.split(path)[-1]
+        self.image_path = path
         self.image = pyglet.image.load(self.image_name).texture
         self.verify_dimensions()
 
