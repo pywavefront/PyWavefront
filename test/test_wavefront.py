@@ -52,3 +52,20 @@ class TestBrokenWavefront(unittest.TestCase):
         "If there are texture coordinates but no normals, should raise an exception."
         self.assertRaises(pywavefront.PywavefrontException,
                 pywavefront.Wavefront, 'simple_missing_normals.obj')
+
+class TestNoMaterial(TestWavefront):
+    def setUp(self):
+        pyglet.resource.path.append('@' + __name__)
+        pyglet.resource.reindex()
+        # reset the obj file to new file with no mtl line
+        self.meshes = pywavefront.Wavefront('simple_no_mtl.obj')
+
+    def testMaterials(self):
+        """Override this method"""
+        pass
+
+    def testMeshMaterialVertices(self):
+        "Mesh vertices should have known values."
+        self.assertEqual(len(self.meshes.meshes['Simple'].materials[0].vertices), 48)
+
+
