@@ -61,11 +61,9 @@ class TestNoMaterial(TestWavefront):
         self.meshes = pywavefront.Wavefront('simple_no_mtl.obj')
 
     def testMaterials(self):
-        """Override this method"""
+        """Override this test"""
         pass
 
     def testMeshMaterialVertices(self):
         "Mesh vertices should have known values."
         self.assertEqual(len(self.meshes.meshes['Simple'].materials[0].vertices), 48)
-
-
