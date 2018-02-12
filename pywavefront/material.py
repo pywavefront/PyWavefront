@@ -39,7 +39,7 @@ import pywavefront.texture as texture
 
 
 class Material(object):
-    def __init__(self, name):
+    def __init__(self, name=None):
         self.name = name
         self.diffuse = [.8, .8, .8, 1.]
         self.ambient = [.2, .2, .2, 1.]
