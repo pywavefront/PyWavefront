@@ -63,5 +63,11 @@ class Parser(object):
                 args[i] = arg
             i += 1
 
-        parse_function = getattr(self, 'parse_%s' % line_type)
-        parse_function(args)
+        attrib = 'parse_%s' % line_type
+
+        if hasattr(self, attrib):
+            parse_function = getattr(self, attrib)
+            parse_function(args)
+        else:
+            print("[PyWavefront] WARNING: Unimplemented OBJ format statement \'%s\' on line \'%s\'"
+                  % (line_type, line.rstrip()))

@@ -147,7 +147,3 @@ class ObjParser(parser.Parser):
             if i == 0:
                 v1 = vertex
             vlast = vertex
-
-    def parse_s(self, args):
-        # unimplemented
-        return
