@@ -1,5 +1,8 @@
 Change Log
 
+## 0.1.6
+* Import .obj without material file - PR #16
+
 ## 0.1.5
 * Support transparency - PR #15
 
