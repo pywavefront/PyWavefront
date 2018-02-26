@@ -16,7 +16,7 @@ class TestWavefront(unittest.TestCase):
         "Ensure parsed wavefront materials match known values."
         self.assertEqual(len(self.meshes.materials), len(self.material_names))
         self.assertEqual(self.meshes.materials[self.material_names[0]].__class__,
-                pywavefront.material.Material)
+                        pywavefront.material.Material)
 
     def testMeshes(self):
         "Ensure parsed wavefront meshes match known values."
@@ -67,3 +67,12 @@ class TestNoMaterial(TestWavefront):
     def testMeshMaterialVertices(self):
         "Mesh vertices should have known values."
         self.assertEqual(len(self.meshes.meshes[self.mesh_names[0]].materials[0].vertices), 48)
+
+class TestNoObjectNoMaterial(TestNoMaterial):
+    def setUp(self):
+        pyglet.resource.path.append('@' + __name__)
+        pyglet.resource.reindex()
+        # reset the obj file to new file with no mtl line
+        self.mesh_names = [None]
+        self.material_names = [None]
+        self.meshes = pywavefront.Wavefront('simple_no_object_no_mtl.obj')

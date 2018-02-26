@@ -58,7 +58,6 @@ class Wavefront(object):
 
     def add_mesh(self, the_mesh):
         self.mesh_list.append(the_mesh)
-        if not the_mesh.name: return
         self.meshes[the_mesh.name] = the_mesh
 
 class ObjParser(parser.Parser):
@@ -118,6 +117,7 @@ class ObjParser(parser.Parser):
             self.wavefront.add_mesh(self.mesh)
         if self.material is None:
             self.material = material.Material()
+            self.wavefront.materials[self.material.name] = self.material
         self.mesh.add_material(self.material)
 
         # For fan triangulation, remember first and latest vertices
