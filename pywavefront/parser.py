@@ -34,10 +34,12 @@
 
 import os
 import pyglet
+import logging
 
 class Parser(object):
     """This defines a generalized parse dispatcher; all parse functions
     reside in subclasses."""
+    strict = False
 
     def read_file(self, file_name):
         for line in open(file_name, 'r'):
@@ -65,9 +67,12 @@ class Parser(object):
 
         attrib = 'parse_%s' % line_type
 
-        if hasattr(self, attrib):
+        if Parser.strict:
+            parse_function = getattr(self, attrib)
+            parse_function(args)
+        elif hasattr(self, attrib):
             parse_function = getattr(self, attrib)
             parse_function(args)
         else:
-            print("[PyWavefront] WARNING: Unimplemented OBJ format statement \'%s\' on line \'%s\'"
-                  % (line_type, line.rstrip()))
+            logging.warning("Unimplemented OBJ format statement '%s' on line '%s'"
+                            % (line_type, line.rstrip()))
