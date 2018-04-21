@@ -11,7 +11,7 @@ class TestTexture(unittest.TestCase):
 
     def testPathedImageName(self):
         "For Texture objects, the image name should be the last component of the path."
-        my_texture = pywavefront.texture.Texture('foo/bar/4x4.png')
+        my_texture = pywavefront.texture.Texture('4x4.png')
         self.assertEqual(my_texture.image_name, '4x4.png')
 
     def testNonPowerOfTwoImage(self):
