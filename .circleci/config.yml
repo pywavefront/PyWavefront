@@ -37,6 +37,7 @@ jobs:
             pip install nose
             sudo apt-get update
             sudo apt-get install freeglut3-dev
+            Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
 
       - save_cache:
           paths:
@@ -52,6 +53,8 @@ jobs:
           name: run tests
           command: |
             . venv/bin/activate
+            export DISPLAY=':99.0'
+            cd test
             nosetests
 
       - store_artifacts:
