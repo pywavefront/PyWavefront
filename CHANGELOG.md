@@ -1,5 +1,9 @@
 Change Log
 
+## 0.1.7
+* Handle any unimplemented flag and carry on with a warning - PR #21
+* Add support to object-less obj file - PR #23
+
 ## 0.1.6
 * Import .obj without material file - PR #16
 

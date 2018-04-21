@@ -61,10 +61,12 @@ All tests can be found in the `test` directory. To run the tests:
 Contributors
 -------
 
+* Daniel Coelho
 * dav92lee
 * Jerek Shoemaker
 * Kurt Yoder
 * Marxlp
+* Sérgio Agostinho
 * Zohar Jackson
 
 License
