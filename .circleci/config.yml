@@ -8,7 +8,7 @@ jobs:
     docker:
       # specify the version you desire here
       # use `-browsers` prefix for selenium tests, e.g. `3.6.1-browsers`
-      - image: circleci/python:3.6.1
+      - image: circleci/python:2.7.14
       
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
@@ -30,11 +30,13 @@ jobs:
       - run:
           name: install dependencies
           command: |
-            python3 -m venv venv
+            python -m venv venv
             . venv/bin/activate
             pip install -r requirements.txt
             pip install nose
-            sudo apt-get update; sudo apt-get install freeglut3-dev
+            sudo apt-get update
+            sudo apt-get install freeglut3-dev
+            sudo apt-get install cmake zlib1g-dev libjpeg-dev xvfb libav-tools xorg-dev libboost-all-dev libsdl2-dev swig
 
       - save_cache:
           paths:
