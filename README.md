@@ -66,7 +66,7 @@ Contributors
 * Jerek Shoemaker
 * Kurt Yoder
 * Marxlp
-* Sérgio Agostinho
+* Sergio Agostinho
 * Zohar Jackson
 
 License
