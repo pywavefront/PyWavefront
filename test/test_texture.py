@@ -2,6 +2,7 @@ import unittest
 import os
 
 import pywavefront.texture
+import pywavefront.visualization # power of two test
 
 def prepend_dir(file):
     return os.path.join(os.path.dirname(__file__), file)

@@ -32,8 +32,6 @@
 # POSSIBILITY OF SUCH DAMAGE.
 # ----------------------------------------------------------------------------
 
-from pyglet.gl import *
-
 import pywavefront.material
 import pywavefront.mesh
 import pywavefront.parser

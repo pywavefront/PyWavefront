@@ -32,9 +32,6 @@
 # POSSIBILITY OF SUCH DAMAGE.
 # ----------------------------------------------------------------------------
 
-from pyglet.gl import *
-
-
 class Mesh(object):
     """This is a basic mesh for drawing using OpenGL. Interestingly, it does
     not contain its own vertices. These are instead drawn via materials."""
@@ -55,11 +52,5 @@ class Mesh(object):
         self.materials.append(material)
 
     def draw(self):
-        glPushClientAttrib(GL_CLIENT_VERTEX_ARRAY_BIT)
-        glPushAttrib(GL_CURRENT_BIT | GL_ENABLE_BIT | GL_LIGHTING_BIT)
-        glEnable(GL_CULL_FACE)
-        glCullFace(GL_BACK)
-        for material in self.materials:
-            material.draw()
-        glPopAttrib()
-        glPopClientAttrib()
+        """Method placeholder"""
+        raise Exception("Please import pywavefront.visualization")
