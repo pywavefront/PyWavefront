@@ -1,16 +1,14 @@
 import unittest
-
-import pyglet
+import os
 
 import pywavefront
 
 class TestWavefront(unittest.TestCase):
     def setUp(self):
-        pyglet.resource.path.append('@' + __name__)
-        pyglet.resource.reindex()
+        folder = os.path.dirname(__file__) + '/'
         self.mesh_names = ['Simple', 'SimpleB']
         self.material_names = ['Material.simple', 'Material2.simple']
-        self.meshes = pywavefront.Wavefront('simple.obj')
+        self.meshes = pywavefront.Wavefront(folder + 'simple.obj')
 
     def testMaterials(self):
         "Ensure parsed wavefront materials match known values."
@@ -42,27 +40,25 @@ class TestWavefront(unittest.TestCase):
 
 class TestBrokenWavefront(unittest.TestCase):
     def setUp(self):
-        pyglet.resource.path.append('@' + __name__)
-        pyglet.resource.reindex()
+        self.folder = os.path.dirname(__file__) + '/'
 
     def testUnknownUsemtl(self):
         "Referencing an unknown material with usemtl should raise an exception."
         self.assertRaises(pywavefront.PywavefrontException,
-                pywavefront.Wavefront, 'simple_unknown_usemtl.obj')
+                pywavefront.Wavefront, self.folder + 'simple_unknown_usemtl.obj')
 
     def testMissingNormals(self):
         "If there are texture coordinates but no normals, should raise an exception."
         self.assertRaises(pywavefront.PywavefrontException,
-                pywavefront.Wavefront, 'simple_missing_normals.obj')
+                pywavefront.Wavefront, self.folder + 'simple_missing_normals.obj')
 
 class TestNoMaterial(TestWavefront):
     def setUp(self):
-        pyglet.resource.path.append('@' + __name__)
-        pyglet.resource.reindex()
+        folder = os.path.dirname(__file__) + '/'
         # reset the obj file to new file with no mtl line
         self.mesh_names = ['Simple', 'SimpleB']
         self.material_names = [None]
-        self.meshes = pywavefront.Wavefront('simple_no_mtl.obj')
+        self.meshes = pywavefront.Wavefront(folder + 'simple_no_mtl.obj')
 
     def testMeshMaterialVertices(self):
         "Mesh vertices should have known values."
@@ -70,9 +66,9 @@ class TestNoMaterial(TestWavefront):
 
 class TestNoObjectNoMaterial(TestNoMaterial):
     def setUp(self):
-        pyglet.resource.path.append('@' + __name__)
-        pyglet.resource.reindex()
+        folder = os.path.dirname(__file__) + '/'
+
         # reset the obj file to new file with no mtl line
         self.mesh_names = [None]
         self.material_names = [None]
-        self.meshes = pywavefront.Wavefront('simple_no_object_no_mtl.obj')
+        self.meshes = pywavefront.Wavefront(folder + 'simple_no_object_no_mtl.obj')

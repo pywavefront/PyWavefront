@@ -1,22 +1,20 @@
 import unittest
-
-import pyglet
+import os
 
 import pywavefront.texture
 
 class TestTexture(unittest.TestCase):
     def setUp(self):
-        pyglet.resource.path.append('@' + __name__)
-        pyglet.resource.reindex()
+        self.folder = os.path.dirname(__file__) + '/'
 
     def testPathedImageName(self):
         "For Texture objects, the image name should be the last component of the path."
-        my_texture = pywavefront.texture.Texture('4x4.png')
-        self.assertEqual(my_texture.image_name, '4x4.png')
+        my_texture = pywavefront.texture.Texture(self.folder + '4x4.png')
+        self.assertEqual(my_texture.image_name, self.folder + '4x4.png')
 
     def testNonPowerOfTwoImage(self):
         "Texture images that have a non-power-of-two dimension should raise an exception."
-        self.assertRaises(Exception, pywavefront.texture.Texture, '3x4.png')
+        self.assertRaises(Exception, pywavefront.texture.Texture, self.folder + '3x4.png')
 
     def testMissingFile(self):
         "Referencing a missing texture file should raise an exception."
