@@ -42,8 +42,9 @@ class Parser(object):
     strict = False
 
     def read_file(self, file_name):
-        for line in open(file_name, 'r'):
-            self.parse(line, dir=os.path.dirname(file_name))
+        with open(file_name, 'r') as file:
+            for line in file:
+                self.parse(line, dir=os.path.dirname(file_name))
 
     def parse(self, line, dir):
         """Determine what type of line we are and dispatch
