@@ -49,6 +49,7 @@ class Wavefront(object):
         self.materials = {}
         self.meshes = {}        # Name mapping
         self.mesh_list = []     # Also includes anonymous meshes
+        self.group = None
 
         ObjParser(self, self.file_name)
 
@@ -104,6 +105,9 @@ class ObjParser(parser.Parser):
         [o] = args
         self.mesh = mesh.Mesh(o)
         self.wavefront.add_mesh(self.mesh)
+
+    def parse_g(self, args):
+        [self.mesh.group] = args
 
     def parse_f(self, args):
         if (len(self.tex_coords) > 1) and (len(self.normals) == 1): 
