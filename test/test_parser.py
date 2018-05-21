@@ -3,11 +3,13 @@ import os
 
 import pywavefront.parser
 
+def prepend_dir(file):
+    return os.path.join(os.path.dirname(__file__), file)
+
 class TestParsers(unittest.TestCase):
     def setUp(self):
         # Append current path to locate files
-        folder = os.path.dirname(__file__) + '/'
-        meshes = pywavefront.Wavefront(folder + 'simple.obj')
+        meshes = pywavefront.Wavefront(prepend_dir('simple.obj'))
         self.mesh1 = meshes.mesh_list[0]
         self.mesh2 = meshes.mesh_list[1]
 
@@ -37,8 +39,7 @@ class TestParsers(unittest.TestCase):
 class TestMtlParser(unittest.TestCase):
     def setUp(self):
         # Append current path to locate files
-        self.folder = os.path.dirname(__file__) + '/'
-        meshes = pywavefront.Wavefront(self.folder + 'simple.obj')
+        meshes = pywavefront.Wavefront(prepend_dir('simple.obj'))
         self.material1 = meshes.mesh_list[0].materials[0]
         self.material2 = meshes.mesh_list[1].materials[0]
 
@@ -70,17 +71,14 @@ class TestMtlParser(unittest.TestCase):
         "Parsing an obj file with known material texture should set its name."
         # also tests d
         self.assertEqual(self.material1.texture.image_name,
-                         self.folder + '4x4.png')
+                         prepend_dir('4x4.png'))
 
 class TestParserFailure(unittest.TestCase):
-    def setUp(self):
-        # Append current path to locate files
-        self.folder = os.path.dirname(__file__) + '/'
 
     def testMissingParseFunction(self):
         "Attempting to parse with a missing parse function should raise an exception."
         # since no parse functions have been defined, this will always fail
-        self.assertRaises(Exception, pywavefront.parser.Parser, self.folder + 'uv_sphere.obj')
+        self.assertRaises(Exception, pywavefront.parser.Parser, prepend_dir('uv_sphere.obj'))
 
     def testMissingParsedFile(self):
         "Referencing a missing parsed file should raise an exception."

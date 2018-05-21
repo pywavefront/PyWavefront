@@ -3,12 +3,14 @@ import os
 
 import pywavefront.material
 
+def prepend_dir(file):
+    return os.path.join(os.path.dirname(__file__), file)
+
 class TestMaterial(unittest.TestCase):
     def setUp(self):
         # Append current path to locate files
-        folder = os.path.dirname(__file__) + '/'
-        self.material = pywavefront.material.Material(folder + 'material')
-        self.material.set_texture(folder + '4x4.png')
+        self.material = pywavefront.material.Material(prepend_dir('material'))
+        self.material.set_texture(prepend_dir('4x4.png'))
 
     def testSetTexture(self):
         "Running set_texture should set a texture."
