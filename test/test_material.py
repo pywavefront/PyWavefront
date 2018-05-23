@@ -1,15 +1,16 @@
 import unittest
-
-import pyglet
+import os
 
 import pywavefront.material
 
+def prepend_dir(file):
+    return os.path.join(os.path.dirname(__file__), file)
+
 class TestMaterial(unittest.TestCase):
     def setUp(self):
-        pyglet.resource.path.append('@' + __name__)
-        pyglet.resource.reindex()
-        self.material = pywavefront.material.Material('material')
-        self.material.set_texture('4x4.png')
+        # Append current path to locate files
+        self.material = pywavefront.material.Material(prepend_dir('material'))
+        self.material.set_texture(prepend_dir('4x4.png'))
 
     def testSetTexture(self):
         "Running set_texture should set a texture."
@@ -55,9 +56,6 @@ class TestMaterial(unittest.TestCase):
         self.assertEqual(self.material.emissive, [0., 0., 0., 0.])
 
 class TestInvalidMaterial(unittest.TestCase):
-    def setUp(self):
-        pyglet.resource.path.append('@' + __name__)
-        pyglet.resource.reindex()
 
     def testSetInvalidTexture(self):
         "Running set_texture with a nonexistent file should raise an exception."
