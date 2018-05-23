@@ -1,5 +1,12 @@
 Change Log
 
+## 0.2.0
+* Make Pyglet an optional dependency - PR #30
+* Close file descriptor when no longer needed - PR #29
+* Specify the full path for the test files. Remove Pyglet dependency on unit tests - PR #28
+* Use the correct accented "e" character- PR #27
+* Add basic circleci configuration
+
 ## 0.1.7
 * Handle any unimplemented flag and carry on with a warning - PR #21
 * Add support to object-less obj file - PR #23
@@ -14,7 +21,7 @@ Change Log
 * Include MANIFEST file - PR #12
 
 ## 0.1.3
-* Replace pyglet resource with native open() - PR #7
+* Replace Pyglet resource with native open() - PR #7
 * Remove UTF-8 encoding/decoding - PR #9
 * Fix issues with parsing resource files - PR #9
 

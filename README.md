@@ -81,6 +81,7 @@ Contributors
 * Jerek Shoemaker
 * Kurt Yoder
 * Marxlp
+* Patrik Huber
 * Sérgio Agostinho
 * Zohar Jackson
 
