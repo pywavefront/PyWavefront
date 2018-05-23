@@ -32,8 +32,6 @@
 # POSSIBILITY OF SUCH DAMAGE.
 # ----------------------------------------------------------------------------
 
-from pyglet.gl import *
-
 import pywavefront.parser as parser
 import pywavefront.texture as texture
 
@@ -87,26 +85,12 @@ class Material(object):
         self.texture = None
 
     def gl_light(self, lighting):
-        """Return a GLfloat with length 4, containing the 4 lighting values."""
-        return (GLfloat * 4)(*(lighting))
+        """Method placeholder"""
+        raise Exception("Please import pywavefront.visualization")
 
-    def draw(self, face=GL_FRONT_AND_BACK):
-        if self.texture:
-            self.texture.draw()
-        else:
-            glDisable(GL_TEXTURE_2D)
-
-        glMaterialfv(face, GL_DIFFUSE, self.gl_light(self.diffuse))
-        glMaterialfv(face, GL_AMBIENT, self.gl_light(self.ambient))
-        glMaterialfv(face, GL_SPECULAR, self.gl_light(self.specular))
-        glMaterialfv(face, GL_EMISSION, self.gl_light(self.emissive))
-        glMaterialf(face, GL_SHININESS, self.shininess)
-
-        if self.gl_floats is None:
-            self.gl_floats = (GLfloat * len(self.vertices))(*self.vertices)
-            self.triangle_count = len(self.vertices) / 8
-        glInterleavedArrays(GL_T2F_N3F_V3F, 0, self.gl_floats)
-        glDrawArrays(GL_TRIANGLES, 0, int(self.triangle_count))
+    def draw(self, face=None):
+        """Method placeholder"""
+        raise Exception("Please import pywavefront.visualization")
 
 
 class MaterialParser(parser.Parser):

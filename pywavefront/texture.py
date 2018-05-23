@@ -32,22 +32,23 @@
 # POSSIBILITY OF SUCH DAMAGE.
 # ----------------------------------------------------------------------------
 
-from pyglet.gl import *
-
+import os
 
 class Texture(object):
     def __init__(self, path):
         self.image_name = path
-        self.image = pyglet.image.load(self.image_name).texture
-        self.verify_dimensions()
+        self.image = None
+
+        if not os.path.exists(path):
+            raise Exception("Requested file does not exist")
 
     def draw(self):
-        glEnable(self.image.target)
-        glBindTexture(self.image.target, self.image.id)
-        gl.glTexParameterf(self.image.target,
-                           gl.GL_TEXTURE_WRAP_S, gl.GL_CLAMP)
-        gl.glTexParameterf(self.image.target,
-                           gl.GL_TEXTURE_WRAP_T, gl.GL_CLAMP)
+        """Method placeholder"""
+        raise Exception("Please import pywavefront.visualization")
+
+    def load_image(self):
+        """Method placeholder"""
+        raise Exception("Please import pywavefront.visualization")
 
     def verify_dimensions(self):
         self.verify('width')

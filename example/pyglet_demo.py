@@ -7,7 +7,7 @@ import ctypes
 import pyglet
 from pyglet.gl import *
 
-import pywavefront
+import pywavefront.visualization
 
 rotation = 0
 

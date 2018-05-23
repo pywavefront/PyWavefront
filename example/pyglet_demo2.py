@@ -9,6 +9,7 @@ import pyglet
 from pyglet.gl import *
 
 from pywavefront import Wavefront
+import pywavefront.visualization
 
 rotation = 0
 

@@ -25,5 +25,7 @@ setup(
         'Topic :: Software Development :: Libraries :: Python Modules',
     ],
     packages=['pywavefront'],
-    requires=['pyglet'],
+    extras_require={
+        'visualization': ['pyglet'],
+    }
 )
