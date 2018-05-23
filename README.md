@@ -3,13 +3,13 @@ PyWavefront
 
 This python module allows you to read Wavefront 3D object files
 (`something.obj` and `something.mtl`) and use them as Python objects.
-Currently Pyglet is required to render and display these objects.
+If you optionally want to render and display these objects, Pyglet is required.
 
 Currently, only a subset of [the defined
 specification](https://en.wikipedia.org/wiki/Wavefront_.obj_file) has
 been implemented.
 
-Requirements
+Optional Dependencies
 ------------
 
 * [Pyglet](http://www.pyglet.org/)
@@ -19,14 +19,29 @@ Usage
 
 ### From Python
 
-    import pywavefront
-    meshes = pywavefront.Wavefront('something.obj')
-    meshes.draw()
+**Basic**
+
+```python
+import pywavefront
+meshes = pywavefront.Wavefront('something.obj')
+```
+
+**Visualization**
+
+```python
+import pywavefront
+
+[create a window and set up your OpenGl context]
+meshes = pywavefront.Wavefront('something.obj')
+
+[inside your drawing loop]
+meshes.draw()
+```
 
 ### Example Script
 
 There are two pyglet example scripts with included `.obj` and `.mtl` files in the `example` directory. To run them, change to the `example`
-directory and run either `./pyglet_demo.py` or `.pyglet_demo2.py`.
+directory and run either `./pyglet_demo.py` or `.pyglet_demo2.py`. Pyglet is required for these.
 
 ### Generating a Wavefront file with Blender
 
