@@ -44,8 +44,8 @@ class Parser(object):
         self.file_name = file_name
         self.dir = os.path.dirname(file_name)
 
-    def read_file(self, file_name):
-        with open(file_name, 'r') as file:
+    def read_file(self):
+        with open(self.file_name, 'r') as file:
             for line in file:
                 self.parse(line)
 

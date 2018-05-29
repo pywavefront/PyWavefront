@@ -74,7 +74,7 @@ class ObjParser(parser.Parser):
         self.vertices = [[0., 0., 0.]]
         self.normals = [[0., 0., 0.]]
         self.tex_coords = [[0., 0.]]
-        self.read_file(self.file_name)
+        self.read_file()
 
     # methods for parsing types of wavefront lines
     def parse_v(self, args):

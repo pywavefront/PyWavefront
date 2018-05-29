@@ -101,7 +101,7 @@ class MaterialParser(parser.Parser):
         super(MaterialParser, self).__init__(file_path)
         self.materials = {}
         self.this_material = None
-        self.read_file(file_path)
+        self.read_file()
 
     def parse_newmtl(self, args):
         [newmtl] = args
