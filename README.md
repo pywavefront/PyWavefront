@@ -78,6 +78,7 @@ Contributors
 
 * Daniel Coelho
 * dav92lee
+* Einar Forselv
 * Jerek Shoemaker
 * Kurt Yoder
 * Marxlp
