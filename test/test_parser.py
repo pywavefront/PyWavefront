@@ -90,6 +90,6 @@ class TestParserFailure(unittest.TestCase):
 
     def testMissingParsedFile(self):
         "Referencing a missing parsed file should raise an exception."
-        file_name = 'donotexsit.obj'
+        file_name = 'doesnotexist.obj'
         parser = pywavefront.parser.Parser(prepend_dir(file_name))
         self.assertRaises(FileNotFoundError, parser.read_file, prepend_dir(file_name))
