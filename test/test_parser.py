@@ -3,8 +3,10 @@ import os
 
 import pywavefront.parser
 
+
 def prepend_dir(file):
     return os.path.join(os.path.dirname(__file__), file)
+
 
 class TestParsers(unittest.TestCase):
     def setUp(self):
@@ -35,6 +37,7 @@ class TestParsers(unittest.TestCase):
         material2 = self.mesh2.materials[0]
         self.assertEqual(material1.name, 'Material.simple')
         self.assertEqual(material2.name, 'Material2.simple')
+
 
 class TestMtlParser(unittest.TestCase):
     def setUp(self):
@@ -73,13 +76,20 @@ class TestMtlParser(unittest.TestCase):
         self.assertEqual(self.material1.texture.image_name,
                          prepend_dir('4x4.png'))
 
+
 class TestParserFailure(unittest.TestCase):
 
     def testMissingParseFunction(self):
         "Attempting to parse with a missing parse function should raise an exception."
-        # since no parse functions have been defined, this will always fail
-        self.assertRaises(Exception, pywavefront.parser.Parser, prepend_dir('uv_sphere.obj'))
+        # since no parse functions have been defined, this will always fail in strict mode
+        file_name = 'simple.obj'
+        parser = pywavefront.parser.Parser(prepend_dir(file_name))
+        pywavefront.parser.Parser.strict = True
+        self.assertRaises(AttributeError, parser.read_file, prepend_dir(file_name))
+        pywavefront.parser.Parser.strict = False
 
     def testMissingParsedFile(self):
         "Referencing a missing parsed file should raise an exception."
-        self.assertRaises(Exception, pywavefront.parser.Parser, 'missing.file.do.not.create')
+        file_name = 'donotexsit.obj'
+        parser = pywavefront.parser.Parser(prepend_dir(file_name))
+        self.assertRaises(FileNotFoundError, parser.read_file, prepend_dir(file_name))
