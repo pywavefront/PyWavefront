@@ -31,21 +31,25 @@
 # ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 # ----------------------------------------------------------------------------
-
 import os
 import logging
+
 
 class Parser(object):
     """This defines a generalized parse dispatcher; all parse functions
     reside in subclasses."""
     strict = False
 
+    def __init__(self, file_name):
+        self.file_name = file_name
+        self.dir = os.path.dirname(file_name)
+
     def read_file(self, file_name):
         with open(file_name, 'r') as file:
             for line in file:
-                self.parse(line, dir=os.path.dirname(file_name))
+                self.parse(line)
 
-    def parse(self, line, dir):
+    def parse(self, line):
         """Determine what type of line we are and dispatch
         appropriately."""
         if line.startswith('#'):
@@ -57,14 +61,6 @@ class Parser(object):
 
         line_type = values[0]
         args = values[1:]
-        i = 0
-        for arg in args:
-            if dir != '' and ('mtllib' in line or 'map_Kd' in line):
-                args[i] = dir + '/' + arg
-            else:
-                args[i] = arg
-            i += 1
-
         attrib = 'parse_%s' % line_type
 
         if Parser.strict:
