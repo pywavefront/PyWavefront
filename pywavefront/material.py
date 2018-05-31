@@ -33,7 +33,7 @@
 # ----------------------------------------------------------------------------
 import os
 
-from pywavefront.parser import Parser
+from pywavefront.parser import Parser, auto_consume
 from pywavefront.texture import Texture
 
 
@@ -112,48 +112,51 @@ class MaterialParser(Parser):
         if parse:
             self.parse()
 
+    @auto_consume
     def parse_newmtl(self):
         self.this_material = Material(self.values[1])
         self.materials[self.this_material.name] = self.this_material
-        self.consume_line()
 
+    @auto_consume
     def parse_Kd(self):
         self.this_material.set_diffuse(self.values[1:])
-        self.consume_line()
 
+    @auto_consume
     def parse_Ka(self):
         self.this_material.set_ambient(self.values[1:])
-        self.consume_line()
 
+    @auto_consume
     def parse_Ks(self):
         self.this_material.set_specular(self.values[1:])
-        self.consume_line()
 
+    @auto_consume
     def parse_Ke(self):
         self.this_material.set_emissive(self.values[1:])
-        self.consume_line()
 
+    @auto_consume
     def parse_Ns(self):
         self.this_material.shininess = float(self.values[1])
-        self.consume_line()
 
+    @auto_consume
     def parse_d(self):
         self.this_material.set_alpha(self.values[1])
-        self.consume_line()
 
+    @auto_consume
     def parse_map_Kd(self):
         Kd = os.path.join(self.dir, " ".join(self.values[1:]))
         self.this_material.set_texture(Kd)
-        self.consume_line()
 
+    @auto_consume
     def parse_Ni(self):
         # unimplemented
-        self.consume_line()
-
+        pass
+    
+    @auto_consume
     def parse_Tr(self):
         # unimplemented
-        self.consume_line()
+        pass
 
+    @auto_consume
     def parse_illum(self):
         # unimplemented
-        self.consume_line()
+        pass
