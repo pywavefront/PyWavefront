@@ -31,13 +31,16 @@
 # ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 # ----------------------------------------------------------------------------
+import os
 
 import pywavefront.material
 import pywavefront.mesh
 import pywavefront.parser
 
+
 class PywavefrontException(Exception):
     pass
+
 
 class Wavefront(object):
     """Import a wavefront .obj file."""
@@ -58,18 +61,20 @@ class Wavefront(object):
         self.mesh_list.append(the_mesh)
         self.meshes[the_mesh.name] = the_mesh
 
+
 class ObjParser(parser.Parser):
     """This parser parses lines from .obj files."""
+
     def __init__(self, wavefront, file_name):
-        # unfortunately we can't escape from external effects on the
-        # wavefront object
+        super(ObjParser, self).__init__(file_name)
         self.wavefront = wavefront
+
         self.mesh = None
         self.material = None
         self.vertices = [[0., 0., 0.]]
         self.normals = [[0., 0., 0.]]
         self.tex_coords = [[0., 0.]]
-        self.read_file(file_name)
+        self.read_file()
 
     # methods for parsing types of wavefront lines
     def parse_v(self, args):
@@ -82,7 +87,7 @@ class ObjParser(parser.Parser):
         self.tex_coords.append(list(map(float, args[0:2])))
 
     def parse_mtllib(self, args):
-        [mtllib] = args
+        mtllib = os.path.join(self.dir, " ".join(args))
         materials = material.MaterialParser(mtllib).materials
         for material_name, material_object in materials.items():
             self.wavefront.materials[material_name] = material_object
@@ -121,7 +126,6 @@ class ObjParser(parser.Parser):
         # For fan triangulation, remember first and latest vertices
         v1 = None
         vlast = None
-        points = []
         for i, v in enumerate(args[0:]):
             if type(v) is bytes:
                 v = v.decode()

@@ -31,6 +31,7 @@
 # ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 # ----------------------------------------------------------------------------
+import os
 
 import pywavefront.parser as parser
 import pywavefront.texture as texture
@@ -97,9 +98,10 @@ class MaterialParser(parser.Parser):
     """Object to parse lines of a materials definition file."""
 
     def __init__(self, file_path):
+        super(MaterialParser, self).__init__(file_path)
         self.materials = {}
         self.this_material = None
-        self.read_file(file_path)
+        self.read_file()
 
     def parse_newmtl(self, args):
         [newmtl] = args
@@ -127,7 +129,7 @@ class MaterialParser(parser.Parser):
         self.this_material.set_alpha(d)
 
     def parse_map_Kd(self, args):
-        [Kd] = args
+        Kd = os.path.join(self.dir, " ".join(args))
         self.this_material.set_texture(Kd)
 
     def parse_Ni(self, args):
