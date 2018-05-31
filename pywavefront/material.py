@@ -51,6 +51,7 @@ class Material(object):
         self.emissive = [0., 0., 0., 1.]
         self.shininess = 0.
         self.texture = None
+        self.is_default = is_default
 
         # Interleaved array of floats in GL_T2F_N3F_V3F format
         self.vertices = []
