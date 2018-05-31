@@ -5,3 +5,6 @@ build
 MANIFEST
 dist
 *.swp
+.idea
+*.egg-info
+.venv
