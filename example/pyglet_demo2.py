@@ -62,7 +62,7 @@ def on_draw():
     glRotatef(90, 0, 0, 1)
     glRotatef(0, 0, 1, 0)
 
-    visualization.draw(meshes.meshes)
+    visualization.draw(meshes)
 
 
 def update(dt):

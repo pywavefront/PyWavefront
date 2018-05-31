@@ -41,7 +41,7 @@ def on_draw():
 
     glEnable(GL_LIGHTING)
 
-    visualization.draw_meshes(meshes.meshes)
+    visualization.draw(meshes)
 
 
 def update(dt):
