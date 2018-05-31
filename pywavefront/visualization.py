@@ -31,87 +31,109 @@
 # ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 # ----------------------------------------------------------------------------
-
+import pyglet
 from pyglet.gl import *
 
-from pywavefront.material import Material
+from pywavefront import Wavefront
 from pywavefront.mesh import Mesh
-from pywavefront.texture import Texture
-
-class _Material(object):
-    """
-    Overrides the drawing routines for the Material class.
-    This class should not be used directly. Its purpose is to shadow
-    the methods to be overriden.
-    """
-
-    def gl_light(self, lighting):
-        """Return a GLfloat with length 4, containing the 4 lighting values."""
-        return (GLfloat * 4)(*(lighting))
-
-    def draw(self, face=GL_FRONT_AND_BACK):
-        if self.texture:
-            self.texture.draw()
-        else:
-            glDisable(GL_TEXTURE_2D)
-
-        glMaterialfv(face, GL_DIFFUSE, self.gl_light(self.diffuse))
-        glMaterialfv(face, GL_AMBIENT, self.gl_light(self.ambient))
-        glMaterialfv(face, GL_SPECULAR, self.gl_light(self.specular))
-        glMaterialfv(face, GL_EMISSION, self.gl_light(self.emissive))
-        glMaterialf(face, GL_SHININESS, self.shininess)
-
-        if self.gl_floats is None:
-            self.gl_floats = (GLfloat * len(self.vertices))(*self.vertices)
-            self.triangle_count = len(self.vertices) / 8
-        glInterleavedArrays(GL_T2F_N3F_V3F, 0, self.gl_floats)
-        glDrawArrays(GL_TRIANGLES, 0, int(self.triangle_count))
 
 
-setattr(Material, "gl_light", _Material.gl_light)
-setattr(Material, "draw", _Material.draw)
+def draw(instance):
+    """Generic draw function"""
+    if isinstance(instance, Wavefront):
+        draw_meshes(instance.meshes)
+    elif isinstance(instance, Mesh):
+        draw_mesh(instance)
+    elif isinstance(instance, dict):
+        draw_meshes(instance)
+    elif isinstance(instance, list):
+        draw_meshes(instance)
+    elif isinstance(instance, tuple):
+        draw_meshes(instance)
+    else:
+        raise ValueError("Cannot figure out how to draw: {}".format(instance))
 
 
-class _Mesh(object):
-    """
-    Overrides the drawing routines for the Mesh class.
-    This class should not be used directly. Its purpose is to shadow
-    the methods to be overriden.
-    """
-    def draw(self):
-        glPushClientAttrib(GL_CLIENT_VERTEX_ARRAY_BIT)
-        glPushAttrib(GL_CURRENT_BIT | GL_ENABLE_BIT | GL_LIGHTING_BIT)
-        glEnable(GL_CULL_FACE)
-        glCullFace(GL_BACK)
-        for material in self.materials:
-            material.draw()
-        glPopAttrib()
-        glPopClientAttrib()
-
-setattr(Mesh, "draw", _Mesh.draw)
+def draw_meshes(meshes):
+    """Draw a dict of meshes"""
+    for name, mesh in meshes.items():
+        draw_mesh(mesh)
 
 
-class _Texture(object):
+def draw_mesh(mesh):
+    """Draw a single mesh"""
+    glPushClientAttrib(GL_CLIENT_VERTEX_ARRAY_BIT)
+    glPushAttrib(GL_CURRENT_BIT | GL_ENABLE_BIT | GL_LIGHTING_BIT)
+    glEnable(GL_CULL_FACE)
+    glCullFace(GL_BACK)
 
-    def init(self, path):
-        self.image_name = path
-        self.load_image()
+    for material in mesh.materials:
+        draw_material(material)
 
-    def draw(self):
-        if not self.image:
-            self.load_image()
+    glPopAttrib()
+    glPopClientAttrib()
 
-        glEnable(self.image.target)
-        glBindTexture(self.image.target, self.image.id)
-        gl.glTexParameterf(self.image.target,
-                           gl.GL_TEXTURE_WRAP_S, gl.GL_CLAMP)
-        gl.glTexParameterf(self.image.target,
-                           gl.GL_TEXTURE_WRAP_T, gl.GL_CLAMP)
 
-    def load_image(self):
-        self.image = pyglet.image.load(self.image_name).texture
-        self.verify_dimensions()
+def draw_material(material, face=GL_FRONT_AND_BACK):
+    """Draw a single material"""
+    if material.texture:
+        draw_texture(material.texture)
+    else:
+        glDisable(GL_TEXTURE_2D)
 
-setattr(Texture, "__init__", _Texture.init)
-setattr(Texture, "draw", _Texture.draw)
-setattr(Texture, "load_image", _Texture.load_image)
+    glMaterialfv(face, GL_DIFFUSE, gl_light(material.diffuse))
+    glMaterialfv(face, GL_AMBIENT, gl_light(material.ambient))
+    glMaterialfv(face, GL_SPECULAR, gl_light(material.specular))
+    glMaterialfv(face, GL_EMISSION, gl_light(material.emissive))
+    glMaterialf(face, GL_SHININESS, material.shininess)
+
+    if material.gl_floats is None:
+        material.gl_floats = (GLfloat * len(material.vertices))(*material.vertices)
+        material.triangle_count = len(material.vertices) / 8
+
+    glInterleavedArrays(GL_T2F_N3F_V3F, 0, material.gl_floats)
+    glDrawArrays(GL_TRIANGLES, 0, int(material.triangle_count))
+
+
+def gl_light(lighting):
+    """Return a GLfloat with length 4, containing the 4 lighting values."""
+    return (GLfloat * 4)(*(lighting))
+
+
+def draw_texture(texture):
+    """Draw a single texture"""
+    if not getattr(texture, 'image', None):
+        texture.image = load_image(texture.image_name)
+
+    glEnable(texture.image.target)
+    glBindTexture(texture.image.target, texture.image.id)
+    gl.glTexParameterf(texture.image.target,
+                       gl.GL_TEXTURE_WRAP_S, gl.GL_CLAMP_TO_EDGE)
+    gl.glTexParameterf(texture.image.target,
+                       gl.GL_TEXTURE_WRAP_T, gl.GL_CLAMP_TO_EDGE)
+
+
+def load_image(name):
+    """Load an image"""
+    image = pyglet.image.load(name).texture
+    verify_dimensions(image)
+    return image
+
+
+def verify_dimensions(image):
+    verify(image, 'width')
+    verify(image, 'height')
+
+
+def verify(image, dimension):
+    value = image.__getattribute__(dimension)
+
+    while value > 1:
+        div_float = float(value) / 2.0
+        div_int = int(div_float)
+
+        if not (div_float == div_int):
+            raise Exception('image %s is %d, which is not a power of 2' % (
+                dimension, image.__getattribute__(dimension)))
+
+        value = div_int
