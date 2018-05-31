@@ -1,7 +1,8 @@
-import unittest
 import os
+import unittest
 
 import pywavefront.parser
+from pywavefront.exceptions import PywavefrontException
 
 
 def prepend_dir(file):
@@ -16,12 +17,12 @@ class TestParsers(unittest.TestCase):
         self.mesh2 = meshes.mesh_list[1]
 
     def testObjName(self):
-        "Parsing an obj file with known names should set those names."
+        """Parsing an obj file with known names should set those names."""
         self.assertEqual(self.mesh1.name, 'Simple')
         self.assertEqual(self.mesh2.name, 'SimpleB')
 
     def testObjVertices(self):
-        "Parsing an obj file with known vertices should set those vertices."
+        """Parsing an obj file with known vertices should set those vertices."""
         # tests v, vt, vn, and f
         material = self.mesh1.materials[0]
         self.assertEqual(material.vertices, [
@@ -31,7 +32,7 @@ class TestParsers(unittest.TestCase):
         # One parser vertex comparison is quite enough, thank you!
 
     def testObjMaterials(self):
-        "Parsing an obj file with known materials should load and assign materials."
+        """Parsing an obj file with known materials should load and assign materials."""
         # tests mtllib and usemtl
         material1 = self.mesh1.materials[0]
         material2 = self.mesh2.materials[0]
@@ -47,31 +48,31 @@ class TestMtlParser(unittest.TestCase):
         self.material2 = meshes.mesh_list[1].materials[0]
 
     def testMtlName(self):
-        "Parsing an obj file with known material names should set those names."
+        """Parsing an obj file with known material names should set those names."""
         self.assertEqual(self.material1.name, 'Material.simple')
         self.assertEqual(self.material2.name, 'Material2.simple')
 
     def testMtlShininess(self):
-        "Parsing an obj file with known material shininess should set it."
+        """Parsing an obj file with known material shininess should set it."""
         self.assertEqual(self.material1.shininess, 1.0)
 
     def testMtlAmbient(self):
-        "Parsing an obj file with known material ambient should set it."
+        """Parsing an obj file with known material ambient should set it."""
         # also tests d
         self.assertEqual(self.material1.ambient, [0., 0., 0., 1.])
 
     def testMtlDiffuse(self):
-        "Parsing an obj file with known material diffuse should set it."
+        """Parsing an obj file with known material diffuse should set it."""
         # also tests d
         self.assertEqual(self.material1.diffuse, [0.1, 0.1, 0.1, 1.])
 
     def testMtlSpecular(self):
-        "Parsing an obj file with known material specular should set it."
+        """Parsing an obj file with known material specular should set it."""
         # also tests d
         self.assertEqual(self.material1.specular, [0.2, 0.2, 0.2, 1.])
 
     def testMtlTextureName(self):
-        "Parsing an obj file with known material texture should set its name."
+        """Parsing an obj file with known material texture should set its name."""
         # also tests d
         self.assertEqual(self.material1.texture.image_name,
                          prepend_dir('4x4.png'))
@@ -80,16 +81,13 @@ class TestMtlParser(unittest.TestCase):
 class TestParserFailure(unittest.TestCase):
 
     def testMissingParseFunction(self):
-        "Attempting to parse with a missing parse function should raise an exception."
+        """Attempting to parse with a missing parse function should raise an exception."""
         # since no parse functions have been defined, this will always fail in strict mode
-        file_name = 'simple.obj'
-        parser = pywavefront.parser.Parser(prepend_dir(file_name))
-        pywavefront.parser.Parser.strict = True
-        self.assertRaises(AttributeError, parser.read_file, prepend_dir(file_name))
-        pywavefront.parser.Parser.strict = False
+        parser = pywavefront.parser.Parser(prepend_dir('simple.obj'), strict=True)
+        self.assertRaises(PywavefrontException, parser.parse)
 
     def testMissingParsedFile(self):
-        "Referencing a missing parsed file should raise an exception."
+        """Attempting to read a non-exiting file should raise an exception."""
         file_name = 'doesnotexist.obj'
         parser = pywavefront.parser.Parser(prepend_dir(file_name))
-        self.assertRaises(FileNotFoundError, parser.read_file, prepend_dir(file_name))
+        self.assertRaises(IOError, parser.parse)
