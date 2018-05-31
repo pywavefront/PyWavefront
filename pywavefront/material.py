@@ -33,12 +33,17 @@
 # ----------------------------------------------------------------------------
 import os
 
-import pywavefront.parser as parser
-import pywavefront.texture as texture
+from pywavefront.parser import Parser
+from pywavefront.texture import Texture
 
 
 class Material(object):
-    def __init__(self, name=None):
+    def __init__(self, name=None, is_default=False):
+        """
+        Create a new material
+        :param name: Name of the material
+        :param is_default: It this an auto created default material?
+        """
         self.name = name
         self.diffuse = [.8, .8, .8, 1.]
         self.ambient = [.2, .2, .2, 1.]
@@ -57,6 +62,7 @@ class Material(object):
         is length 4. Also ensure each value is a float"""
         while len(values) < 4:
             values.append(0.)
+
         return list(map(float, values))
 
     def set_alpha(self, alpha):
@@ -67,79 +73,86 @@ class Material(object):
         self.specular[3] = alpha
         self.emissive[3] = alpha
 
-    def set_diffuse(self, values=[]):
-        self.diffuse = self.pad_light(values)
+    def set_diffuse(self, values=None):
+        self.diffuse = self.pad_light(values or [])
 
-    def set_ambient(self, values=[]):
-        self.ambient = self.pad_light(values)
+    def set_ambient(self, values=None):
+        self.ambient = self.pad_light(values or [])
 
-    def set_specular(self, values=[]):
-        self.specular = self.pad_light(values)
+    def set_specular(self, values=None):
+        self.specular = self.pad_light(values or [])
 
-    def set_emissive(self, values=[]):
-        self.emissive = self.pad_light(values)
+    def set_emissive(self, values=None):
+        self.emissive = self.pad_light(values or [])
 
     def set_texture(self, path):
-        self.texture = texture.Texture(path)
+        self.texture = Texture(path)
 
     def unset_texture(self):
         self.texture = None
 
-    def gl_light(self, lighting):
-        """Method placeholder"""
-        raise Exception("Please import pywavefront.visualization")
 
-    def draw(self, face=None):
-        """Method placeholder"""
-        raise Exception("Please import pywavefront.visualization")
-
-
-class MaterialParser(parser.Parser):
+class MaterialParser(Parser):
     """Object to parse lines of a materials definition file."""
 
-    def __init__(self, file_path):
-        super(MaterialParser, self).__init__(file_path)
+    def __init__(self, file_name, strict=False, encoding="utf-8", parse=True):
+        """
+        Create a new material parser
+        :param file_name: file name and path of obj file to read
+        :param strict: Enable strict mode
+        :param encoding: Encoding to read the text files
+        :param parse: Should parse be called immediately or manually called later?
+        """
+        super(MaterialParser, self).__init__(file_name, strict=strict, encoding=encoding)
+
         self.materials = {}
         self.this_material = None
-        self.read_file()
 
-    def parse_newmtl(self, args):
-        [newmtl] = args
-        self.this_material = Material(newmtl)
+        if parse:
+            self.parse()
+
+    def parse_newmtl(self):
+        self.this_material = Material(self.values[1])
         self.materials[self.this_material.name] = self.this_material
+        self.consume_line()
 
-    def parse_Kd(self, args):
-        self.this_material.set_diffuse(args)
+    def parse_Kd(self):
+        self.this_material.set_diffuse(self.values[1:])
+        self.consume_line()
 
-    def parse_Ka(self, args):
-        self.this_material.set_ambient(args)
+    def parse_Ka(self):
+        self.this_material.set_ambient(self.values[1:])
+        self.consume_line()
 
-    def parse_Ks(self, args):
-        self.this_material.set_specular(args)
+    def parse_Ks(self):
+        self.this_material.set_specular(self.values[1:])
+        self.consume_line()
 
-    def parse_Ke(self, args):
-        self.this_material.set_emissive(args)
+    def parse_Ke(self):
+        self.this_material.set_emissive(self.values[1:])
+        self.consume_line()
 
-    def parse_Ns(self, args):
-        [Ns] = args
-        self.this_material.shininess = float(Ns)
+    def parse_Ns(self):
+        self.this_material.shininess = float(self.values[1])
+        self.consume_line()
 
-    def parse_d(self, args):
-        [d] = args
-        self.this_material.set_alpha(d)
+    def parse_d(self):
+        self.this_material.set_alpha(self.values[1])
+        self.consume_line()
 
-    def parse_map_Kd(self, args):
-        Kd = os.path.join(self.dir, " ".join(args))
+    def parse_map_Kd(self):
+        Kd = os.path.join(self.dir, " ".join(self.values[1:]))
         self.this_material.set_texture(Kd)
+        self.consume_line()
 
-    def parse_Ni(self, args):
+    def parse_Ni(self):
         # unimplemented
-        return
+        self.consume_line()
 
-    def parse_Tr(self, args):
+    def parse_Tr(self):
         # unimplemented
-        return
+        self.consume_line()
 
-    def parse_illum(self, args):
+    def parse_illum(self):
         # unimplemented
-        return
+        self.consume_line()

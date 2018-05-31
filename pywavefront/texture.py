@@ -31,8 +31,10 @@
 # ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 # ----------------------------------------------------------------------------
-
 import os
+
+from pywavefront.exceptions import PywavefrontException
+
 
 class Texture(object):
     def __init__(self, path):
@@ -40,26 +42,4 @@ class Texture(object):
         self.image = None
 
         if not os.path.exists(path):
-            raise Exception("Requested file does not exist")
-
-    def draw(self):
-        """Method placeholder"""
-        raise Exception("Please import pywavefront.visualization")
-
-    def load_image(self):
-        """Method placeholder"""
-        raise Exception("Please import pywavefront.visualization")
-
-    def verify_dimensions(self):
-        self.verify('width')
-        self.verify('height')
-
-    def verify(self, dimension):
-        value = self.image.__getattribute__(dimension)
-        while value > 1:
-            div_float = float(value) / 2.0
-            div_int = int(div_float)
-            if not (div_float == div_int):
-                raise Exception('image %s is %d, which is not a power of 2' % (
-                    dimension, self.image.__getattribute__(dimension)))
-            value = div_int
+            raise PywavefrontException("Requested file does not exist")

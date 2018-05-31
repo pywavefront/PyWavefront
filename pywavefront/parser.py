@@ -31,44 +31,127 @@
 # ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 # ----------------------------------------------------------------------------
-import os
+import codecs
+import gzip
+import io
 import logging
+import os
+import sys
+
+from pywavefront.exceptions import PywavefrontException
 
 
 class Parser(object):
     """This defines a generalized parse dispatcher; all parse functions
     reside in subclasses."""
-    strict = False
 
-    def __init__(self, file_name):
+    def __init__(self, file_name, strict=False, encoding="utf-8"):
+        """
+        Initializer for the base parser
+        :param file_name: Name and path of the file to read
+        :param strict: Enable or disable strict mode
+        """
         self.file_name = file_name
+        self.strict = strict
+        self.encoding = encoding
         self.dir = os.path.dirname(file_name)
 
-    def read_file(self):
-        with open(self.file_name, 'r') as file:
-            for line in file:
-                self.parse(line)
+        self.dispatcher = self._build_dispatch_map()
+        self.lines = self.create_line_generator()
 
-    def parse(self, line):
-        """Determine what type of line we are and dispatch
-        appropriately."""
-        if line.startswith('#'):
-            return
+        self.line = None
+        self.values = None
 
-        values = line.split()
-        if len(values) < 2:
-            return
+    def create_line_generator(self):
+        """
+        Creates a generator function yielding lines in the file
+        Should only yield non-empty lines
+        """
+        if self.file_name.endswith(".gz"):
+            if sys.version_info.major == 3:
+                gz = gzip.open(self.file_name, mode='rt', encoding=self.encoding)
+                f = io.BufferedReader(gz)
+                for line in gz:
+                    if line == '':
+                        continue
+                    yield line
 
-        line_type = values[0]
-        args = values[1:]
-        attrib = 'parse_%s' % line_type
+                gz.close()
+            else:
+                gz = gzip.open(self.file_name, mode='rt')
+                f = io.BufferedReader(gz)
+                for line in f.readlines():
+                    if line == '':
+                        continue
+                    yield line
 
-        if Parser.strict:
-            parse_function = getattr(self, attrib)
-            parse_function(args)
-        elif hasattr(self, attrib):
-            parse_function = getattr(self, attrib)
-            parse_function(args)
+                gz.close()
+        else:
+            if sys.version_info.major == 3:
+                # Python 3 native `open` is much faster
+                with open(self.file_name, mode='r', encoding=self.encoding) as file:
+                    for line in file:
+                        # Skip empty lines
+                        if line == '':
+                            continue
+                        yield line
+            else:
+                with codecs.open(self.file_name, mode='r', encoding=self.encoding) as file:
+                    for line in file:
+                        # Skip empty lines
+                        if line == '':
+                            continue
+                        yield line
+
+    def next_line(self):
+        """Read the next line from the line generator and split it"""
+        self.line = next(self.lines)
+        self.values = self.line.split()
+
+    def consume_line(self):
+        """Tell the parser we are done with this line"""
+        self.line = None
+        self.values = None
+
+    def parse(self):
+        """
+        Parse all the lines in the obj file
+        Determines what type of line we are and dispatch appropriately.
+        """
+        try:
+            while True:
+                # Only advance the parser if the previous line was consumed
+                if not self.line:
+                    self.next_line()
+
+                if self.line[0] == '#' or len(self.values) < 2:
+                    self.consume_line()
+                    continue
+
+                self.dispatcher.get(self.values[0], self.parse_fallback)()
+        except StopIteration:
+            pass
+
+    def parse_fallback(self):
+        """Fallback method when parser doesn't know the statement"""
+        if self.strict:
+            raise PywavefrontException("Unimplemented OBJ format statement '%s' on line '%s'"
+                                       % (self.values[0], self.line.rstrip()))
         else:
             logging.warning("Unimplemented OBJ format statement '%s' on line '%s'"
-                            % (line_type, line.rstrip()))
+                            % (self.values[0], self.line.rstrip()))
+
+        self.consume_line()
+
+    def _build_dispatch_map(self):
+        """
+        Build a dispatch map: {func name": func} dict
+        This is to easily dispatch to each parse method.
+
+        Parse methods must start with `parse_` to be registered.
+        The suffix should be the name of the obj statement
+        such as `parse_v` for vertex statements.
+        """
+        return {"_".join(a.split("_")[1:]): getattr(self, a)
+                for a in dir(self)
+                if a.startswith("parse_")}
