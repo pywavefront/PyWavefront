@@ -1,19 +1,18 @@
-#!/usr/bin/env python
-# Run with : ./profile.sh <obj file>
 import cProfile
 import pstats
 import sys
+
 try:
     from StringIO import StringIO
 except:
     from io import StringIO
 
-print(len(sys.argv), sys.argv)
 
 if len(sys.argv) < 2:
-    print("Usage: ./profile.sh <obj file>")
+    print("Usage: profiler.py <obj file>")
     exit(1)
 
+# Run the profiler
 pr = cProfile.Profile()
 pr.enable()
 import pywavefront
@@ -26,4 +25,3 @@ sortby = 'tottime'
 ps = pstats.Stats(pr, stream=s).sort_stats(sortby)
 ps.print_stats()
 print(s.getvalue())
-

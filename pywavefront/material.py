@@ -42,7 +42,7 @@ class Material(object):
         """
         Create a new material
         :param name: Name of the material
-        :param is_default: It this an auto created default material?
+        :param is_default: Is this an auto created default material?
         """
         self.name = name
         self.diffuse = [.8, .8, .8, 1.]
@@ -150,7 +150,7 @@ class MaterialParser(Parser):
     def parse_Ni(self):
         # unimplemented
         pass
-    
+
     @auto_consume
     def parse_Tr(self):
         # unimplemented
