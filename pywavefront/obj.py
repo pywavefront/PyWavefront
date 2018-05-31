@@ -1,7 +1,7 @@
 import os
 
 from pywavefront.exceptions import PywavefrontException
-from pywavefront.parser import Parser
+from pywavefront.parser import Parser, auto_consume
 from pywavefront.material import Material, MaterialParser
 from pywavefront.mesh import Mesh
 
@@ -93,6 +93,7 @@ class ObjParser(Parser):
             if self.values[0] != "vt":
                 break
 
+    @auto_consume
     def parse_mtllib(self):
         mtllib = os.path.join(self.dir, " ".join(self.values[1:]))
         materials = MaterialParser(mtllib, encoding=self.encoding, strict=self.strict).materials
@@ -100,8 +101,7 @@ class ObjParser(Parser):
         for material_name, material_object in materials.items():
             self.wavefront.materials[material_name] = material_object
 
-        self.consume_line()
-
+    @auto_consume
     def parse_usemtl(self):
         self.material = self.wavefront.materials.get(self.values[1], None)
 
@@ -111,15 +111,13 @@ class ObjParser(Parser):
         if self.mesh is not None:
             self.mesh.add_material(self.material)
 
-        self.consume_line()
-
     def parse_usemat(self):
         self.parse_usemtl()
 
+    @auto_consume
     def parse_o(self):
         self.mesh = Mesh(self.values[1])
         self.wavefront.add_mesh(self.mesh)
-        self.consume_line()
 
     def parse_f(self):
         # Support objects without `o` statement

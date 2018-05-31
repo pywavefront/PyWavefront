@@ -41,6 +41,14 @@ import sys
 from pywavefront.exceptions import PywavefrontException
 
 
+def auto_consume(func):
+    """Decorator for auto consuming lines when leaving the function"""
+    def inner(*args, **kwargs):
+        func(*args, **kwargs)
+        args[0].consume_line()
+    return inner
+
+
 class Parser(object):
     """This defines a generalized parse dispatcher; all parse functions
     reside in subclasses."""
@@ -132,6 +140,7 @@ class Parser(object):
         except StopIteration:
             pass
 
+    @auto_consume
     def parse_fallback(self):
         """Fallback method when parser doesn't know the statement"""
         if self.strict:
