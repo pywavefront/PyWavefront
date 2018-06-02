@@ -69,3 +69,5 @@ class TestNoObjectNoMaterial(TestNoMaterial):
         self.mesh_names = [None]
         self.material_names = [None]
         self.meshes = pywavefront.Wavefront(prepend_dir('simple_no_object_no_mtl.obj'))
+
+# test to kick off ci, hopefully
