@@ -9,6 +9,10 @@ Currently, only a subset of [the defined
 specification](https://en.wikipedia.org/wiki/Wavefront_.obj_file) has
 been implemented.
 
+Current test status: [![CircleCI](https://circleci.com/gh/greenmoss/PyWavefront.svg?style=svg)](https://circleci.com/gh/greenmoss/PyWavefront)
+
+Slack: [channel](https://pywavefront.slack.com/)
+
 Optional Dependencies
 ------------
 
