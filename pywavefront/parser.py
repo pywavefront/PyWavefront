@@ -31,44 +31,132 @@
 # ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 # ----------------------------------------------------------------------------
-import os
+import codecs
+import gzip
 import logging
+import os
+import sys
+
+from pywavefront.exceptions import PywavefrontException
+
+
+def auto_consume(func):
+    """Decorator for auto consuming lines when leaving the function"""
+    def inner(*args, **kwargs):
+        func(*args, **kwargs)
+        args[0].consume_line()
+    return inner
 
 
 class Parser(object):
     """This defines a generalized parse dispatcher; all parse functions
     reside in subclasses."""
-    strict = False
 
-    def __init__(self, file_name):
+    def __init__(self, file_name, strict=False, encoding="utf-8"):
+        """
+        Initializer for the base parser
+        :param file_name: Name and path of the file to read
+        :param strict: Enable or disable strict mode
+        """
         self.file_name = file_name
+        self.strict = strict
+        self.encoding = encoding
         self.dir = os.path.dirname(file_name)
 
-    def read_file(self):
-        with open(self.file_name, 'r') as file:
+        self.dispatcher = self._build_dispatch_map()
+        self.lines = self.create_line_generator()
+
+        self.line = None
+        self.values = None
+
+    def create_line_generator(self):
+        """
+        Creates a generator function yielding lines in the file
+        Should only yield non-empty lines
+        """
+
+        if self.file_name.endswith(".gz"):
+            if sys.version_info.major == 3:
+                gz = gzip.open(self.file_name, mode='rt', encoding=self.encoding)
+            else:
+                gz = gzip.open(self.file_name, mode='rt')
+
+            for line in gz.readlines():
+                if line == '':
+                    continue
+                yield line
+
+            gz.close()
+        else:
+            if sys.version_info.major == 3:
+                # Python 3 native `open` is much faster
+                file = open(self.file_name, mode='r', encoding=self.encoding)
+            else:
+                # Python 2 needs the codecs package to deal with encoding
+                file = codecs.open(self.file_name, mode='r', encoding=self.encoding)
+
             for line in file:
-                self.parse(line)
+                if line == '':  # Skip empty lines
+                    continue
+                yield line
 
-    def parse(self, line):
-        """Determine what type of line we are and dispatch
-        appropriately."""
-        if line.startswith('#'):
-            return
+            file.close()
 
-        values = line.split()
-        if len(values) < 2:
-            return
+    def next_line(self):
+        """Read the next line from the line generator and split it"""
+        self.line = next(self.lines)  # Will raise StopIteration when there are no more lines
+        self.values = self.line.split()
 
-        line_type = values[0]
-        args = values[1:]
-        attrib = 'parse_%s' % line_type
+    def consume_line(self):
+        """
+        Tell the parser we are done with this line.
+        This is simply by setting None values.
+        """
+        self.line = None
+        self.values = None
 
-        if Parser.strict:
-            parse_function = getattr(self, attrib)
-            parse_function(args)
-        elif hasattr(self, attrib):
-            parse_function = getattr(self, attrib)
-            parse_function(args)
+    def parse(self):
+        """
+        Parse all the lines in the obj file
+        Determines what type of line we are and dispatch appropriately.
+        """
+        try:
+            # Continues until `next_line()` raises StopIteration
+            # This can trigger here or in parse functions in the subclass
+            while True:
+                # Only advance the parser if the previous line was consumed.
+                # Parse functions reading multiple lines can end up reading one line too far,
+                # so they return without consuming the line and we pick it up here
+                if not self.line:
+                    self.next_line()
+
+                if self.line[0] == '#' or len(self.values) < 2:
+                    self.consume_line()
+                    continue
+
+                self.dispatcher.get(self.values[0], self.parse_fallback)()
+        except StopIteration:
+            pass
+
+    @auto_consume
+    def parse_fallback(self):
+        """Fallback method when parser doesn't know the statement"""
+        if self.strict:
+            raise PywavefrontException("Unimplemented OBJ format statement '%s' on line '%s'"
+                                       % (self.values[0], self.line.rstrip()))
         else:
             logging.warning("Unimplemented OBJ format statement '%s' on line '%s'"
-                            % (line_type, line.rstrip()))
+                            % (self.values[0], self.line.rstrip()))
+
+    def _build_dispatch_map(self):
+        """
+        Build a dispatch map: {func name": func} dict
+        This is to easily dispatch to each parse method.
+
+        Parse methods must start with `parse_` to be registered.
+        The suffix should be the name of the obj statement
+        such as `parse_v` for vertex statements.
+        """
+        return {"_".join(a.split("_")[1:]): getattr(self, a)
+                for a in dir(self)
+                if a.startswith("parse_")}
