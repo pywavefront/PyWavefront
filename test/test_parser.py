@@ -40,6 +40,15 @@ class TestParsers(unittest.TestCase):
         self.assertEqual(material2.name, 'Material2.simple')
 
 
+class TestParserGz(TestParsers):
+    """Run all tests is TestParsers for gzip file as well"""
+    def setUp(self):
+        # Append current path to locate files
+        meshes = pywavefront.Wavefront(prepend_dir('simple.obj.gz'))
+        self.mesh1 = meshes.mesh_list[0]
+        self.mesh2 = meshes.mesh_list[1]
+
+
 class TestMtlParser(unittest.TestCase):
     def setUp(self):
         # Append current path to locate files
