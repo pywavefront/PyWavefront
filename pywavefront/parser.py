@@ -33,7 +33,6 @@
 # ----------------------------------------------------------------------------
 import codecs
 import gzip
-import io
 import logging
 import os
 import sys
@@ -75,49 +74,44 @@ class Parser(object):
         Creates a generator function yielding lines in the file
         Should only yield non-empty lines
         """
+
         if self.file_name.endswith(".gz"):
             if sys.version_info.major == 3:
                 gz = gzip.open(self.file_name, mode='rt', encoding=self.encoding)
-                f = io.BufferedReader(gz)
-                for line in gz:
-                    if line == '':
-                        continue
-                    yield line
-
-                gz.close()
             else:
                 gz = gzip.open(self.file_name, mode='rt')
-                f = io.BufferedReader(gz)
-                for line in f.readlines():
-                    if line == '':
-                        continue
-                    yield line
 
-                gz.close()
+            for line in gz.readlines():
+                if line == '':
+                    continue
+                yield line
+
+            gz.close()
         else:
             if sys.version_info.major == 3:
                 # Python 3 native `open` is much faster
-                with open(self.file_name, mode='r', encoding=self.encoding) as file:
-                    for line in file:
-                        # Skip empty lines
-                        if line == '':
-                            continue
-                        yield line
+                file = open(self.file_name, mode='r', encoding=self.encoding)
             else:
-                with codecs.open(self.file_name, mode='r', encoding=self.encoding) as file:
-                    for line in file:
-                        # Skip empty lines
-                        if line == '':
-                            continue
-                        yield line
+                # Python 2 needs the codecs package to deal with encoding
+                file = codecs.open(self.file_name, mode='r', encoding=self.encoding)
+
+            for line in file:
+                if line == '':  # Skip empty lines
+                    continue
+                yield line
+
+            file.close()
 
     def next_line(self):
         """Read the next line from the line generator and split it"""
-        self.line = next(self.lines)
+        self.line = next(self.lines)  # Will raise StopIteration when there are no more lines
         self.values = self.line.split()
 
     def consume_line(self):
-        """Tell the parser we are done with this line"""
+        """
+        Tell the parser we are done with this line.
+        This is simply by setting None values.
+        """
         self.line = None
         self.values = None
 
@@ -127,8 +121,12 @@ class Parser(object):
         Determines what type of line we are and dispatch appropriately.
         """
         try:
+            # Continues until `next_line()` raises StopIteration
+            # This can trigger here or in parse functions in the subclass
             while True:
-                # Only advance the parser if the previous line was consumed
+                # Only advance the parser if the previous line was consumed.
+                # Parse functions reading multiple lines can end up reading one line too far,
+                # so they return without consuming the line and we pick it up here
                 if not self.line:
                     self.next_line()
 
@@ -149,8 +147,6 @@ class Parser(object):
         else:
             logging.warning("Unimplemented OBJ format statement '%s' on line '%s'"
                             % (self.values[0], self.line.rstrip()))
-
-        self.consume_line()
 
     def _build_dispatch_map(self):
         """

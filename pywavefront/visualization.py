@@ -46,10 +46,6 @@ def draw(instance):
         draw_mesh(instance)
     elif isinstance(instance, dict):
         draw_meshes(instance)
-    elif isinstance(instance, list):
-        draw_meshes(instance)
-    elif isinstance(instance, tuple):
-        draw_meshes(instance)
     else:
         raise ValueError("Cannot figure out how to draw: {}".format(instance))
 

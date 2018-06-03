@@ -62,6 +62,8 @@ class ObjParser(Parser):
 
     def consume_normals(self):
         """Consumes all consecutive texture coordinate lines"""
+        # The first iteration processes the current/first vn statement.
+        # The loop continues until there are no more vn-statements or StopIteration is raised by generator
         while True:
             yield (
                 float(self.values[1]),
@@ -83,6 +85,8 @@ class ObjParser(Parser):
 
     def consume_texture_coordinates(self):
         """Consume all consecutive texture coordinates"""
+        # The first iteration processes the current/first vt statement.
+        # The loop continues until there are no more vt-statements or StopIteration is raised by generator
         while True:
             yield (
                 float(self.values[1]),
@@ -153,6 +157,8 @@ class ObjParser(Parser):
 
         We always triangulate to make it simple
         """
+        # The first iteration processes the current/first f statement.
+        # The loop continues until there are no more f-statements or StopIteration is raised by generator
         while True:
             v1 = None
             vlast = None

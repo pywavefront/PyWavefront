@@ -39,7 +39,7 @@ class TestWavefront(unittest.TestCase):
         self.assertEqual(len(self.meshes.mesh_list), len(self.mesh_names) + 1)
 
     def testMeshMaterialVertices(self):
-        "" "Mesh vertices should have known values."""
+        """Mesh vertices should have known values."""
         self.assertEqual(len(self.meshes.meshes[self.mesh_names[0]].materials[0].vertices), 24)
 
 
@@ -50,11 +50,6 @@ class TestBrokenWavefront(unittest.TestCase):
         self.assertRaises(pywavefront.PywavefrontException,
                           pywavefront.Wavefront,
                           prepend_dir('simple_unknown_usemtl.obj'))
-
-    # def testMissingNormals(self):
-    #     """If there are texture coordinates but no normals, should raise an exception."""
-    #     self.assertRaises(pywavefront.PywavefrontException,
-    #                       pywavefront.Wavefront, prepend_dir('simple_missing_normals.obj'))
 
 
 class TestNoMaterial(TestWavefront):
