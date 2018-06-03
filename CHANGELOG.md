@@ -1,5 +1,11 @@
 Change Log
 
+## 0.3.0
+* Run all parser tests for gzip file - PR #40
+* Revamp parser to prepare to support different vertex formats  - PR #38
+* Make dir available as instance attribute + tests - PR # 33
+* Use setuptools - PR #31
+
 ## 0.2.0
 * Make Pyglet an optional dependency - PR #30
 * Close file descriptor when no longer needed - PR #29
