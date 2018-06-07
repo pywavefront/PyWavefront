@@ -167,7 +167,6 @@ class ObjParser(Parser):
 
         # If the face contains elements
         triangulate = len(self.values) - 1 >= 4
-        print("triangulate", triangulate)
 
         parts = self.values[1].split('/')
         # We assume texture coordinates are present
@@ -187,8 +186,6 @@ class ObjParser(Parser):
             ("N3F", has_vn),
             ("V3F", True)
         ] if e[1])
-
-        print("Format", self.vertex_format)
 
         # The first iteration processes the current/first f statement.
         # The loop continues until there are no more f-statements or StopIteration is raised by generator
