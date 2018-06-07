@@ -23,9 +23,11 @@ class ObjParser(Parser):
 
         self.mesh = None
         self.material = None
-        self.vertices = [[0., 0., 0.]]
-        self.normals = [[0., 0., 0.]]
-        self.tex_coords = [[0., 0.]]
+        self.vertex_format = ""
+
+        self.vertices = []
+        self.normals = []
+        self.tex_coords = []
 
         if parse:
             self.parse()
@@ -157,53 +159,90 @@ class ObjParser(Parser):
 
         We always triangulate to make it simple
         """
+        # Figure out the format of the first vertex
+        # We assume every consecutive vertex has the same format
+        # NOTE: Order is always v/vt/vn where v is mandatory and vt and vn is optional
+        has_vt = False
+        has_vn = False
+
+        # If the face contains elements
+        triangulate = len(self.values) - 1 >= 4
+        print("triangulate", triangulate)
+
+        parts = self.values[1].split('/')
+        # We assume texture coordinates are present
+        if len(parts) == 2:
+            has_vt = True
+
+        # We have a vn, but not necessarily a vt
+        elif len(parts) == 3:
+            # Check for empty vt "1//1"
+            if parts[1] != '':
+                has_vt = True
+            has_vn = True
+
+        # Prepare vertex format string
+        self.vertex_format = "_".join(e[0] for e in [
+            ("T2F", has_vt),
+            ("N3F", has_vn),
+            ("V3F", True)
+        ] if e[1])
+
+        print("Format", self.vertex_format)
+
         # The first iteration processes the current/first f statement.
         # The loop continues until there are no more f-statements or StopIteration is raised by generator
         while True:
-            v1 = None
-            vlast = None
+            v1, vlast = None, None
 
             for i, v in enumerate(self.values[1:]):
-                v_index, t_index, n_index = (list(map(int, [j or 0 for j in v.split('/')])) + [0, 0])[:3]
+                parts = v.split('/')
+                v_index = (int(parts[0]) - 1)
+                t_index = (int(parts[1]) - 1) if has_vt else None
+                n_index = (int(parts[2]) - 1) if has_vn else None
+
+                # v_index, t_index, n_index = (list(map(int, [j or 0 for j in v.split('/')])) + [0, 0])[:3]
 
                 # Resolve negative index lookups
                 if v_index < 0:
                     v_index += len(self.vertices) - 1
 
-                if t_index < 0:
+                if has_vt and t_index < 0:
                     t_index += len(self.tex_coords) - 1
 
-                if n_index < 0:
+                if has_vn and n_index < 0:
                     n_index += len(self.normals) - 1
 
-                vertex = (
-                    self.tex_coords[t_index][0],
-                    self.tex_coords[t_index][1],
+                pos = self.vertices[v_index]
+                uv = self.tex_coords[t_index] if has_vt else []
+                normal = self.normals[n_index] if has_vn else []
 
-                    self.normals[n_index][0],
-                    self.normals[n_index][1],
-                    self.normals[n_index][2],
-
-                    self.vertices[v_index][0],
-                    self.vertices[v_index][1],
-                    self.vertices[v_index][2],
-                )
-
-                for v in vertex:
+                # Just yield all the values
+                for v in uv:
                     yield v
 
-                if i >= 3:
-                    # Emit vertex 1 and 3 triangulating when a 4th vertex is specified
-                    for v in v1:
-                        yield v
+                for v in normal:
+                    yield v
 
-                    for v in vlast:
-                        yield v
+                for v in pos:
+                    yield v
 
-                if i == 0:
-                    v1 = vertex
+                # Triangulation when more than 3 elements is present
+                if triangulate:
+                    if i >= 3:
+                        # Emit vertex 1 and 3 triangulating when a 4th vertex is specified
+                        for v in v1:
+                            yield v
 
-                vlast = vertex
+                        for v in vlast:
+                            yield v
+
+                    if i == 0:
+                        # Store the first vertex
+                        v1 = uv + normal + pos
+
+                    # Store the last vertex
+                    vlast = uv + normal + pos
 
             # Break out of the loop when there are no more f statements
             self.next_line()
