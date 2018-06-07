@@ -23,8 +23,8 @@ class ObjParser(Parser):
 
         self.mesh = None
         self.material = None
-        self.vertex_format = ""
 
+        # Stores ALL vertices, normals and texcoords for the entire file
         self.vertices = []
         self.normals = []
         self.tex_coords = []
@@ -43,12 +43,24 @@ class ObjParser(Parser):
         statements can also occur in the vertex list
         """
         while True:
-            # TODO: Check for vertex color
-            yield (
-                float(self.values[1]),
-                float(self.values[2]),
-                float(self.values[3]),
-            )
+            # Vertex color
+            if len(self.values) == 7:
+                print(self.line)
+                yield (
+                    float(self.values[1]),
+                    float(self.values[2]),
+                    float(self.values[3]),
+                    float(self.values[4]),
+                    float(self.values[5]),
+                    float(self.values[6]),
+                )
+            # Positions only
+            else:
+                yield (
+                    float(self.values[1]),
+                    float(self.values[2]),
+                    float(self.values[3]),
+                )
 
             self.next_line()
             if self.values[0] != "v":
@@ -104,8 +116,8 @@ class ObjParser(Parser):
         mtllib = os.path.join(self.dir, " ".join(self.values[1:]))
         materials = MaterialParser(mtllib, encoding=self.encoding, strict=self.strict).materials
 
-        for material_name, material_object in materials.items():
-            self.wavefront.materials[material_name] = material_object
+        for name, material in materials.items():
+            self.wavefront.materials[name] = material
 
     @auto_consume
     def parse_usemtl(self):
@@ -126,15 +138,16 @@ class ObjParser(Parser):
         self.wavefront.add_mesh(self.mesh)
 
     def parse_f(self):
-        # Support objects without `o` statement
-        if self.mesh is None:
-            self.mesh = Mesh()
-            self.wavefront.add_mesh(self.mesh)
-
         # Add default material if not created
         if self.material is None:
             self.material = Material(is_default=True)
             self.wavefront.materials[self.material.name] = self.material
+
+        # Support objects without `o` statement
+        if self.mesh is None:
+            self.mesh = Mesh()
+            self.wavefront.add_mesh(self.mesh)
+            self.mesh.add_material(self.material)
 
         self.mesh.add_material(self.material)
 
@@ -164,6 +177,7 @@ class ObjParser(Parser):
         # NOTE: Order is always v/vt/vn where v is mandatory and vt and vn is optional
         has_vt = False
         has_vn = False
+        has_colors = False
 
         # If the face contains elements
         triangulate = len(self.values) - 1 >= 4
@@ -180,12 +194,23 @@ class ObjParser(Parser):
                 has_vt = True
             has_vn = True
 
+        # Are we referencing vertex with color info?
+        vertex = self.vertices[int(parts[0])]
+        has_colors = len(vertex) == 6
+
         # Prepare vertex format string
-        self.vertex_format = "_".join(e[0] for e in [
+        vertex_format = "_".join(e[0] for e in [
             ("T2F", has_vt),
+            ("C3F", has_colors),
             ("N3F", has_vn),
             ("V3F", True)
         ] if e[1])
+
+        # If the material already have vertex data, ensure the same format is used
+        if self.material.vertex_format and self.material.vertex_format != vertex_format:
+            raise ValueError("Trying to merge vertex data with different formats")
+
+        self.material.vertex_format = vertex_format
 
         # The first iteration processes the current/first f statement.
         # The loop continues until there are no more f-statements or StopIteration is raised by generator
@@ -210,12 +235,16 @@ class ObjParser(Parser):
                 if has_vn and n_index < 0:
                     n_index += len(self.normals) - 1
 
-                pos = self.vertices[v_index]
-                uv = self.tex_coords[t_index] if has_vt else []
-                normal = self.normals[n_index] if has_vn else []
+                pos = self.vertices[v_index][0:3] if has_colors else self.vertices[v_index]
+                color = self.vertices[v_index][3:] if has_colors else ()
+                uv = self.tex_coords[t_index] if has_vt else ()
+                normal = self.normals[n_index] if has_vn else ()
 
                 # Just yield all the values
                 for v in uv:
+                    yield v
+
+                for v in color:
                     yield v
 
                 for v in normal:
@@ -236,10 +265,10 @@ class ObjParser(Parser):
 
                     if i == 0:
                         # Store the first vertex
-                        v1 = uv + normal + pos
+                        v1 = uv + color + normal + pos
 
                     # Store the last vertex
-                    vlast = uv + normal + pos
+                    vlast = uv + color + normal + pos
 
             # Break out of the loop when there are no more f statements
             self.next_line()
