@@ -36,44 +36,59 @@ from pyglet.gl import *
 
 from pywavefront import Wavefront
 from pywavefront.mesh import Mesh
+from pywavefront.material import Material
+
+
+VERTEX_FORMATS = {
+    'V3F': GL_V3F,
+    'C3F_V3F': GL_C3F_V3F,
+    'N3F_V3F': GL_N3F_V3F,
+    'T2F_V3F': GL_T2F_V3F,
+    # 'C3F_N3F_V3F': GL_C3F_N3F_V3F,  # Unsupported
+    'T2F_C3F_V3F': GL_T2F_C3F_V3F,
+    'T2F_N3F_V3F': GL_T2F_N3F_V3F,
+    # 'T2F_C3F_N3F_V3F': GL_T2F_C3F_N3F_V3F,  # Unsupported
+}
 
 
 def draw(instance):
     """Generic draw function"""
+    # Draw Wavefront instance
     if isinstance(instance, Wavefront):
-        draw_meshes(instance.meshes)
-    elif isinstance(instance, Mesh):
-        draw_mesh(instance)
+        draw_materials(instance.materials)
+    # Draw single material
+    elif isinstance(instance, Material):
+        draw_material(instance)
+    # Draw dict of materials
     elif isinstance(instance, dict):
-        draw_meshes(instance)
+        draw_materials(instance)
     else:
         raise ValueError("Cannot figure out how to draw: {}".format(instance))
 
 
-def draw_meshes(meshes):
+def draw_materials(materials):
     """Draw a dict of meshes"""
-    for name, mesh in meshes.items():
-        draw_mesh(mesh)
+    for name, material in materials.items():
+        draw_material(material)
 
 
-def draw_mesh(mesh):
-    """Draw a single mesh"""
+def draw_material(material, face=GL_FRONT_AND_BACK):
+    """Draw a single material"""
+    if material.gl_floats is None:
+        material.gl_floats = (GLfloat * len(material.vertices))(*material.vertices)
+        material.triangle_count = len(material.vertices) / material.vertex_size
+
+    vertex_format = VERTEX_FORMATS.get(material.vertex_format)
+    if not vertex_format:
+        raise ValueError("Vertex format {} not supported by pyglet".format(vertex_format))
+
     glPushClientAttrib(GL_CLIENT_VERTEX_ARRAY_BIT)
     glPushAttrib(GL_CURRENT_BIT | GL_ENABLE_BIT | GL_LIGHTING_BIT)
     glEnable(GL_CULL_FACE)
     glCullFace(GL_BACK)
 
-    for material in mesh.materials:
-        draw_material(material)
-
-    glPopAttrib()
-    glPopClientAttrib()
-
-
-def draw_material(material, face=GL_FRONT_AND_BACK):
-    """Draw a single material"""
-    if material.texture:
-        draw_texture(material.texture)
+    if material.texture and material.has_uvs:
+        bind_texture(material.texture)
     else:
         glDisable(GL_TEXTURE_2D)
 
@@ -82,13 +97,18 @@ def draw_material(material, face=GL_FRONT_AND_BACK):
     glMaterialfv(face, GL_SPECULAR, gl_light(material.specular))
     glMaterialfv(face, GL_EMISSION, gl_light(material.emissive))
     glMaterialf(face, GL_SHININESS, material.shininess)
+    glEnable(GL_LIGHT0)
 
-    if material.gl_floats is None:
-        material.gl_floats = (GLfloat * len(material.vertices))(*material.vertices)
-        material.triangle_count = len(material.vertices) / 8
+    if material.has_normals:
+        glEnable(GL_LIGHTING)
+    else:
+        glDisable(GL_LIGHTING)
 
-    glInterleavedArrays(GL_T2F_N3F_V3F, 0, material.gl_floats)
+    glInterleavedArrays(vertex_format, 0, material.gl_floats)
     glDrawArrays(GL_TRIANGLES, 0, int(material.triangle_count))
+
+    glPopAttrib()
+    glPopClientAttrib()
 
 
 def gl_light(lighting):
@@ -96,7 +116,7 @@ def gl_light(lighting):
     return (GLfloat * 4)(*(lighting))
 
 
-def draw_texture(texture):
+def bind_texture(texture):
     """Draw a single texture"""
     if not getattr(texture, 'image', None):
         texture.image = load_image(texture.image_name)
