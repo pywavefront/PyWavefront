@@ -59,6 +59,23 @@ class Material(object):
 
         self.gl_floats = None
 
+    @property
+    def has_normals(self):
+        return "N3F" in self.vertex_format
+
+    @property
+    def has_uvs(self):
+        return "T2F" in self.vertex_format
+
+    @property
+    def has_colors(self):
+        return "C3F" in self.vertex_format
+
+    @property
+    def vertex_size(self):
+        """How many float each vertex contains in the interleaved data"""
+        return self.has_uvs * 2 + self.has_normals * 3 + self.has_colors * 3 + 3
+
     def pad_light(self, values):
         """Accept an array of up to 4 values, and return an array of 4 values.
         If the input array is less than length 4, pad it with zeroes until it
