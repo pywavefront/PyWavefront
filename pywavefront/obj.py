@@ -45,7 +45,6 @@ class ObjParser(Parser):
         while True:
             # Vertex color
             if len(self.values) == 7:
-                print(self.line)
                 yield (
                     float(self.values[1]),
                     float(self.values[2]),
@@ -173,7 +172,7 @@ class ObjParser(Parser):
         We always triangulate to make it simple
         """
         # Figure out the format of the first vertex
-        # We assume every consecutive vertex has the same format
+        # We raise an exception if any following vertex has a different format
         # NOTE: Order is always v/vt/vn where v is mandatory and vt and vn is optional
         has_vt = False
         has_vn = False
@@ -222,8 +221,6 @@ class ObjParser(Parser):
                 v_index = (int(parts[0]) - 1)
                 t_index = (int(parts[1]) - 1) if has_vt else None
                 n_index = (int(parts[2]) - 1) if has_vn else None
-
-                # v_index, t_index, n_index = (list(map(int, [j or 0 for j in v.split('/')])) + [0, 0])[:3]
 
                 # Resolve negative index lookups
                 if v_index < 0:
