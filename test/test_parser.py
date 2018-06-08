@@ -24,12 +24,17 @@ class TestParsers(unittest.TestCase):
     def testObjVertices(self):
         """Parsing an obj file with known vertices should set those vertices."""
         # tests v, vt, vn, and f
-        material = self.mesh1.materials[0]
-        self.assertEqual(material.vertices, [
-                14.0, 15.0, 20.0, 21.0, 22.0, 0.04, 0.05, 0.06,
-                12.0, 13.0, 20.0, 21.0, 22.0, 0.01, 0.02, 0.03,
-                10.0, 11.0, 20.0, 21.0, 22.0, 0.07, 0.08, 0.09])
-        # One parser vertex comparison is quite enough, thank you!
+        self.assertEqual(self.mesh1.materials[0].vertices, [
+            14.0, 15.0, 20.0, 21.0, 22.0, 0.04, 0.05, 0.06,
+            12.0, 13.0, 20.0, 21.0, 22.0, 0.01, 0.02, 0.03,
+            10.0, 11.0, 20.0, 21.0, 22.0, 0.07, 0.08, 0.09])
+
+        self.assertEqual(self.mesh2.materials[0].vertices, [
+            1.0, 0.0, 0.0, 1.0, -0.0, -1.0, 0.0, 1.0,
+            0.0, 0.0, 0.0, 1.0, -0.0, 1.0, 0.0, 1.0,
+            0.0, 1.0, 0.0, 1.0, -0.0, 1.0, 0.0, -1.0])
+
+        self.assertEqual(self.mesh2.materials[0].vertex_format, "T2F_N3F_V3F")
 
     def testObjMaterials(self):
         """Parsing an obj file with known materials should load and assign materials."""
@@ -47,6 +52,80 @@ class TestParserGz(TestParsers):
         meshes = pywavefront.Wavefront(prepend_dir('simple.obj.gz'))
         self.mesh1 = meshes.mesh_list[0]
         self.mesh2 = meshes.mesh_list[1]
+
+
+class TestParserVertexVariants(unittest.TestCase):
+
+    def testObjNoNormals(self):
+        """Parse obj without normals"""
+        # tests v, vt and f
+        meshes = pywavefront.Wavefront(prepend_dir('simple_vt.obj'))
+        self.mesh1 = meshes.mesh_list[0]
+        self.mesh2 = meshes.mesh_list[1]
+
+        self.assertEqual(self.mesh1.materials[0].vertices, [
+            14.0, 15.0, 0.04, 0.05, 0.06,
+            12.0, 13.0, 0.01, 0.02, 0.03,
+            10.0, 11.0, 0.07, 0.08, 0.09])
+
+        self.assertEqual(self.mesh2.materials[0].vertices, [
+            1.0, 0.0, -1.0, 0.0, 1.0,
+            0.0, 0.0, 1.0, 0.0, 1.0,
+            0.0, 1.0, 1.0, 0.0, -1.0])
+
+        self.assertEqual(self.mesh2.materials[0].vertex_format, "T2F_V3F")
+
+    def testObjNoUVs(self):
+        """Parse object with no uvs"""
+        meshes = pywavefront.Wavefront(prepend_dir('simple_normals.obj'))
+        self.mesh1 = meshes.mesh_list[0]
+        self.mesh2 = meshes.mesh_list[1]
+
+        self.assertEqual(self.mesh1.materials[0].vertices, [
+            20.0, 21.0, 22.0, 0.04, 0.05, 0.06,
+            20.0, 21.0, 22.0, 0.01, 0.02, 0.03,
+            20.0, 21.0, 22.0, 0.07, 0.08, 0.09])
+
+        self.assertEqual(self.mesh2.materials[0].vertices, [
+            0.0, 1.0, -0.0, -1.0, 0.0, 1.0,
+            0.0, 1.0, -0.0, 1.0, 0.0, 1.0,
+            0.0, 1.0, -0.0, 1.0, 0.0, -1.0])
+
+        self.assertEqual(self.mesh2.materials[0].vertex_format, "N3F_V3F")
+
+    def testObjOnlyPositions(self):
+        meshes = pywavefront.Wavefront(prepend_dir('simple_positions.obj'))
+        self.mesh1 = meshes.mesh_list[0]
+        self.mesh2 = meshes.mesh_list[1]
+
+        self.assertEqual(self.mesh1.materials[0].vertices, [
+            0.04, 0.05, 0.06,
+            0.01, 0.02, 0.03,
+            0.07, 0.08, 0.09])
+
+        self.assertEqual(self.mesh2.materials[0].vertices, [
+            -1.0, 0.0, 1.0,
+            1.0, 0.0, 1.0,
+            1.0, 0.0, -1.0])
+
+        self.assertEqual(self.mesh2.materials[0].vertex_format, "V3F")
+
+    def testObjColors(self):
+        meshes = pywavefront.Wavefront(prepend_dir('simple_colors.obj'))
+        self.mesh1 = meshes.mesh_list[0]
+        self.mesh2 = meshes.mesh_list[1]
+
+        self.assertEqual(self.mesh1.materials[0].vertices, [
+            14.0, 15.0, 1.0, 0.0, 0.0, 20.0, 21.0, 22.0, 0.04, 0.05, 0.06,
+            12.0, 13.0, 1.0, 0.0, 0.0, 20.0, 21.0, 22.0, 0.01, 0.02, 0.03,
+            10.0, 11.0, 1.0, 0.0, 0.0, 20.0, 21.0, 22.0, 0.07, 0.08, 0.09])
+
+        self.assertEqual(self.mesh2.materials[0].vertices, [
+            1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, -0.0, -1.0, 0.0, 1.0,
+            0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, -0.0, 1.0, 0.0, 1.0,
+            0.0, 1.0, 0.0, 1.0, 0.0, 0.0, 1.0, -0.0, 1.0, 0.0, -1.0])
+
+        self.assertEqual(self.mesh2.materials[0].vertex_format, "T2F_C3F_N3F_V3F")
 
 
 class TestMtlParser(unittest.TestCase):

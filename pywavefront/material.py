@@ -54,7 +54,9 @@ class Material(object):
         self.is_default = is_default
 
         # Interleaved array of floats in GL_T2F_N3F_V3F format
+        self.vertex_format = ""
         self.vertices = []
+
         self.gl_floats = None
 
     def pad_light(self, values):
