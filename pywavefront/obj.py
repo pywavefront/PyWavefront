@@ -62,6 +62,9 @@ class ObjParser(Parser):
                 )
 
             self.next_line()
+            if not self.values:
+                break
+
             if self.values[0] != "v":
                 break
 
@@ -70,7 +73,7 @@ class ObjParser(Parser):
 
         # Since list() also consumes StopIteration we need to sanity check the line
         # to make sure the parser advances
-        if self.values[0] == "vn":
+        if self.values and self.values[0] == "vn":
             self.next_line()
 
     def consume_normals(self):
@@ -85,6 +88,9 @@ class ObjParser(Parser):
             )
 
             self.next_line()
+            if not self.values:
+                break
+
             if self.values[0] != "vn":
                 break
 
@@ -107,6 +113,9 @@ class ObjParser(Parser):
             )
 
             self.next_line()
+            if not self.values:
+                break
+
             if self.values[0] != "vt":
                 break
 
@@ -154,7 +163,7 @@ class ObjParser(Parser):
 
         # Since list() also consumes StopIteration we need to sanity check the line
         # to make sure the parser advances
-        if self.values[0] == "f":
+        if self.values and self.values[0] == "f":
             self.next_line()
 
     def consume_faces(self):
@@ -178,9 +187,6 @@ class ObjParser(Parser):
         has_vn = False
         has_colors = False
 
-        # If the face contains elements
-        triangulate = len(self.values) - 1 >= 4
-
         parts = self.values[1].split('/')
         # We assume texture coordinates are present
         if len(parts) == 2:
@@ -194,7 +200,7 @@ class ObjParser(Parser):
             has_vn = True
 
         # Are we referencing vertex with color info?
-        vertex = self.vertices[int(parts[0])]
+        vertex = self.vertices[int(parts[0]) - 1]
         has_colors = len(vertex) == 6
 
         # Prepare vertex format string
@@ -215,6 +221,9 @@ class ObjParser(Parser):
         # The loop continues until there are no more f-statements or StopIteration is raised by generator
         while True:
             v1, vlast = None, None
+
+            # Do we need to triangulate? Each line may contain a varying amount of elements
+            triangulate = (len(self.values) - 1) > 3
 
             for i, v in enumerate(self.values[1:]):
                 parts = v.split('/')
@@ -269,5 +278,8 @@ class ObjParser(Parser):
 
             # Break out of the loop when there are no more f statements
             self.next_line()
+            if not self.values:
+                break
+
             if self.values[0] != "f":
                 break

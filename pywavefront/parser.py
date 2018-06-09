@@ -82,8 +82,6 @@ class Parser(object):
                 gz = gzip.open(self.file_name, mode='rt')
 
             for line in gz.readlines():
-                if line == '':
-                    continue
                 yield line
 
             gz.close()
@@ -96,8 +94,6 @@ class Parser(object):
                 file = codecs.open(self.file_name, mode='r', encoding=self.encoding)
 
             for line in file:
-                if line == '':  # Skip empty lines
-                    continue
                 yield line
 
             file.close()
