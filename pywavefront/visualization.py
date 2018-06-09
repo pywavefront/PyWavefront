@@ -96,7 +96,7 @@ def draw_material(material, face=GL_FRONT_AND_BACK):
     glMaterialfv(face, GL_AMBIENT, gl_light(material.ambient))
     glMaterialfv(face, GL_SPECULAR, gl_light(material.specular))
     glMaterialfv(face, GL_EMISSION, gl_light(material.emissive))
-    glMaterialf(face, GL_SHININESS, material.shininess)
+    glMaterialf(face, GL_SHININESS, min(128.0, material.shininess))
     glEnable(GL_LIGHT0)
 
     if material.has_normals:
