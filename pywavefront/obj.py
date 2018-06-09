@@ -65,7 +65,7 @@ class ObjParser(Parser):
             if not self.values:
                 break
 
-            if self.values and self.values[0] != "v":
+            if self.values[0] != "v":
                 break
 
     def parse_vn(self):
