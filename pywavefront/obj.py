@@ -178,9 +178,6 @@ class ObjParser(Parser):
         has_vn = False
         has_colors = False
 
-        # If the face contains elements
-        triangulate = len(self.values) - 1 >= 4
-
         parts = self.values[1].split('/')
         # We assume texture coordinates are present
         if len(parts) == 2:
@@ -215,6 +212,9 @@ class ObjParser(Parser):
         # The loop continues until there are no more f-statements or StopIteration is raised by generator
         while True:
             v1, vlast = None, None
+
+            # Do we need to triangulate? Each line may contain a varying amount of elements
+            triangulate = (len(self.values) - 1) > 3
 
             for i, v in enumerate(self.values[1:]):
                 parts = v.split('/')
