@@ -200,7 +200,7 @@ class ObjParser(Parser):
             has_vn = True
 
         # Are we referencing vertex with color info?
-        vertex = self.vertices[int(parts[0])]
+        vertex = self.vertices[int(parts[0]) - 1]
         has_colors = len(vertex) == 6
 
         # Prepare vertex format string
