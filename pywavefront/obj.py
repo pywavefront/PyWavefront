@@ -62,7 +62,10 @@ class ObjParser(Parser):
                 )
 
             self.next_line()
-            if self.values[0] != "v":
+            if not self.values:
+                break
+
+            if self.values and self.values[0] != "v":
                 break
 
     def parse_vn(self):
@@ -70,7 +73,7 @@ class ObjParser(Parser):
 
         # Since list() also consumes StopIteration we need to sanity check the line
         # to make sure the parser advances
-        if self.values[0] == "vn":
+        if self.values and self.values[0] == "vn":
             self.next_line()
 
     def consume_normals(self):
@@ -85,6 +88,9 @@ class ObjParser(Parser):
             )
 
             self.next_line()
+            if not self.values:
+                break
+
             if self.values[0] != "vn":
                 break
 
@@ -107,6 +113,9 @@ class ObjParser(Parser):
             )
 
             self.next_line()
+            if not self.values:
+                break
+
             if self.values[0] != "vt":
                 break
 
@@ -154,7 +163,7 @@ class ObjParser(Parser):
 
         # Since list() also consumes StopIteration we need to sanity check the line
         # to make sure the parser advances
-        if self.values[0] == "f":
+        if self.values and self.values[0] == "f":
             self.next_line()
 
     def consume_faces(self):
@@ -269,5 +278,8 @@ class ObjParser(Parser):
 
             # Break out of the loop when there are no more f statements
             self.next_line()
+            if not self.values:
+                break
+
             if self.values[0] != "f":
                 break
