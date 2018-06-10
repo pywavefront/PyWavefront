@@ -10,6 +10,7 @@ setup(
     url='https://github.com/greenmoss/PyWavefront',
     description='Python/pyglet library for importing Wavefront .obj files',
     long_description=open('README.md').read(),
+    long_description_content_type='text/markdown',
     license='BSD',
     classifiers=[
         'Development Status :: 4 - Beta',
