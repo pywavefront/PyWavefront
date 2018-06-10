@@ -1,4 +1,4 @@
-![pypi](https://img.shields.io/pypi/v/PyWavefront.svg)
+[![pypi](https://img.shields.io/pypi/v/PyWavefront.svg)](https://pypi.org/project/PyWavefront/)
 [![CircleCI](https://circleci.com/gh/greenmoss/PyWavefront.svg?style=svg)](https://circleci.com/gh/greenmoss/PyWavefront)
 
 PyWavefront
@@ -23,7 +23,7 @@ pip install PyWavefront
 
 ## Usage
 
-Basic example loading and obj file:
+Basic example loading an obj file:
 
 ```python
 import pywavefront
