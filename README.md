@@ -1,51 +1,87 @@
+![pypi](https://img.shields.io/pypi/v/PyWavefront.svg)
+[![CircleCI](https://circleci.com/gh/greenmoss/PyWavefront.svg?style=svg)](https://circleci.com/gh/greenmoss/PyWavefront)
+
 PyWavefront
 ===========
 
-This python module allows you to read Wavefront 3D object files
-(`something.obj` and `something.mtl`) and use them as Python objects.
-If you optionally want to render and display these objects, Pyglet is required.
+PyWavefront reads Wavefront 3D object files (`something.obj` and `something.mtl`)
+and generates interleaved vertex data for each material ready for rendering.
+Python 2.7.x or 3.6+ is supported. A simple (optional) visualization module is also
+provided for rendering the object(s). The interleaved data can also be used by
+more modern renderers thought VBOs or VAOs.
 
-Currently, only a subset of [the defined
-specification](https://en.wikipedia.org/wiki/Wavefront_.obj_file) has
-been implemented.
+Currently the most commonly used features in [the defined specification](https://en.wikipedia.org/wiki/Wavefront_.obj_file) has
+been implemented. Positions, texture coordinates, normals, vertex color and material parsing.
+We currently don't support parameter space vertices, line elements or smoothing groups.
+Create an issue or pull request on github if needed features are missing.
 
-Current test status: [![CircleCI](https://circleci.com/gh/greenmoss/PyWavefront.svg?style=svg)](https://circleci.com/gh/greenmoss/PyWavefront)
+The package is on pypi or can be cloned on [github](https://github.com/greenmoss/PyWavefront).
 
-Slack: [channel](https://pywavefront.slack.com/)
-
-Optional Dependencies
-------------
-
-* [Pyglet](http://www.pyglet.org/)
-
-Usage
------
-
-### From Python
-
-**Basic**
-
-```python
-import pywavefront
-meshes = pywavefront.Wavefront('something.obj')
+```
+pip install PyWavefront
 ```
 
-**Visualization**
+## Usage
+
+Basic example loading and obj file:
 
 ```python
 import pywavefront
+scene = pywavefront.Wavefront('something.obj')
+```
+
+A more complex example
+
+* `strict` will raise an exception if unsupported features are found in the obj or mtl file. Default `True`.
+* `encoding` of the obj and mtl file(s). Default `utf-8`.
+* `parse` decides if parsing should start immediately. Default 'False'.
+
+```python
+import pywavefront
+scene = pywavefront.Wavefront('something.obj', strict=True, encoding="iso-8859-1", parse=False)
+scene.parse()  # Explicit call to parse() needed when parse=False
+
+# All vertex data if merged
+for name, material in data.materials.items():
+    # Contains the vertex format (string) such as "T2F_N3F_V3F"
+    # T2F, C3F, N3F and V3F may appear in this string
+    material.vertex_format
+    # Contains the vertex list of floats in the format described above
+    material.vertices
+    # Material properties
+    material.diffuse
+    material.ambient
+    material.texture
+    # ..
+```
+
+## Visualization
+
+[Pyglet](http://www.pyglet.org/) is required to use the visualization module.
+```
+pip install pyglet
+```
+
+Example:
+
+```python
+import pywavefront
+from pywavefront import visualization
 
 [create a window and set up your OpenGl context]
-meshes = pywavefront.Wavefront('something.obj')
+obj = pywavefront.Wavefront('something.obj')
 
 [inside your drawing loop]
-meshes.draw()
+visualization.draw(obj)
 ```
 
-### Example Script
+### Example Scripts
 
-There are two pyglet example scripts with included `.obj` and `.mtl` files in the `example` directory. To run them, change to the `example`
-directory and run either `./pyglet_demo.py` or `.pyglet_demo2.py`. Pyglet is required for these.
+The `example` directory contains some basic examples using the `visualization` module
+
+* `pyglet_demo.py` : Simple textured globe
+* `pyglet_demo2.py` : Higher resolution textured globe
+* `pyglet_demo_boxes.py` : Boxes demonstrating supported vertex formats
 
 ### Generating a Wavefront file with Blender
 
@@ -55,21 +91,7 @@ The following presumes you are using [Blender](http://www.blender.org/) to gener
 * Export the mesh from Blender using the Wavefront format, including normals.
 * Reference your `*.obj` file as in the pywavefront example above.
 
-Installation
-------------
-
-### Source distribution
-
-Assuming you are in the top-level PyWavefront directory:
-
-    python setup.py install
-
-### Pip
-
-    pip install PyWavefront
-
-Tests
------
+## Tests
 
 All tests can be found in the `test` directory. To run the tests:
 
@@ -77,8 +99,11 @@ All tests can be found in the `test` directory. To run the tests:
 * Change to the top-level directory, e.g. `PyWavefront`, the directory that contains this `README` file.
 * Run `nosetests`
 
-Contributors
--------
+## Community
+
+Slack: [channel](https://pywavefront.slack.com/)
+
+## Contributors
 
 * Daniel Coelho
 * dav92lee
