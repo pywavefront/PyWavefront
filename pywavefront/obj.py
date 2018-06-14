@@ -142,7 +142,7 @@ class ObjParser(Parser):
         if self.material is None:
             # Create a new default material if configured to resolve missing ones
             if self.create_materials:
-                self.material = Material()
+                self.material = Material(name=name, is_default=True)
                 self.wavefront.materials[name] = self.material
             else:
                 raise PywavefrontException('Unknown material: %s' % name)
@@ -226,7 +226,10 @@ class ObjParser(Parser):
 
         # If the material already have vertex data, ensure the same format is used
         if self.material.vertex_format and self.material.vertex_format != vertex_format:
-            raise ValueError("Trying to merge vertex data with different formats")
+            raise ValueError((
+                "Trying to merge vertex data with different format: {}. "
+                "Material {} has vertex format {}"
+            ).format(vertex_format, self.material.name, self.material.vertex_format))
 
         self.material.vertex_format = vertex_format
 
