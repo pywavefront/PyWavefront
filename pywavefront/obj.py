@@ -140,12 +140,12 @@ class ObjParser(Parser):
         self.material = self.wavefront.materials.get(name, None)
 
         if self.material is None:
-            # Create a new default material if configured to resolve missing ones
-            if self.create_materials:
-                self.material = Material(name=name, is_default=True)
-                self.wavefront.materials[name] = self.material
-            else:
+            if not self.create_materials:
                 raise PywavefrontException('Unknown material: %s' % name)
+
+            # Create a new default material if configured to resolve missing ones
+            self.material = Material(name=name, is_default=True)
+            self.wavefront.materials[name] = self.material
 
         if self.mesh is not None:
             self.mesh.add_material(self.material)
