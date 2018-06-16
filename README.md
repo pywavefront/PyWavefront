@@ -34,7 +34,8 @@ A more complex example
 
 * `strict` will raise an exception if unsupported features are found in the obj or mtl file. Default `True`.
 * `encoding` of the obj and mtl file(s). Default `utf-8`.
-* `parse` decides if parsing should start immediately. Default 'False'.
+* `create_materials` will create materials if mtl file is missing or obj file references non-exiting materials . Default `False`.
+* `parse` decides if parsing should start immediately. Default `False`.
 
 ```python
 import pywavefront

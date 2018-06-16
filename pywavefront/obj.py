@@ -9,13 +9,14 @@ from pywavefront.mesh import Mesh
 class ObjParser(Parser):
     """This parser parses lines from .obj files."""
 
-    def __init__(self, wavefront, file_name, strict=False, encoding="utf-8", parse=True):
+    def __init__(self, wavefront, file_name, strict=False, encoding="utf-8", create_materials=False, parse=True):
         """
         Create a new obj parser
         :param wavefront: The wavefront object
         :param file_name: file name and path of obj file to read
         :param strict: Enable strict mode
         :param encoding: Encoding to read the text files
+        :param create_materials: Create materials if they don't exist
         :param parse: Should parse be called immediately or manually called later?
         """
         super(ObjParser, self).__init__(file_name, strict=strict, encoding=encoding)
@@ -23,6 +24,7 @@ class ObjParser(Parser):
 
         self.mesh = None
         self.material = None
+        self.create_materials = create_materials
 
         # Stores ALL vertices, normals and texcoords for the entire file
         self.vertices = []
@@ -122,17 +124,28 @@ class ObjParser(Parser):
     @auto_consume
     def parse_mtllib(self):
         mtllib = os.path.join(self.dir, " ".join(self.values[1:]))
-        materials = MaterialParser(mtllib, encoding=self.encoding, strict=self.strict).materials
+        try:
+            materials = MaterialParser(mtllib, encoding=self.encoding, strict=self.strict).materials
+        except IOError:
+            if self.create_materials:
+                return
+            raise
 
         for name, material in materials.items():
             self.wavefront.materials[name] = material
 
     @auto_consume
     def parse_usemtl(self):
-        self.material = self.wavefront.materials.get(self.values[1], None)
+        name = " ".join(self.values[1:])
+        self.material = self.wavefront.materials.get(name, None)
 
         if self.material is None:
-            raise PywavefrontException('Unknown material: %s' % self.values[1])
+            if not self.create_materials:
+                raise PywavefrontException('Unknown material: %s' % name)
+
+            # Create a new default material if configured to resolve missing ones
+            self.material = Material(name=name, is_default=True)
+            self.wavefront.materials[name] = self.material
 
         if self.mesh is not None:
             self.mesh.add_material(self.material)
@@ -213,7 +226,10 @@ class ObjParser(Parser):
 
         # If the material already have vertex data, ensure the same format is used
         if self.material.vertex_format and self.material.vertex_format != vertex_format:
-            raise ValueError("Trying to merge vertex data with different formats")
+            raise ValueError((
+                "Trying to merge vertex data with different format: {}. "
+                "Material {} has vertex format {}"
+            ).format(vertex_format, self.material.name, self.material.vertex_format))
 
         self.material.vertex_format = vertex_format
 
