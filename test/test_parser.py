@@ -54,6 +54,19 @@ class TestParserGz(TestParsers):
         self.mesh2 = meshes.mesh_list[1]
 
 
+class TestParserMissingMaterials(unittest.TestCase):
+    """Test `create_materials` functionality"""
+
+    def test_missing_material_error(self):
+        """Parser should crash if `create_materials` is not set"""
+        with self.assertRaises(IOError):
+            pywavefront.Wavefront(prepend_dir('simple_missing_material.obj'))
+
+    def test_missing_material_create(self):
+        """Parser should handle missing materials if `create_materials` is set"""
+        pywavefront.Wavefront(prepend_dir('simple_missing_material.obj'), create_materials=True)
+
+
 class TestParserVertexVariants(unittest.TestCase):
 
     def testObjNoNormals(self):
