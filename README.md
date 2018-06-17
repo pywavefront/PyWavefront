@@ -32,18 +32,18 @@ scene = pywavefront.Wavefront('something.obj')
 
 A more complex example
 
-* `strict` will raise an exception if unsupported features are found in the obj or mtl file. Default `True`.
-* `encoding` of the obj and mtl file(s). Default `utf-8`.
-* `create_materials` will create materials if mtl file is missing or obj file references non-exiting materials . Default `False`.
-* `parse` decides if parsing should start immediately. Default `False`.
+* `strict` (Default: `False`) will raise an exception if unsupported features are found in the obj or mtl file
+* `encoding` (Default: `utf-8`) of the obj and mtl file(s)
+* `create_materials` (Default: `False`) will create materials if mtl file is missing or obj file references non-existing materials
+* `parse` (Default: `True`) decides if parsing should start immediately.
 
 ```python
 import pywavefront
 scene = pywavefront.Wavefront('something.obj', strict=True, encoding="iso-8859-1", parse=False)
 scene.parse()  # Explicit call to parse() needed when parse=False
 
-# All vertex data if merged
-for name, material in data.materials.items():
+# Iterate vertex data collected in each material
+for name, material in scene.materials.items():
     # Contains the vertex format (string) such as "T2F_N3F_V3F"
     # T2F, C3F, N3F and V3F may appear in this string
     material.vertex_format
@@ -82,7 +82,7 @@ The `example` directory contains some basic examples using the `visualization` m
 
 * `pyglet_demo.py` : Simple textured globe
 * `pyglet_demo2.py` : Higher resolution textured globe
-* `pyglet_demo_boxes.py` : Boxes demonstrating supported vertex formats
+* `pyglet_demo_boxes.py` : Boxes demonstrating supported vertex formats of the visualization module
 
 ### Generating a Wavefront file with Blender
 
