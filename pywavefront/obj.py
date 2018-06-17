@@ -8,6 +8,7 @@ from pywavefront.mesh import Mesh
 
 class ObjParser(Parser):
     """This parser parses lines from .obj files."""
+    material_parser_cls = MaterialParser
 
     def __init__(self, wavefront, file_name, strict=False, encoding="utf-8", create_materials=False, parse=True):
         """
@@ -125,7 +126,7 @@ class ObjParser(Parser):
     def parse_mtllib(self):
         mtllib = os.path.join(self.dir, " ".join(self.values[1:]))
         try:
-            materials = MaterialParser(mtllib, encoding=self.encoding, strict=self.strict).materials
+            materials = self.material_parser_cls(mtllib, encoding=self.encoding, strict=self.strict).materials
         except IOError:
             if self.create_materials:
                 return
