@@ -1,15 +1,21 @@
 Change Log
 
+## 0.3.2
+* Fix README - PR #55
+* Allow users to override material parser - PR #54
+* Allow parser to create missing materials - PR #52
+* Fix pypi markdown, tweak README - PR #51
+
 ## 0.3.1
-* Revamp README PR #48
-* Fix various bugs PR #47
-* Cap shininess in visualization PR #46
-* Support different vertex formats + example PR #43
-* Detect vertex format, vertex color, and tests PR #42
+* Revamp README - PR #48
+* Fix various bugs - PR #47
+* Cap shininess in visualization - PR #46
+* Support different vertex formats + example - PR #43
+* Detect vertex format, vertex color, and tests - PR #42
 
 ## 0.3.0
 * Run all parser tests for gzip file - PR #40
-* Revamp parser to prepare to support different vertex formats  - PR #38
+* Revamp parser to prepare to support different vertex formats - PR #38
 * Make dir available as instance attribute + tests - PR #33
 * Use setuptools - PR #31
 
