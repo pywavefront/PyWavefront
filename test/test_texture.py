@@ -18,3 +18,6 @@ class TestTexture(unittest.TestCase):
     def testMissingFile(self):
         """Referencing a missing texture file should raise an exception."""
         self.assertRaises(Exception, pywavefront.texture.Texture, 'missing.file.do.not.create')
+
+    def test_path_separator(self):
+        pywavefront.texture.Texture(prepend_dir('../test\\4x4.png'))
