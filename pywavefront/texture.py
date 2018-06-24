@@ -38,8 +38,8 @@ from pywavefront.exceptions import PywavefrontException
 
 class Texture(object):
     def __init__(self, path):
-        self.image_name = path
+        self.image_name = path.replace('\\', os.path.sep)
         self.image = None
 
-        if not os.path.exists(path):
-            raise PywavefrontException("Requested file does not exist")
+        if not os.path.exists(self.image_name):
+            raise PywavefrontException("Texture  does not exist: {}".format(self.image_name))
