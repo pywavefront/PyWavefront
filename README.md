@@ -76,6 +76,20 @@ obj = pywavefront.Wavefront('something.obj')
 visualization.draw(obj)
 ```
 
+## Logging
+
+The default log level is `ERROR`. This is configurable including overriding the formatter.
+
+```python
+import logging
+import pywavefront
+
+pywavefront.configure_logging(
+    logging.DEBUG,
+    formatter=logging.Formatter('%(name)s-%(levelname)s: %(message)s')
+)
+```
+
 ### Example Scripts
 
 The `example` directory contains some basic examples using the `visualization` module
