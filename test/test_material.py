@@ -56,11 +56,3 @@ class TestMaterial(unittest.TestCase):
         """set_emissive should set known values."""
         self.material.set_emissive()
         self.assertEqual(self.material.emissive, [0., 0., 0., 0.])
-
-
-class TestInvalidMaterial(unittest.TestCase):
-
-    def testSetInvalidTexture(self):
-        """Running set_texture with a nonexistent file should raise an exception."""
-        material = pywavefront.material.Material('material')
-        self.assertRaises(Exception, material.set_texture, 'missing.file.do.not.create')

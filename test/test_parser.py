@@ -175,7 +175,7 @@ class TestMtlParser(unittest.TestCase):
     def testMtlTextureName(self):
         """Parsing an obj file with known material texture should set its name."""
         # also tests d
-        self.assertEqual(self.material1.texture.image_name,
+        self.assertEqual(self.material1.texture.path,
                          prepend_dir('4x4.png'))
 
 
