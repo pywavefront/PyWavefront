@@ -31,15 +31,10 @@
 # ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 # ----------------------------------------------------------------------------
-import os
-
-from pywavefront.exceptions import PywavefrontException
 
 
 class Texture(object):
     def __init__(self, path):
-        self.image_name = path
+        # Treat path as part of a file uri always using forward slashes
+        self.path = path.replace('\\', '/')
         self.image = None
-
-        if not os.path.exists(path):
-            raise PywavefrontException("Requested file does not exist")
