@@ -1,4 +1,7 @@
+import logging
 from pywavefront import ObjParser
+
+logger = logging.getLogger("pywavefront")
 
 
 class Wavefront(object):

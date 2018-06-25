@@ -31,10 +31,13 @@
 # ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 # ----------------------------------------------------------------------------
+import logging
 import os
 
 from pywavefront.parser import Parser, auto_consume
 from pywavefront.texture import Texture
+
+logger = logging.getLogger("pywavefront")
 
 
 class Material(object):
