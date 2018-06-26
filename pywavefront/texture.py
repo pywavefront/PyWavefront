@@ -38,3 +38,8 @@ class Texture(object):
         # Treat path as part of a file uri always using forward slashes
         self.path = path.replace('\\', '/')
         self.image = None
+
+    @property
+    def image_name(self):
+        """Wrap the old property name to not break compatibility"""
+        return self.path
