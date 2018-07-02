@@ -1,9 +1,12 @@
+import logging
 import os
 
 from pywavefront.exceptions import PywavefrontException
 from pywavefront.parser import Parser, auto_consume
 from pywavefront.material import Material, MaterialParser
 from pywavefront.mesh import Mesh
+
+logger = logging.getLogger("pywavefront")
 
 
 class ObjParser(Parser):

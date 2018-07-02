@@ -39,6 +39,8 @@ import sys
 
 from pywavefront.exceptions import PywavefrontException
 
+logger = logging.getLogger("pywavefront")
+
 
 def auto_consume(func):
     """Decorator for auto consuming lines when leaving the function"""
@@ -141,7 +143,7 @@ class Parser(object):
             raise PywavefrontException("Unimplemented OBJ format statement '%s' on line '%s'"
                                        % (self.values[0], self.line.rstrip()))
         else:
-            logging.warning("Unimplemented OBJ format statement '%s' on line '%s'"
+            logger.warning("Unimplemented OBJ format statement '%s' on line '%s'"
                             % (self.values[0], self.line.rstrip()))
 
     def _build_dispatch_map(self):

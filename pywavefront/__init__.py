@@ -31,6 +31,23 @@
 # ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 # ----------------------------------------------------------------------------
+import logging
+
 from pywavefront.exceptions import PywavefrontException
 from pywavefront.obj import ObjParser
 from pywavefront.wavefront import Wavefront
+
+logger = logging.getLogger("pywavefront")
+log_handler = logging.StreamHandler()
+logger.addHandler(log_handler)
+
+
+def configure_logging(level, formatter=None):
+    logger.setLevel(level)
+    log_handler.setLevel(level)
+
+    if formatter:
+        log_handler.setFormatter(formatter)
+
+
+configure_logging(logging.ERROR, logging.Formatter('%(name)s-%(levelname)s: %(message)s'))
