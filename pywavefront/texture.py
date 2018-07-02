@@ -31,15 +31,24 @@
 # ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 # ----------------------------------------------------------------------------
+import os
 
 
 class Texture(object):
     def __init__(self, path):
         # Treat path as part of a file uri always using forward slashes
-        self.path = path.replace('\\', '/')
+        self.path = path.replace('\\', os.path.sep)
         self.image = None
 
     @property
     def image_name(self):
         """Wrap the old property name to not break compatibility"""
         return self.path
+
+    @image_name.setter
+    def image_name(self, value):
+        """Wrap the old property name to not break compatibility"""
+        self.path = value
+
+    def exists(self):
+        return os.path.exists(self.path)
