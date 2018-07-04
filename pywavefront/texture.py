@@ -33,13 +33,22 @@
 # ----------------------------------------------------------------------------
 import os
 
-from pywavefront.exceptions import PywavefrontException
-
 
 class Texture(object):
     def __init__(self, path):
-        self.image_name = path
+        # Treat path as part of a file uri always using forward slashes
+        self.path = path.replace('\\', os.path.sep)
         self.image = None
 
-        if not os.path.exists(path):
-            raise PywavefrontException("Requested file does not exist")
+    @property
+    def image_name(self):
+        """Wrap the old property name to not break compatibility"""
+        return self.path
+
+    @image_name.setter
+    def image_name(self, value):
+        """Wrap the old property name to not break compatibility"""
+        self.path = value
+
+    def exists(self):
+        return os.path.exists(self.path)

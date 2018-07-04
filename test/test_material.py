@@ -60,7 +60,8 @@ class TestMaterial(unittest.TestCase):
 
 class TestInvalidMaterial(unittest.TestCase):
 
-    def testSetInvalidTexture(self):
+    def test_missing_texture(self):
         """Running set_texture with a nonexistent file should raise an exception."""
         material = pywavefront.material.Material('material')
-        self.assertRaises(Exception, material.set_texture, 'missing.file.do.not.create')
+        material.set_texture('missing.file.do.not.create')
+        self.assertFalse(material.texture.exists())
