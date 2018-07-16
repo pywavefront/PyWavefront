@@ -217,7 +217,11 @@ class ObjParser(Parser):
             has_vn = True
 
         # Are we referencing vertex with color info?
-        vertex = self.vertices[int(parts[0]) - 1]
+        vindex = int(parts[0])
+        if vindex < 0:
+            vindex += len(self.vertices) + 1
+
+        vertex = self.vertices[vindex]
         has_colors = len(vertex) == 6
 
         # Prepare vertex format string
@@ -253,13 +257,13 @@ class ObjParser(Parser):
 
                 # Resolve negative index lookups
                 if v_index < 0:
-                    v_index += len(self.vertices) - 1
+                    v_index += len(self.vertices) + 1
 
                 if has_vt and t_index < 0:
-                    t_index += len(self.tex_coords) - 1
+                    t_index += len(self.tex_coords) + 1
 
                 if has_vn and n_index < 0:
-                    n_index += len(self.normals) - 1
+                    n_index += len(self.normals) + 1
 
                 pos = self.vertices[v_index][0:3] if has_colors else self.vertices[v_index]
                 color = self.vertices[v_index][3:] if has_colors else ()
