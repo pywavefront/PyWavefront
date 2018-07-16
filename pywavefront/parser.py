@@ -136,6 +136,12 @@ class Parser(object):
         except StopIteration:
             pass
 
+        self.post_parse()
+
+    def post_parse(self):
+        """Override to trigger operations after parsing is complete"""
+        pass
+
     @auto_consume
     def parse_fallback(self):
         """Fallback method when parser doesn't know the statement"""
