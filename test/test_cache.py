@@ -58,12 +58,12 @@ class FakeIO(object):
     def __init__(self):
         self.files = {}
 
-    def __call__(self, name, *args, **kwargs):
+    def __call__(self, name, mode, *args, **kwargs):
         """Simulates open()"""
         fake_file = self.files.get(name)
 
         if not fake_file:
-            fake_file = FakeFile(name)
+            fake_file = FakeFile(name, mode)
             self.files[name] = fake_file
 
         return fake_file
@@ -73,7 +73,8 @@ class FakeIO(object):
 
 class FakeFile(object):
 
-    def __init__(self, name):
+    def __init__(self, name, mode):
+        self.mode = mode
         self.name = name
         self.data = BytesIO()
 
@@ -87,7 +88,7 @@ class FakeFile(object):
         pass
 
     def write(self, data):
-        if isinstance(data, str):
+        if not 'b' in self.mode:
             data = data.encode('utf-8')
 
         self.data.write(data)
