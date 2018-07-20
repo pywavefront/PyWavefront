@@ -36,14 +36,13 @@ class ObjParser(Parser):
         self.meta = Meta()
         self.cache = cache
         self.cache_loaded = False
-        self.parse_now = parse
 
         # Stores ALL vertices, normals and texcoords for the entire file
         self.vertices = []
         self.normals = []
         self.tex_coords = []
 
-        if self.parse_now:
+        if parse:
             self.parse()
 
     def parse(self):
