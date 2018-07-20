@@ -18,6 +18,7 @@ def prepend_dir(file):
 
 
 class CacheTest(unittest.TestCase):
+    maxDiff = None
 
     def test_create(self):
         """Test creating cache files"""
