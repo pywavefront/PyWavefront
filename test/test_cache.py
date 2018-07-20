@@ -101,5 +101,5 @@ class FakeFile(object):
         return cont
 
     def json(self):
-        d = self.contents().decode()
+        d = self.contents().decode('utf-8')
         return json.loads(d)
