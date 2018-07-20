@@ -1,6 +1,6 @@
 import os
 import unittest
-from unittest import mock
+import mock
 from io import BytesIO
 import json
 from datetime import datetime
