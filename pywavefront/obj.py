@@ -35,7 +35,7 @@ class ObjParser(Parser):
         self.create_materials = create_materials
         self.meta = Meta()
         self.cache = cache
-        self.cache_loaded = False
+        self.cache_loader = None
 
         # Stores ALL vertices, normals and texcoords for the entire file
         self.vertices = []
@@ -50,22 +50,27 @@ class ObjParser(Parser):
         start = time.time()
 
         if self.cache:
-            self.cache_loaded = CacheLoader(
-                self.file_name,
-                self.wavefront,
-                strict=self.strict,
-                create_materials=self.create_materials,
-                encoding=self.encoding,
-                parse=self.parse,
-            ).parse()
+            self.load_cache()
 
-        if not self.cache_loaded:
+        if not self.cache_loader:
             super(ObjParser, self).parse()
 
         logger.info("%s: Load time: %s", self.file_name, time.time() - start)
 
+    def load_cache(self):
+        """Loads the file using cached data"""
+        self.cache_loader = CacheLoader(
+            self.file_name,
+            self.wavefront,
+            strict=self.strict,
+            create_materials=self.create_materials,
+            encoding=self.encoding,
+            parse=self.parse,
+        ).parse()
+
     def post_parse(self):
-        if self.cache and not self.cache_loaded:
+        """Called after parsing is done"""
+        if self.cache and not self.cache_loader:
             CacheWriter(self.file_name, self.wavefront, self.meta).write()
 
     # methods for parsing types of wavefront lines

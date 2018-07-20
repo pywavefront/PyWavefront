@@ -14,10 +14,12 @@ logger = logging.getLogger("pywavefront")
 
 
 def cache_name(file_name):
+    """Generate the name of the binary cache file"""
     return "{}.bin".format(file_name)
 
 
 def meta_name(file_name):
+    """Generate the name of the meta file"""
     return "{}.json".format(file_name)
 
 
