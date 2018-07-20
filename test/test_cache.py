@@ -89,7 +89,7 @@ class FakeFile(object):
 
     def write(self, data):
         if not 'b' in self.mode:
-            data = data.encode('utf-8')
+            data = data.encode()
 
         self.data.write(data)
 
@@ -102,5 +102,5 @@ class FakeFile(object):
         return cont
 
     def json(self):
-        d = self.contents().decode('utf-8')
+        d = self.contents().decode()
         return json.loads(d)
