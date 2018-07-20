@@ -50,7 +50,7 @@ class Mesh(object):
         return False
 
     def add_material(self, material):
-        """Add a material to the mesh, IFF it is not already present."""
+        """Add a material to the mesh, IF it's not already present."""
         if self.has_material(material):
             return
 

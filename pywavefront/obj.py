@@ -188,7 +188,7 @@ class ObjParser(Parser):
                 raise PywavefrontException('Unknown material: %s' % name)
 
             # Create a new default material if configured to resolve missing ones
-            self.material = Material(name=name, is_default=True)
+            self.material = Material(name, is_default=True)
             self.wavefront.materials[name] = self.material
 
         if self.mesh is not None:
@@ -205,8 +205,7 @@ class ObjParser(Parser):
     def parse_f(self):
         # Add default material if not created
         if self.material is None:
-            self.material = Material(name="default{}".format(
-                len(self.wavefront.materials)), is_default=True)
+            self.material = Material("default{}".format(len(self.wavefront.materials)), is_default=True)
             self.wavefront.materials[self.material.name] = self.material
 
         # Support objects without `o` statement

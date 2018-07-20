@@ -41,7 +41,7 @@ logger = logging.getLogger("pywavefront")
 
 
 class Material(object):
-    def __init__(self, name=None, is_default=False):
+    def __init__(self, name, is_default=False):
         """
         Create a new material
         :param name: Name of the material

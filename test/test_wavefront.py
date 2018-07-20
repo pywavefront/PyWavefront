@@ -56,7 +56,7 @@ class TestNoMaterial(TestWavefront):
     def setUp(self):
         # reset the obj file to new file with no mtl line
         self.mesh_names = ['Simple', 'SimpleB']
-        self.material_names = [None]
+        self.material_names = ["default0"]
         self.meshes = pywavefront.Wavefront(prepend_dir('simple_no_mtl.obj'))
 
     def testMeshMaterialVertices(self):
@@ -68,5 +68,5 @@ class TestNoObjectNoMaterial(TestNoMaterial):
     def setUp(self):
         # reset the obj file to new file with no mtl line
         self.mesh_names = [None]
-        self.material_names = [None]
+        self.material_names = ["default0"]
         self.meshes = pywavefront.Wavefront(prepend_dir('simple_no_object_no_mtl.obj'))

@@ -44,7 +44,7 @@ class CacheLoader(object):
             if not meta_exists and not cache_exists:
                 logger.info("%s has no cache files", self.file_name)
             else:
-                logger.error("%s are missing a .bin or .json file. Cache loading will be disabled.")
+                logger.warning("%s are missing a .bin or .json file. Cache loading will be disabled.", self.file_name)
 
             return False
 
