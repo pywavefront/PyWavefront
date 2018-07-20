@@ -88,7 +88,7 @@ class FakeFile(object):
 
     def write(self, data):
         if isinstance(data, str):
-            data = data.encode()
+            data = data.encode('utf-8')
 
         self.data.write(data)
 
