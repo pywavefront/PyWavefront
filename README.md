@@ -102,7 +102,7 @@ Json file example:
 ```
 
 These files will not be recreated until you delete them.
-The bin file is also compessed with gzip to grately reduce size.
+The bin file is also compessed with gzip to greatly reduce size.
 
 ## Visualization
 
