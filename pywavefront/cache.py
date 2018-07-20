@@ -29,25 +29,42 @@ class CacheLoader(object):
     def __init__(self, file_name, wavefront, strict=False, create_materials=False, encoding='utf-8', parse=True, **kwargs):
         self.wavefront = wavefront
         self.file_name = file_name
+        self.path = os.path.dirname(file_name)
         self.encoding = encoding
-        self.create_materials = create_materials
         self.strict = strict
         self.dir = os.path.dirname(file_name)
         self.meta = None
 
     def parse(self):
-        # Load materials
-        if not os.path.exists(meta_name(self.file_name)) or not os.path.exists(cache_name(self.file_name)):
-            logger.info("%s has no cache files", self.file_name)
+        meta_exists = os.path.exists(meta_name(self.file_name))
+        cache_exists = os.path.exists(cache_name(self.file_name))
+
+        if not meta_exists or not cache_exists:
+            # If both files are missing, things are normal
+            if not meta_exists and not cache_exists:
+                logger.info("%s has no cache files", self.file_name)
+            else:
+                logger.error("%s are missing a .bin or .json file. Cache loading will be disabled.")
+
             return False
 
         logger.info("%s loading cached version", self.file_name)
 
         self.meta = Meta.from_file(meta_name(self.file_name))
-        self._parse_materials()
+        self._parse_mtllibs()
         self._load_vertex_buffers()
 
         return True
+
+    def load_vertex_buffer(self, fd, material, length):
+        """
+        Load vertex data from file. Can be overriden to reduce data copy
+
+        :param fd: file object
+        :param material: The material these vertices belong to
+        :param length: Byte length of the vertex data
+        """
+        material.vertices = struct.unpack('{}f'.format(length // 4), fd.read(length))
 
     def _load_vertex_buffers(self):
         """Load each vertex buffer into each material"""
@@ -61,20 +78,20 @@ class CacheLoader(object):
                 self.wavefront.materials[mat.name] = mat
 
             mat.vertex_format = buff['vertex_format']
-            mat.vertices = struct.unpack('{}f'.format(buff['byte_length'] // 4), fd.read(buff['byte_length']))
+            self.load_vertex_buffer(fd, mat, buff['byte_length'])
 
         fd.close()
 
-    def _parse_materials(self):
+    def _parse_mtllibs(self):
         """Load mtl files"""
-        for mtl_file in self.meta.materials:
-            mtllib = mtl_file
+        for mtllib in self.meta.mtllibs:
             try:
-                materials = self.material_parser_cls(mtllib, encoding=self.encoding, strict=self.strict).materials
+                materials = self.material_parser_cls(
+                    os.path.join(self.path, mtllib),
+                    encoding=self.encoding,
+                    strict=self.strict).materials
             except IOError:
-                if self.create_materials:
-                    return
-                raise
+                raise IOError("Failed to load mtl file:".format(os.path.join(self.path, mtllib)))
 
             for name, material in materials.items():
                 self.wavefront.materials[name] = material

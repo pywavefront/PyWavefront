@@ -14,6 +14,8 @@ logger = logging.getLogger("pywavefront")
 class ObjParser(Parser):
     """This parser parses lines from .obj files."""
     material_parser_cls = MaterialParser
+    cache_loader_cls = CacheLoader
+    cache_writer_cls = CacheWriter
 
     def __init__(self, wavefront, file_name, strict=False, encoding="utf-8",
                  create_materials=False, parse=True, cache=False):
@@ -34,7 +36,7 @@ class ObjParser(Parser):
         self.material = None
         self.create_materials = create_materials
         self.cache = cache
-        self.cache_loader = None
+        self.cache_loaded = None
 
         # Stores ALL vertices, normals and texcoords for the entire file
         self.vertices = []
@@ -51,14 +53,14 @@ class ObjParser(Parser):
         if self.cache:
             self.load_cache()
 
-        if not self.cache_loader:
+        if not self.cache_loaded:
             super(ObjParser, self).parse()
 
         logger.info("%s: Load time: %s", self.file_name, time.time() - start)
 
     def load_cache(self):
         """Loads the file using cached data"""
-        self.cache_loader = CacheLoader(
+        self.cache_loaded = self.cache_loader_cls(
             self.file_name,
             self.wavefront,
             strict=self.strict,
@@ -69,8 +71,8 @@ class ObjParser(Parser):
 
     def post_parse(self):
         """Called after parsing is done"""
-        if self.cache and not self.cache_loader:
-            CacheWriter(self.file_name, self.wavefront).write()
+        if self.cache and not self.cache_loaded:
+            self.cache_writer_cls(self.file_name, self.wavefront).write()
 
     # methods for parsing types of wavefront lines
     def parse_v(self):
@@ -203,7 +205,8 @@ class ObjParser(Parser):
     def parse_f(self):
         # Add default material if not created
         if self.material is None:
-            self.material = Material(is_default=True)
+            self.material = Material(name="default{}".format(
+                len(self.wavefront.materials)), is_default=True)
             self.wavefront.materials[self.material.name] = self.material
 
         # Support objects without `o` statement
