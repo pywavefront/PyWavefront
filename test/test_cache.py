@@ -29,7 +29,7 @@ class CacheTest(unittest.TestCase):
         scene = Wavefront(prepend_dir(obj_file), cache=True)
 
         with mock.patch("gzip.open", new=fake_io):
-            with mock.patch("builtins.open", new=fake_io):
+            with mock.patch("pywavefront.cache.open", new=fake_io):
                 scene.parser.post_parse()
 
         # Inspect metadata
