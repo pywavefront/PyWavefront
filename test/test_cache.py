@@ -17,11 +17,6 @@ def prepend_dir(file):
 
 class CacheTest(unittest.TestCase):
 
-    def equal_dicts(self, x, y):
-        keys_match = set(x.keys()) == set(y.keys())
-        vals_match = all([x[k] == y[k] for k in x])
-        return keys_match and vals_match
-
     def test_create(self):
         """Test creating cache files"""
         obj_file = 'simple.obj'
@@ -45,12 +40,13 @@ class CacheTest(unittest.TestCase):
         now = datetime.now()
         meta['created_at'] = now
         data['created_at'] = now
-        assert self.equal_dicts(meta, data)
+        # assert self.equal_dicts(meta, data)
+        self.assertDictEqual(meta, data)
 
         # Inspect binary file
         data = fake_io[prepend_dir(obj_file) + '.bin'].contents()
         data_cmp = b'\x00\x00`A\x00\x00pA\x00\x00\xa0A\x00\x00\xa8A\x00\x00\xb0A\n\xd7#=\xcd\xccL=\x8f\xc2u=\x00\x00@A\x00\x00PA\x00\x00\xa0A\x00\x00\xa8A\x00\x00\xb0A\n\xd7#<\n\xd7\xa3<\x8f\xc2\xf5<\x00\x00 A\x00\x000A\x00\x00\xa0A\x00\x00\xa8A\x00\x00\xb0A)\\\x8f=\n\xd7\xa3=\xecQ\xb8=\x00\x00\x80?\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x80?\x00\x00\x00\x80\x00\x00\x80\xbf\x00\x00\x00\x00\x00\x00\x80?\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x80?\x00\x00\x00\x80\x00\x00\x80?\x00\x00\x00\x00\x00\x00\x80?\x00\x00\x00\x00\x00\x00\x80?\x00\x00\x00\x00\x00\x00\x80?\x00\x00\x00\x80\x00\x00\x80?\x00\x00\x00\x00\x00\x00\x80\xbf'
-        assert data == data_cmp
+        self.assertEqual(data, data_cmp)
 
 
 class FakeIO(object):
