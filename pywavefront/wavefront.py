@@ -9,7 +9,7 @@ class Wavefront(object):
     parser_cls = ObjParser
 
     """Import a wavefront .obj file."""
-    def __init__(self, file_name, strict=False, encoding="utf-8", create_materials=False, parse=True):
+    def __init__(self, file_name, strict=False, encoding="utf-8", create_materials=False, parse=True, cache=False):
         """
         Create a Wavefront instance
         :param file_name: file name and path of obj file to read
@@ -19,7 +19,7 @@ class Wavefront(object):
         :param parse: Should parse be called immediately or manually called later?
         """
         self.file_name = file_name
-
+        self.mtllibs = []
         self.materials = {}
         self.meshes = {}        # Name mapping
         self.mesh_list = []     # Also includes anonymous meshes
@@ -30,7 +30,8 @@ class Wavefront(object):
             strict=strict,
             encoding=encoding,
             create_materials=create_materials,
-            parse=parse)
+            parse=parse,
+            cache=cache)
 
     def parse(self):
         """Manually call the parser. This is used when parse=False"""

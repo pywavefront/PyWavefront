@@ -53,6 +53,7 @@ def auto_consume(func):
 class Parser(object):
     """This defines a generalized parse dispatcher; all parse functions
     reside in subclasses."""
+    auto_post_parse = True
 
     def __init__(self, file_name, strict=False, encoding="utf-8"):
         """
@@ -135,6 +136,13 @@ class Parser(object):
                 self.dispatcher.get(self.values[0], self.parse_fallback)()
         except StopIteration:
             pass
+
+        if self.auto_post_parse:
+            self.post_parse()
+
+    def post_parse(self):
+        """Override to trigger operations after parsing is complete"""
+        pass
 
     @auto_consume
     def parse_fallback(self):

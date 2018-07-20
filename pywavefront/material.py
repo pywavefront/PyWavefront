@@ -41,7 +41,7 @@ logger = logging.getLogger("pywavefront")
 
 
 class Material(object):
-    def __init__(self, name=None, is_default=False):
+    def __init__(self, name, is_default=False):
         """
         Create a new material
         :param name: Name of the material
@@ -61,6 +61,11 @@ class Material(object):
         self.vertices = []
 
         self.gl_floats = None
+
+    @property
+    def file(self):
+        """File with full path"""
+        return os.path.join(self.path, self.name)
 
     @property
     def has_normals(self):

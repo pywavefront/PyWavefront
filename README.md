@@ -36,6 +36,7 @@ A more complex example
 * `encoding` (Default: `utf-8`) of the obj and mtl file(s)
 * `create_materials` (Default: `False`) will create materials if mtl file is missing or obj file references non-existing materials
 * `parse` (Default: `True`) decides if parsing should start immediately.
+* `cache` (Default: `False`) writes the parsed geometry to a binary file    for faster loading in the future
 
 ```python
 import pywavefront
@@ -55,6 +56,53 @@ for name, material in scene.materials.items():
     material.texture
     # ..
 ```
+
+## Binary Cache
+
+When ``cache=True`` the interleaved vertex data is written
+as floats to a ``.bin`` file after the file is loaded. A json
+file is also generated describing the contents of the binary file.
+The binary file will be loaded the next time we attept to load
+the obj file reducing the loading time greatly.
+
+Tests have shown loading time reduction by 10x to 30x.
+
+Loading ``myfile.obj`` will generate the following files in the
+same directory.
+
+```
+myfile.obj.bin
+myfile.obj.json
+```
+
+Json file example:
+
+```json
+{
+  "created_at": "2018-07-16T14:28:43.451336",
+  "version": "0.1",
+  "materials": [
+    "lost_empire.mtl"
+  ],
+  "vertex_buffers": [
+    {
+      "material": "Stone",
+      "vertex_format": "T2F_N3F_V3F",
+      "byte_offset": 0,
+      "byte_length": 5637888
+    },
+    {
+      "material": "Grass",
+      "vertex_format": "T2F_N3F_V3F",
+      "byte_offset": 5637888,
+      "byte_length": 6494208
+    }
+  ]
+}
+```
+
+These files will not be recreated until you delete them.
+The bin file is also compessed with gzip to greatly reduce size.
 
 ## Visualization
 

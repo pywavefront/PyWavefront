@@ -1,10 +1,12 @@
 import logging
 import os
+import time
 
 from pywavefront.exceptions import PywavefrontException
 from pywavefront.parser import Parser, auto_consume
 from pywavefront.material import Material, MaterialParser
 from pywavefront.mesh import Mesh
+from pywavefront.cache import Meta, CacheWriter, CacheLoader
 
 logger = logging.getLogger("pywavefront")
 
@@ -12,8 +14,11 @@ logger = logging.getLogger("pywavefront")
 class ObjParser(Parser):
     """This parser parses lines from .obj files."""
     material_parser_cls = MaterialParser
+    cache_loader_cls = CacheLoader
+    cache_writer_cls = CacheWriter
 
-    def __init__(self, wavefront, file_name, strict=False, encoding="utf-8", create_materials=False, parse=True):
+    def __init__(self, wavefront, file_name, strict=False, encoding="utf-8",
+                 create_materials=False, parse=True, cache=False):
         """
         Create a new obj parser
         :param wavefront: The wavefront object
@@ -21,6 +26,7 @@ class ObjParser(Parser):
         :param strict: Enable strict mode
         :param encoding: Encoding to read the text files
         :param create_materials: Create materials if they don't exist
+        :param cache: Cache the loaded obj files in binary format
         :param parse: Should parse be called immediately or manually called later?
         """
         super(ObjParser, self).__init__(file_name, strict=strict, encoding=encoding)
@@ -29,6 +35,8 @@ class ObjParser(Parser):
         self.mesh = None
         self.material = None
         self.create_materials = create_materials
+        self.cache = cache
+        self.cache_loaded = None
 
         # Stores ALL vertices, normals and texcoords for the entire file
         self.vertices = []
@@ -37,6 +45,34 @@ class ObjParser(Parser):
 
         if parse:
             self.parse()
+
+    def parse(self):
+        """Trigger cache load or call superclass parse()"""
+        start = time.time()
+
+        if self.cache:
+            self.load_cache()
+
+        if not self.cache_loaded:
+            super(ObjParser, self).parse()
+
+        logger.info("%s: Load time: %s", self.file_name, time.time() - start)
+
+    def load_cache(self):
+        """Loads the file using cached data"""
+        self.cache_loaded = self.cache_loader_cls(
+            self.file_name,
+            self.wavefront,
+            strict=self.strict,
+            create_materials=self.create_materials,
+            encoding=self.encoding,
+            parse=self.parse,
+        ).parse()
+
+    def post_parse(self):
+        """Called after parsing is done"""
+        if self.cache and not self.cache_loaded:
+            self.cache_writer_cls(self.file_name, self.wavefront).write()
 
     # methods for parsing types of wavefront lines
     def parse_v(self):
@@ -127,9 +163,13 @@ class ObjParser(Parser):
 
     @auto_consume
     def parse_mtllib(self):
-        mtllib = os.path.join(self.dir, " ".join(self.values[1:]))
+        mtllib = " ".join(self.values[1:])
         try:
-            materials = self.material_parser_cls(mtllib, encoding=self.encoding, strict=self.strict).materials
+            materials = self.material_parser_cls(
+                os.path.join(self.dir, mtllib),
+                encoding=self.encoding,
+                strict=self.strict).materials
+            self.wavefront.mtllibs.append(mtllib)
         except IOError:
             if self.create_materials:
                 return
@@ -148,7 +188,7 @@ class ObjParser(Parser):
                 raise PywavefrontException('Unknown material: %s' % name)
 
             # Create a new default material if configured to resolve missing ones
-            self.material = Material(name=name, is_default=True)
+            self.material = Material(name, is_default=True)
             self.wavefront.materials[name] = self.material
 
         if self.mesh is not None:
@@ -165,7 +205,7 @@ class ObjParser(Parser):
     def parse_f(self):
         # Add default material if not created
         if self.material is None:
-            self.material = Material(is_default=True)
+            self.material = Material("default{}".format(len(self.wavefront.materials)), is_default=True)
             self.wavefront.materials[self.material.name] = self.material
 
         # Support objects without `o` statement
@@ -219,7 +259,9 @@ class ObjParser(Parser):
         # Are we referencing vertex with color info?
         vindex = int(parts[0])
         if vindex < 0:
-            vindex += len(self.vertices) + 1
+            vindex += len(self.vertices)
+        else:
+            vindex -= 1
 
         vertex = self.vertices[vindex]
         has_colors = len(vertex) == 6
