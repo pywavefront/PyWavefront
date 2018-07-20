@@ -15,6 +15,7 @@ class CacheTest(unittest.TestCase):
     """Create and load cache for a specific obj file"""
     maxDiff = None
     obj_file = 'simple.obj'
+    create_materials = False
 
     def load_obj(self, filename, fake_io=None):
         """Helper method loading files with proper mocks"""
@@ -22,13 +23,13 @@ class CacheTest(unittest.TestCase):
             self.fake_io = FakeIO()
 
         if not fake_io:
-            scene = Wavefront(prepend_dir(filename), cache=True)
+            scene = Wavefront(prepend_dir(filename), cache=True, create_materials=self.create_materials)
 
         with mock.patch("pywavefront.cache.gzip.open", new=self.fake_io):
             with mock.patch("pywavefront.cache.open", new=self.fake_io):
                 with mock.patch("pywavefront.cache.os.path.exists", new=self.fake_io.exisis):
                     if fake_io:
-                        scene = Wavefront(prepend_dir(filename), cache=True)
+                        scene = Wavefront(prepend_dir(filename), cache=True, create_materials=self.create_materials)
                     scene.parser.post_parse()
 
         self.meta_file = self.obj_file + '.json'
@@ -88,6 +89,27 @@ class CacheTest(unittest.TestCase):
 @mock.patch('pywavefront.parser.Parser.auto_post_parse', new=False)
 class CacheTestNoMaterials(CacheTest):
     obj_file = 'simple_no_mtl.obj'
+
+
+@mock.patch('pywavefront.parser.Parser.auto_post_parse', new=False)
+class CacheTestSimpleColors(CacheTest):
+    obj_file = 'simple_colors.obj'
+
+
+@mock.patch('pywavefront.parser.Parser.auto_post_parse', new=False)
+class CacheTestNegativeIndices(CacheTest):
+    obj_file = 'simple_negative_indices.obj'
+
+
+@mock.patch('pywavefront.parser.Parser.auto_post_parse', new=False)
+class CacheTestNoObjNoMtl(CacheTest):
+    obj_file = 'simple_no_object_no_mtl.obj'
+
+
+@mock.patch('pywavefront.parser.Parser.auto_post_parse', new=False)
+class CacheTestUnknownMtl(CacheTest):
+    obj_file = 'simple_unknown_usemtl.obj'
+    create_materials = True
 
 
 class FakeFileExists(object):
