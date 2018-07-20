@@ -63,7 +63,7 @@ When ``cache=True`` the interleaved vertex data is written
 as floats to a ``.bin`` file after the file is loaded. A json
 file is also generated describing the contents of the binary file.
 The binary file will be loaded the next time we attept to load
-the obj file reducing the loading time grately.
+the obj file reducing the loading time greatly.
 
 Tests have shown loading time reduction by 10x to 30x.
 
@@ -96,19 +96,6 @@ Json file example:
       "vertex_format": "T2F_N3F_V3F",
       "byte_offset": 5637888,
       "byte_length": 6494208
-    },
-    ...
-    {
-      "material": "Repeater_(on)",
-      "vertex_format": "T2F_N3F_V3F",
-      "byte_offset": 21597120,
-      "byte_length": 192
-    },
-    {
-      "material": "White_Wool",
-      "vertex_format": "T2F_N3F_V3F",
-      "byte_offset": 21597312,
-      "byte_length": 2496
     }
   ]
 }
