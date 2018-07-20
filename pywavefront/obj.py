@@ -33,7 +33,6 @@ class ObjParser(Parser):
         self.mesh = None
         self.material = None
         self.create_materials = create_materials
-        self.meta = Meta()
         self.cache = cache
         self.cache_loader = None
 
@@ -71,7 +70,7 @@ class ObjParser(Parser):
     def post_parse(self):
         """Called after parsing is done"""
         if self.cache and not self.cache_loader:
-            CacheWriter(self.file_name, self.wavefront, self.meta).write()
+            CacheWriter(self.file_name, self.wavefront).write()
 
     # methods for parsing types of wavefront lines
     def parse_v(self):
@@ -162,10 +161,13 @@ class ObjParser(Parser):
 
     @auto_consume
     def parse_mtllib(self):
-        mtllib = os.path.join(self.dir, " ".join(self.values[1:]))
+        mtllib = " ".join(self.values[1:])
         try:
-            materials = self.material_parser_cls(mtllib, encoding=self.encoding, strict=self.strict).materials
-            self.meta.add_material(mtllib)
+            materials = self.material_parser_cls(
+                os.path.join(self.dir, mtllib),
+                encoding=self.encoding,
+                strict=self.strict).materials
+            self.wavefront.mtllibs.append(mtllib)
         except IOError:
             if self.create_materials:
                 return

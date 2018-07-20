@@ -82,13 +82,15 @@ class CacheLoader(object):
 
 class CacheWriter(object):
 
-    def __init__(self, file_name, wavefront, meta):
+    def __init__(self, file_name, wavefront):
         self.file_name = file_name
         self.wavefront = wavefront
-        self.meta = meta
+        self.meta = Meta()
 
     def write(self):
         logger.info("%s creating cache", self.file_name)
+
+        self.meta.mtllibs = self.wavefront.mtllibs
 
         offset = 0
         fd = gzip.open(cache_name(self.file_name), 'wb')
@@ -118,7 +120,7 @@ class Meta(object):
     format_version = "0.1"
 
     def __init__(self, **kwargs):
-        self._materials = kwargs.get('materials') or []
+        self._mtllibs = kwargs.get('mtllibs') or []
         self._vertex_buffers = kwargs.get('vertex_buffers') or []
         self._version = kwargs.get('version') or self.format_version
         self._created_at = kwargs.get('created_at') or datetime.now().isoformat()
@@ -131,10 +133,6 @@ class Meta(object):
             "byte_offset": byte_offset,
             "byte_length": byte_length,
         })
-
-    def add_material(self, material):
-        """Add an mtl material file name"""
-        self._materials.append(material)
 
     @classmethod
     def from_file(cls, path):
@@ -150,7 +148,7 @@ class Meta(object):
                 {
                     "created_at": self._created_at,
                     "version": self._version,
-                    "materials": self._materials,
+                    "mtllibs": self._mtllibs,
                     "vertex_buffers": self._vertex_buffers,
                 },
                 indent=2,
@@ -169,5 +167,9 @@ class Meta(object):
         return self._vertex_buffers
     
     @property
-    def materials(self):
-        return self._materials
+    def mtllibs(self):
+        return self._mtllibs
+
+    @mtllibs.setter
+    def mtllibs(self, value):
+        self._mtllibs = value

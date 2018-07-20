@@ -19,7 +19,7 @@ class Wavefront(object):
         :param parse: Should parse be called immediately or manually called later?
         """
         self.file_name = file_name
-
+        self.mtllibs = []
         self.materials = {}
         self.meshes = {}        # Name mapping
         self.mesh_list = []     # Also includes anonymous meshes

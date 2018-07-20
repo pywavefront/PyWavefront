@@ -41,13 +41,14 @@ logger = logging.getLogger("pywavefront")
 
 
 class Material(object):
-    def __init__(self, name=None, is_default=False):
+    def __init__(self, name=None, path=None, is_default=False):
         """
         Create a new material
         :param name: Name of the material
         :param is_default: Is this an auto created default material?
         """
-        self.name = name
+        self.name = name  # Name as it appears in the obj file
+        self.path = path # Path to the file
         self.diffuse = [.8, .8, .8, 1.]
         self.ambient = [.2, .2, .2, 1.]
         self.specular = [0., 0., 0., 1.]
@@ -61,6 +62,11 @@ class Material(object):
         self.vertices = []
 
         self.gl_floats = None
+
+    @property
+    def file(self):
+        """File with full path"""
+        return os.path.join(self.path, self.name)
 
     @property
     def has_normals(self):

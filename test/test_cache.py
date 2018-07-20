@@ -1,5 +1,3 @@
-from __future__ import unicode_literals
-
 import os
 import unittest
 import mock
@@ -33,8 +31,9 @@ class CacheTest(unittest.TestCase):
         # Inspect metadata
         meta = fake_io[prepend_dir(obj_file) + '.json'].json()
         data = {
+            'created_at': None,
             'version': '0.1',
-            'materials': ['/Users/einarforselv/Documents/projects/contraz/PyWavefront/test/simple.mtl'],
+            'mtllibs': ['simple.mtl'],
             'vertex_buffers': [
                 {'material': 'Material.simple', 'vertex_format': 'T2F_N3F_V3F', 'byte_offset': 0, 'byte_length': 96},
                 {'material': 'Material2.simple', 'vertex_format': 'T2F_N3F_V3F', 'byte_offset': 96, 'byte_length': 96}
@@ -43,7 +42,6 @@ class CacheTest(unittest.TestCase):
         now = datetime.now()
         meta['created_at'] = now
         data['created_at'] = now
-        # assert self.equal_dicts(meta, data)
         self.assertDictEqual(meta, data)
 
         # Inspect binary file
