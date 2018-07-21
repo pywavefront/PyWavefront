@@ -22,6 +22,8 @@ setup(
         'Operating System :: POSIX :: Linux',
         'Natural Language :: English',
         'Programming Language :: Python',
+        'Programming Language :: Python :: 2',
+        'Programming Language :: Python :: 3',
         'Topic :: Multimedia :: Graphics :: 3D Rendering',
         'Topic :: Software Development :: Libraries :: Python Modules',
     ],
