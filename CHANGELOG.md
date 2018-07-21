@@ -1,5 +1,14 @@
 Change Log
 
+## 0.4.1
+* Add Python 3 - PR #65
+
+## 0.4.0
+* Add binary cache - PR #63
+* Fix handling of negative indices - PR #62
+* Set up logger - PR #60
+* Allow textures to load from anywhere - PR #59
+
 ## 0.3.2
 * Fix README - PR #55
 * Allow users to override material parser - PR #54
