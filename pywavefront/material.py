@@ -52,8 +52,15 @@ class Material(object):
         self.ambient = [.2, .2, .2, 1.]
         self.specular = [0., 0., 0., 1.]
         self.emissive = [0., 0., 0., 1.]
+        self.transparency = 1.0
         self.shininess = 0.
-        self.texture = None
+        self.texture = None  # diffuse
+        self.texture_ambient = None
+        self.texture_specular_color = None
+        self.texture_specular_highlight = None
+        self.texture_alpha = None
+        self.texture_bump = None
+
         self.is_default = is_default
 
         # Interleaved array of floats in GL_T2F_N3F_V3F format
@@ -61,11 +68,6 @@ class Material(object):
         self.vertices = []
 
         self.gl_floats = None
-
-    @property
-    def file(self):
-        """File with full path"""
-        return os.path.join(self.path, self.name)
 
     @property
     def has_normals(self):
@@ -95,7 +97,7 @@ class Material(object):
 
     def set_alpha(self, alpha):
         """Set alpha/last value on all four lighting attributes."""
-        alpha = float(alpha)
+        self.transparency = alpha
         self.diffuse[3] = alpha
         self.ambient[3] = alpha
         self.specular[3] = alpha
@@ -115,6 +117,21 @@ class Material(object):
 
     def set_texture(self, path):
         self.texture = Texture(path)
+
+    def set_texture_ambient(self, path):
+        self.texture_ambient = Texture(path)
+
+    def set_texture_specular_color(self, path):
+        self.texture_specular_color = Texture(path)
+
+    def set_texture_specular_highlight(self, path):
+        self.texture_specular_highlight = Texture(path)
+
+    def set_texture_alpha(self, path):
+        self.texture_alpha = Texture(path)
+
+    def set_texture_bump(self, path):
+        self.texture_bump = Texture(path)
 
     def unset_texture(self):
         self.texture = None
@@ -166,24 +183,57 @@ class MaterialParser(Parser):
 
     @auto_consume
     def parse_d(self):
-        self.this_material.set_alpha(self.values[1])
+        """Transparency"""
+        self.this_material.set_alpha(float(self.values[1]))
+
+    @auto_consume
+    def parse_Tr(self):
+        """Transparency (alternative)"""
+        self.this_material.set_alpha(1.0 - float(self.values[1]))
 
     @auto_consume
     def parse_map_Kd(self):
+        """Diffuse map"""
         Kd = os.path.join(self.dir, " ".join(self.values[1:]))
         self.this_material.set_texture(Kd)
 
     @auto_consume
-    def parse_Ni(self):
-        # unimplemented
-        pass
+    def parse_map_Ka(self):
+        """Ambient map"""
+        Kd = os.path.join(self.dir, " ".join(self.values[1:]))
+        self.this_material.set_texture_ambient(Kd)
 
     @auto_consume
-    def parse_Tr(self):
-        # unimplemented
+    def parse_map_Ks(self):
+        """Specular color map"""
+        Kd = os.path.join(self.dir, " ".join(self.values[1:]))
+        self.this_material.set_texture_specular_color(Kd)
+
+    @auto_consume
+    def parse_map_Ns(self):
+        """Specular color map"""
+        Kd = os.path.join(self.dir, " ".join(self.values[1:]))
+        self.this_material.set_texture_specular_highlight(Kd)
+
+    @auto_consume
+    def parse_map_d(self):
+        """Aplha map"""
+        Kd = os.path.join(self.dir, " ".join(self.values[1:]))
+        self.this_material.set_texture_alpha(Kd)
+
+    @auto_consume
+    def parse_map_bump(self):
+        """Bump map"""
+        Kd = os.path.join(self.dir, " ".join(self.values[1:]))
+        self.this_material.set_texture_bump(Kd)
+
+    def parse_bump(self):
+        self.parse_map_bump()
+
+    @auto_consume
+    def parse_Ni(self):
         pass
 
     @auto_consume
     def parse_illum(self):
-        # unimplemented
         pass
