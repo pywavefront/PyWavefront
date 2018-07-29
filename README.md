@@ -4,8 +4,8 @@
 PyWavefront
 ===========
 
-PyWavefront reads Wavefront 3D object files (`something.obj` and `something.mtl`)
-and generates interleaved vertex data for each material ready for rendering.
+PyWavefront reads Wavefront 3D object files (`something.obj`, `something.obj.gz`
+and `something.mtl`) and generates interleaved vertex data for each material ready for rendering.
 Python 2.7.x or 3.6+ is supported. A simple (optional) visualization module is also
 provided for rendering the object(s). The interleaved data can also be used by
 more modern renderers thought VBOs or VAOs.
@@ -15,7 +15,8 @@ been implemented. Positions, texture coordinates, normals, vertex color and mate
 We currently don't support parameter space vertices, line elements or smoothing groups.
 Create an issue or pull request on github if needed features are missing.
 
-The package is on pypi or can be cloned on [github](https://github.com/greenmoss/PyWavefront).
+The package is on [pypi](https://pypi.org/project/PyWavefront/)
+or can be cloned on [github](https://github.com/greenmoss/PyWavefront).
 
 ```
 pip install PyWavefront
@@ -63,9 +64,10 @@ When ``cache=True`` the interleaved vertex data is written
 as floats to a ``.bin`` file after the file is loaded. A json
 file is also generated describing the contents of the binary file.
 The binary file will be loaded the next time we attept to load
-the obj file reducing the loading time greatly.
+the obj file reducing the loading time significantly.
 
-Tests have shown loading time reduction by 10x to 30x.
+Tests have shown loading time reduction by 10 to 100 times
+depending on the size and structure of the original obj file.
 
 Loading ``myfile.obj`` will generate the following files in the
 same directory.
@@ -101,7 +103,7 @@ Json file example:
 }
 ```
 
-These files will not be recreated until you delete them.
+These files will **not be recreated until you delete them**.
 The bin file is also compessed with gzip to greatly reduce size.
 
 ## Visualization
