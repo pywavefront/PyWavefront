@@ -87,8 +87,10 @@ def draw_material(material, face=GL_FRONT_AND_BACK):
     glEnable(GL_CULL_FACE)
     glCullFace(GL_BACK)
 
-    if material.texture and material.has_uvs:
-        bind_texture(material.texture)
+    # Fall back to ambient texture if no diffuse
+    texture = material.texture or material.texture_ambient
+    if texture and material.has_uvs:
+        bind_texture(texture)
     else:
         glDisable(GL_TEXTURE_2D)
 

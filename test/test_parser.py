@@ -3,7 +3,7 @@ import unittest
 
 import pywavefront.parser
 from pywavefront.exceptions import PywavefrontException
-
+from pywavefront.material import MaterialParser
 
 def prepend_dir(file):
     return os.path.join(os.path.dirname(__file__), file)
@@ -151,15 +151,15 @@ class TestParserVertexVariants(unittest.TestCase):
 
 class TestMtlParser(unittest.TestCase):
     def setUp(self):
-        # Append current path to locate files
-        meshes = pywavefront.Wavefront(prepend_dir('simple.obj'))
-        self.material1 = meshes.mesh_list[0].materials[0]
-        self.material2 = meshes.mesh_list[1].materials[0]
+        parser = MaterialParser(prepend_dir('simple_parsetest.mtl'))
+        self.materials = parser.materials
+        self.material1 = self.materials['Material.simple']
+        self.material2 = self.materials['Material2.simple']
 
     def testMtlName(self):
         """Parsing an obj file with known material names should set those names."""
-        self.assertEqual(self.material1.name, 'Material.simple')
-        self.assertEqual(self.material2.name, 'Material2.simple')
+        self.assertIn('Material.simple', self.materials.keys())
+        self.assertIn('Material2.simple', self.materials.keys())
 
     def testMtlShininess(self):
         """Parsing an obj file with known material shininess should set it."""
@@ -180,11 +180,22 @@ class TestMtlParser(unittest.TestCase):
         # also tests d
         self.assertEqual(self.material1.specular, [0.2, 0.2, 0.2, 1.])
 
-    def testMtlTextureName(self):
-        """Parsing an obj file with known material texture should set its name."""
-        # also tests d
-        self.assertEqual(self.material1.texture.path,
-                         prepend_dir('4x4.png'))
+    def testMtlTransparency(self):
+        self.assertEqual(self.material1.transparency, 1.0)
+
+    def testMtlIllum(self):
+        self.assertEqual(self.material1.illumination_model, 2)
+
+    def testMtlNi(self):
+        self.assertEqual(self.material1.optical_density, 0.75)
+
+    def testTextures(self):
+        self.assertEqual(self.material1.texture.path, prepend_dir('kd.png'))
+        self.assertEqual(self.material1.texture_ambient.path, prepend_dir('ka.png'))
+        self.assertEqual(self.material1.texture_specular_color.path, prepend_dir('ks.png'))
+        self.assertEqual(self.material1.texture_specular_highlight.path, prepend_dir('ns.png'))
+        self.assertEqual(self.material1.texture_alpha.path, prepend_dir('d.png'))
+        self.assertEqual(self.material1.texture_bump.path, prepend_dir('bump.png'))
 
 
 class TestParserFailure(unittest.TestCase):

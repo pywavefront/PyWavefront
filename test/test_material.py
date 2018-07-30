@@ -13,11 +13,17 @@ class TestMaterial(unittest.TestCase):
         # Append current path to locate files
         self.material = pywavefront.material.Material(prepend_dir('material'))
         self.material.set_texture(prepend_dir('4x4.png'))
+        self.material.set_texture_ambient(prepend_dir('4x4.png'))
 
     def testSetTexture(self):
         """Running set_texture should set a texture."""
         self.assertEqual(self.material.texture.__class__,
-                pywavefront.texture.Texture)
+                         pywavefront.texture.Texture)
+        self.assertEqual(self.material.texture_ambient.__class__,
+                         pywavefront.texture.Texture)
+
+        self.assertEqual(self.material.texture.path, prepend_dir('4x4.png'))
+        self.assertEqual(self.material.texture_ambient.path, prepend_dir('4x4.png'))
 
     def testUnsetTexture(self):
         """Running unset_texture should set texture to None."""
@@ -56,6 +62,9 @@ class TestMaterial(unittest.TestCase):
         """set_emissive should set known values."""
         self.material.set_emissive()
         self.assertEqual(self.material.emissive, [0., 0., 0., 0.])
+
+    def testTransparency(self):
+        self.assertEqual(self.material.transparency, 1.0)
 
 
 class TestInvalidMaterial(unittest.TestCase):

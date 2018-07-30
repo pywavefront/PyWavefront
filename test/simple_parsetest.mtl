@@ -1,0 +1,24 @@
+# Comment
+newmtl Material.simple
+Ns 1.0
+Ka 0.0 0.0 0.0
+Kd 0.1 0.1 0.1
+Ks 0.2 0.2 0.2
+d 1.0
+Tr 0.0
+illum 2
+Ni 0.75
+map_Kd kd.png
+map_Ka ka.png
+map_Ks ks.png
+map_Ns ns.png
+map_d d.png
+map_bump bump.png
+bump bump.png
+newmtl Material2.simple
+Ns 1.0
+Ka 0.0 0.0 0.0
+Kd 0.64 0.64 0.64
+Ks 0.5 0.5 0.5
+d 1.0
+map_Kd 4x4.png
