@@ -158,7 +158,6 @@ class TestMtlParser(unittest.TestCase):
 
     def testMtlName(self):
         """Parsing an obj file with known material names should set those names."""
-        print(self.materials)
         self.assertIn('Material.simple', self.materials.keys())
         self.assertIn('Material2.simple', self.materials.keys())
 
@@ -183,6 +182,12 @@ class TestMtlParser(unittest.TestCase):
 
     def testMtlTransparency(self):
         self.assertEqual(self.material1.transparency, 1.0)
+
+    def testMtlIllum(self):
+        self.assertEqual(self.material1.illumination_model, 2)
+
+    def testMtlNi(self):
+        self.assertEqual(self.material1.optical_density, 0.75)
 
     def testTextures(self):
         self.assertEqual(self.material1.texture.path, prepend_dir('kd.png'))

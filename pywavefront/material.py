@@ -54,6 +54,21 @@ class Material(object):
         self.emissive = [0., 0., 0., 1.]
         self.transparency = 1.0
         self.shininess = 0.
+        self.optical_density = 1.0
+        # Multiple illumination models are available, per material. These are enumerated as follows: 
+        # 0. Color on and Ambient off
+        # 1. Color on and Ambient on
+        # 2. Highlight on
+        # 3. Reflection on and Ray trace on
+        # 4. Transparency: Glass on, Reflection: Ray trace on
+        # 5. Reflection: Fresnel on and Ray trace on
+        # 6. Transparency: Refraction on, Reflection: Fresnel off and Ray trace on
+        # 7. Transparency: Refraction on, Reflection: Fresnel on and Ray trace on
+        # 8. Reflection on and Ray trace off
+        # 9. Transparency: Glass on, Reflection: Ray trace off
+        # 10. Casts shadows onto invisible surfaces
+        self.illumination_model = 0
+
         self.texture = None  # diffuse
         self.texture_ambient = None
         self.texture_specular_color = None
@@ -217,7 +232,7 @@ class MaterialParser(Parser):
 
     @auto_consume
     def parse_map_d(self):
-        """Aplha map"""
+        """Alpha map"""
         Kd = os.path.join(self.dir, " ".join(self.values[1:]))
         self.this_material.set_texture_alpha(Kd)
 
@@ -232,8 +247,8 @@ class MaterialParser(Parser):
 
     @auto_consume
     def parse_Ni(self):
-        pass
+        self.this_material.optical_density = float(self.values[1])
 
     @auto_consume
     def parse_illum(self):
-        pass
+        self.this_material.illumination_model = float(self.values[1])

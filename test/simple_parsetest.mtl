@@ -6,6 +6,8 @@ Kd 0.1 0.1 0.1
 Ks 0.2 0.2 0.2
 d 1.0
 Tr 0.0
+illum 2
+Ni 0.75
 map_Kd kd.png
 map_Ka ka.png
 map_Ks ks.png

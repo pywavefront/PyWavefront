@@ -17,8 +17,10 @@ class TestMaterial(unittest.TestCase):
 
     def testSetTexture(self):
         """Running set_texture should set a texture."""
-        self.assertEqual(self.material.texture.__class__, pywavefront.texture.Texture)
-        self.assertEqual(self.material.texture_ambient.__class__, pywavefront.texture.Texture)
+        self.assertEqual(self.material.texture.__class__,
+                         pywavefront.texture.Texture)
+        self.assertEqual(self.material.texture_ambient.__class__,
+                         pywavefront.texture.Texture)
 
         self.assertEqual(self.material.texture.path, prepend_dir('4x4.png'))
         self.assertEqual(self.material.texture_ambient.path, prepend_dir('4x4.png'))
