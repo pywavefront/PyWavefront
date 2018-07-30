@@ -136,7 +136,11 @@ class ObjParser(Parser):
                     float(self.values[3]),
                 )
 
-            self.next_line()
+            try:
+                self.next_line()
+            except StopIteration:
+                break
+
             if not self.values:
                 break
 
@@ -162,7 +166,11 @@ class ObjParser(Parser):
                 float(self.values[3]),
             )
 
-            self.next_line()
+            try:
+                self.next_line()
+            except StopIteration:
+                break
+
             if not self.values:
                 break
 
@@ -187,7 +195,11 @@ class ObjParser(Parser):
                 float(self.values[2]),
             )
 
-            self.next_line()
+            try:
+                self.next_line()
+            except StopIteration:
+                break
+
             if not self.values:
                 break
 
@@ -376,7 +388,11 @@ class ObjParser(Parser):
                     vlast = uv + color + normal + pos
 
             # Break out of the loop when there are no more f statements
-            self.next_line()
+            try:
+                self.next_line()
+            except StopIteration:
+                break
+
             if not self.values:
                 break
 
