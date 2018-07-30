@@ -1,12 +1,21 @@
-.DS_Store
+
+# build
+*.egg-info
+dist
 *.pyc
 *.pyo
 build
 MANIFEST
-dist
 *.swp
-.idea
-*.egg-info
+
+# virtualenvs
 .venv
 .venv2
 .venv3
+
+# IDEs
+.idea
+.vscode
+
+# osx
+.DS_Store
