@@ -4,7 +4,8 @@ To release:
 * Update contributors in `README.md`
 * Update version in `setup.py`
 * `git push origin master`
-* Create/activate virtualenv: `pip install twine`
+* Create/activate virtualenv, and `pip install twine`
+    * **MUST** be Python 3.7 or later!
 * `python setup.py bdist_wheel --universal`
 * `twine upload dist/$(ls -tr dist/ | tail -1)`
 * Create Github release, named as version
