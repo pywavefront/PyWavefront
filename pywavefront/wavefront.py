@@ -42,7 +42,16 @@ class Wavefront(object):
     parser_cls = ObjParser
 
     """Import a wavefront .obj file."""
-    def __init__(self, file_name, strict=False, encoding="utf-8", create_materials=False, parse=True, cache=False):
+    def __init__(
+        self,
+        file_name,
+        strict=False,
+        encoding="utf-8",
+        create_materials=False,
+        collect_faces=False,
+        parse=True,
+        cache=False
+    ):
         """
         Create a Wavefront instance
         :param file_name: file name and path of obj file to read
@@ -55,6 +64,7 @@ class Wavefront(object):
         self.mtllibs = []
         self.materials = {}
         self.meshes = {}        # Name mapping
+        self.vertices = []
         self.mesh_list = []     # Also includes anonymous meshes
 
         self.parser = self.parser_cls(
@@ -63,6 +73,7 @@ class Wavefront(object):
             strict=strict,
             encoding=encoding,
             create_materials=create_materials,
+            collect_faces=collect_faces,
             parse=parse,
             cache=cache)
 

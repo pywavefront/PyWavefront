@@ -36,6 +36,7 @@ A more complex example
 * `strict` (Default: `False`) will raise an exception if unsupported features are found in the obj or mtl file
 * `encoding` (Default: `utf-8`) of the obj and mtl file(s)
 * `create_materials` (Default: `False`) will create materials if mtl file is missing or obj file references non-existing materials
+* `collect_faces` (Default: `False`) will collect triangle face data for every mesh. In case faces with more than three vertices are specified they will be triangulated. See the documentation of `ObjParser#consume_faces()` in [`obj.py`](https://github.com/greenmoss/PyWavefront/blob/master/pywavefront/obj.py).
 * `parse` (Default: `True`) decides if parsing should start immediately.
 * `cache` (Default: `False`) writes the parsed geometry to a binary file    for faster loading in the future
 

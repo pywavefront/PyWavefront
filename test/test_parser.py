@@ -44,6 +44,33 @@ class TestParsers(unittest.TestCase):
         self.assertEqual(material1.name, 'Material.simple')
         self.assertEqual(material2.name, 'Material2.simple')
 
+class TestParserCollectFaces(unittest.TestCase):
+    """Test collecting (possibly triangulated) faces"""
+    def setUp(self):
+        self.meshes = pywavefront.Wavefront(prepend_dir('arbitrary-faces.obj'), collect_faces=True).meshes
+
+    def testTrianglesOnlyFaces(self):
+        self.assertTrue(self.meshes['triangleOnly'].has_faces)
+        self.assertEqual(self.meshes['triangleOnly'].faces, [[1, 0, 2]])
+
+    def testQuadFaces(self):
+        self.assertTrue(self.meshes['quadOnly'].has_faces)
+        self.assertEqual(self.meshes['quadOnly'].faces, [
+            [4, 5, 6], [7, 4, 6],
+            [5, 4, 6], [7, 5, 6],
+            [7, 6, 4], [5, 7, 4]
+        ])
+
+    def testArbitrarilyMixedFaced(self):
+        self.assertTrue(self.meshes['arbitrary'].has_faces)
+        self.assertEqual(self.meshes['arbitrary'].faces, [
+            [8, 9, 10], [11, 8, 10],
+            [11, 8, 9], [10, 11, 9], [12, 11, 10],
+            [12, 9, 10], [8, 12, 10], [11, 12, 8], [13, 12, 11],
+            [13, 11, 9]
+        ])
+
+
 class NegativeIndices(TestParsers):
     """Run all tests with negative indices"""
     def setUp(self):
