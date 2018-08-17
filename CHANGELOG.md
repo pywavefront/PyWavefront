@@ -1,5 +1,10 @@
 Change Log
 
+## 0.4.2
+* Add Python 3.7 support - PR #72
+* Add missing material properties - PR #70
+* Tweak README - PR #68
+
 ## 0.4.1
 * Add Python 3 - PR #65
 
