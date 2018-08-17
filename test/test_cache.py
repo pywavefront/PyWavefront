@@ -167,12 +167,18 @@ class FakeFile(object):
 
     def read(self, length=-1):
         if length == -1:
-            return self.data.read()
+            if 'b' in self.mode:
+                return self.data.read()
 
-        return self.data.read(length)
+            return self.data.read().decode('utf-8')
+
+        if 'b' in self.mode:
+            return self.data.read(length)
+        
+        return self.data.read(length).decode('utf-8')
 
     def write(self, data):
-        if not 'b' in self.mode:
+        if 'b' not in self.mode:
             data = data.encode()
 
         self.data.write(data)
