@@ -172,6 +172,7 @@ to request an invitation. Ensure you leave the subject line intact!
 
 ## Contributors
 
+* ComFreek
 * Daniel Coelho
 * dav92lee
 * Einar Forselv

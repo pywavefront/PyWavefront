@@ -1,5 +1,11 @@
 Change Log
 
+## 1.0.0
+* Use Python 3.4 on CI server - PR #78
+* Switch to Python 3.4+ - PR #77
+* Fix support for earlier py3 versions, which do not support json as bytes - PR #76
+* Add option to retain face data - PR #74
+
 ## 0.4.2
 * Add Python 3.7 support - PR #72
 * Add missing material properties - PR #70
