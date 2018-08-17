@@ -1,5 +1,8 @@
 Change Log
 
+## 1.0.1
+* Release only for Python3, not universal - Fixes #79
+
 ## 1.0.0
 * Use Python 3.4 on CI server - PR #78
 * Switch to Python 3.4+ - PR #77

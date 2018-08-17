@@ -1,5 +1,6 @@
 To release:
-* Verify pass in CircleCI
+* Verify pass in [CircleCI](https://circleci.com/gh/greenmoss/PyWavefront)
+    * Check against latest `master`
 * Update `CHANGELOG.md` from merged PRs
 * Update contributors in `README.md`
 * Update version in `setup.py`
