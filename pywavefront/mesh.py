@@ -37,9 +37,18 @@ class Mesh(object):
     """This is a basic mesh for drawing using OpenGL. Interestingly, it does
     not contain its own vertices. These are instead drawn via materials."""
 
-    def __init__(self, name=None):
+    def __init__(self, name=None, has_faces=False):
         self.name = name
         self.materials = []
+
+        self.has_faces = has_faces
+
+        # If self.has_faces, this is a list of triangle faces, i.e. triples with vertex indices.
+        #
+        # The original faces have been possibly triangulated if quad or even higher dimensional
+        # faces were specified. See :meth:`ObjParser.consume_faces` for the specific triangulation
+        # algorithm.
+        self.faces = []
 
     def has_material(self, new_material):
         """Determine whether we already have a material of this name."""

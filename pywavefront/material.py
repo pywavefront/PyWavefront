@@ -41,7 +41,7 @@ logger = logging.getLogger("pywavefront")
 
 
 class Material(object):
-    def __init__(self, name, is_default=False):
+    def __init__(self, name, is_default=False, has_faces=False):
         """
         Create a new material
         :param name: Name of the material
@@ -55,7 +55,7 @@ class Material(object):
         self.transparency = 1.0
         self.shininess = 0.
         self.optical_density = 1.0
-        # Multiple illumination models are available, per material. These are enumerated as follows: 
+        # Multiple illumination models are available, per material. These are enumerated as follows:
         # 0. Color on and Ambient off
         # 1. Color on and Ambient on
         # 2. Highlight on
@@ -155,7 +155,7 @@ class Material(object):
 class MaterialParser(Parser):
     """Object to parse lines of a materials definition file."""
 
-    def __init__(self, file_name, strict=False, encoding="utf-8", parse=True):
+    def __init__(self, file_name, strict=False, encoding="utf-8", parse=True, collect_faces=False):
         """
         Create a new material parser
         :param file_name: file name and path of obj file to read
@@ -167,13 +167,14 @@ class MaterialParser(Parser):
 
         self.materials = {}
         self.this_material = None
+        self.collect_faces = collect_faces
 
         if parse:
             self.parse()
 
     @auto_consume
     def parse_newmtl(self):
-        self.this_material = Material(self.values[1])
+        self.this_material = Material(self.values[1], has_faces=self.collect_faces)
         self.materials[self.this_material.name] = self.this_material
 
     @auto_consume

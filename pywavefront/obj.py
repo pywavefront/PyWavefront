@@ -31,6 +31,7 @@
 # ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 # ----------------------------------------------------------------------------
+from collections import namedtuple
 import logging
 import os
 import time
@@ -51,7 +52,7 @@ class ObjParser(Parser):
     cache_writer_cls = CacheWriter
 
     def __init__(self, wavefront, file_name, strict=False, encoding="utf-8",
-                 create_materials=False, parse=True, cache=False):
+                 create_materials=False, collect_faces=False, parse=True, cache=False):
         """
         Create a new obj parser
         :param wavefront: The wavefront object
@@ -68,11 +69,11 @@ class ObjParser(Parser):
         self.mesh = None
         self.material = None
         self.create_materials = create_materials
+        self.collect_faces = collect_faces
         self.cache = cache
         self.cache_loaded = None
 
-        # Stores ALL vertices, normals and texcoords for the entire file
-        self.vertices = []
+        # Stores normals and texcoords for the entire file
         self.normals = []
         self.tex_coords = []
 
@@ -109,7 +110,7 @@ class ObjParser(Parser):
 
     # methods for parsing types of wavefront lines
     def parse_v(self):
-        self.vertices += list(self.consume_vertices())
+        self.wavefront.vertices += list(self.consume_vertices())
 
     def consume_vertices(self):
         """
@@ -213,7 +214,9 @@ class ObjParser(Parser):
             materials = self.material_parser_cls(
                 os.path.join(self.dir, mtllib),
                 encoding=self.encoding,
-                strict=self.strict).materials
+                strict=self.strict,
+                collect_faces=self.collect_faces
+            ).materials
             self.wavefront.mtllibs.append(mtllib)
         except IOError:
             if self.create_materials:
@@ -233,7 +236,7 @@ class ObjParser(Parser):
                 raise PywavefrontException('Unknown material: %s' % name)
 
             # Create a new default material if configured to resolve missing ones
-            self.material = Material(name, is_default=True)
+            self.material = Material(name, is_default=True, has_faces=self.collect_faces)
             self.wavefront.materials[name] = self.material
 
         if self.mesh is not None:
@@ -244,44 +247,82 @@ class ObjParser(Parser):
 
     @auto_consume
     def parse_o(self):
-        self.mesh = Mesh(self.values[1])
+        self.mesh = Mesh(self.values[1], has_faces=self.collect_faces)
         self.wavefront.add_mesh(self.mesh)
 
     def parse_f(self):
         # Add default material if not created
         if self.material is None:
-            self.material = Material("default{}".format(len(self.wavefront.materials)), is_default=True)
+            self.material = Material(
+                "default{}".format(len(self.wavefront.materials)),
+                is_default=True,
+                has_faces=self.collect_faces
+            )
             self.wavefront.materials[self.material.name] = self.material
 
         # Support objects without `o` statement
         if self.mesh is None:
-            self.mesh = Mesh()
+            self.mesh = Mesh(has_faces=self.collect_faces)
             self.wavefront.add_mesh(self.mesh)
             self.mesh.add_material(self.material)
 
         self.mesh.add_material(self.material)
 
-        self.material.vertices += list(self.consume_faces())
+        collected_faces = []
+        consumed_vertices = self.consume_faces(collected_faces if self.collect_faces else None)
+        self.material.vertices += list(consumed_vertices)
+
+        if self.collect_faces:
+            self.mesh.faces += list(collected_faces)
 
         # Since list() also consumes StopIteration we need to sanity check the line
         # to make sure the parser advances
         if self.values and self.values[0] == "f":
             self.next_line()
 
-    def consume_faces(self):
+    def consume_faces(self, collected_faces = None):
         """
         Consume all consecutive faces
 
-        If a 4th vertex is specified, we triangulate.
-        In a perfect world we could consume this straight forward and draw using GL_TRIANGLE_FAN.
-        This is however rarely the case..
+        If more than three vertices are specified, we triangulate by the following procedure:
 
-        * If the face is co-planar but concave, then you need to triangulate the face
+            Let the face have n vertices in the order v_1 v_2 v_3 ... v_n, n >= 3.
+            We emit the first face as usual: (v_1, v_2, v_3). For each remaining vertex v_j,
+            j > 3, we emit (v_j, v_1, v_{j - 1}), e.g. (v_4, v_1, v_3), (v_5, v_1, v_4).
+
+        In a perfect world we could consume all vertices straight forward and draw using
+        GL_TRIANGLE_FAN (which exactly matches the procedure above).
+        This is however rarely the case.
+
+        * If the face is co-planar but concave, then you need to triangulate the face.
         * If the face is not-coplanar, you are screwed, because OBJ doesn't preserve enough information
-          to know what tessellation was intended
+          to know what tessellation was intended.
 
-        We always triangulate to make it simple
+        We always triangulate to make it simple.
+
+            :param collected_faces: A list into which all (possibly triangulated) faces will be written in the form
+                                    of triples of the corresponding absolute vertex IDs. These IDs index the list
+                                    self.wavefront.vertices.
+                                    Specify None to prevent consuming faces (and thus saving memory usage).
         """
+
+        # Helper tuple and function
+        Vertex = namedtuple('Vertex', 'idx pos color uv normal')
+        def emit_vertex(vertex):
+            # Just yield all the values except for the index
+            for v in vertex.uv:
+                yield v
+
+            for v in vertex.color:
+                yield v
+
+            for v in vertex.normal:
+                yield v
+
+            for v in vertex.pos:
+                yield v
+
+
         # Figure out the format of the first vertex
         # We raise an exception if any following vertex has a different format
         # NOTE: Order is always v/vt/vn where v is mandatory and vt and vn is optional
@@ -304,11 +345,11 @@ class ObjParser(Parser):
         # Are we referencing vertex with color info?
         vindex = int(parts[0])
         if vindex < 0:
-            vindex += len(self.vertices)
+            vindex += len(self.wavefront.vertices)
         else:
             vindex -= 1
 
-        vertex = self.vertices[vindex]
+        vertex = self.wavefront.vertices[vindex]
         has_colors = len(vertex) == 6
 
         # Prepare vertex format string
@@ -331,10 +372,8 @@ class ObjParser(Parser):
         # The first iteration processes the current/first f statement.
         # The loop continues until there are no more f-statements or StopIteration is raised by generator
         while True:
-            v1, vlast = None, None
-
-            # Do we need to triangulate? Each line may contain a varying amount of elements
-            triangulate = (len(self.values) - 1) > 3
+            # The very first vertex, the last encountered and the current one
+            v1, vlast, vcurrent = None, None, None
 
             for i, v in enumerate(self.values[1:]):
                 parts = v.split('/')
@@ -344,7 +383,7 @@ class ObjParser(Parser):
 
                 # Resolve negative index lookups
                 if v_index < 0:
-                    v_index += len(self.vertices) + 1
+                    v_index += len(self.wavefront.vertices) + 1
 
                 if has_vt and t_index < 0:
                     t_index += len(self.tex_coords) + 1
@@ -352,42 +391,40 @@ class ObjParser(Parser):
                 if has_vn and n_index < 0:
                     n_index += len(self.normals) + 1
 
-                pos = self.vertices[v_index][0:3] if has_colors else self.vertices[v_index]
-                color = self.vertices[v_index][3:] if has_colors else ()
-                uv = self.tex_coords[t_index] if has_vt else ()
-                normal = self.normals[n_index] if has_vn else ()
+                vlast = vcurrent
+                vcurrent = Vertex(
+                    idx = v_index,
+                    pos = self.wavefront.vertices[v_index][0:3] if has_colors else self.wavefront.vertices[v_index],
+                    color = self.wavefront.vertices[v_index][3:] if has_colors else (),
+                    uv = self.tex_coords[t_index] if has_vt else (),
+                    normal = self.normals[n_index] if has_vn else ()
+                )
 
-                # Just yield all the values
-                for v in uv:
-                    yield v
+                yield from emit_vertex(vcurrent)
 
-                for v in color:
-                    yield v
+                # Triangulation when more than 3 elements are present
+                if i >= 3:
+                    # The current vertex has already been emitted.
+                    # Now just emit the first and the third vertices from the face
+                    yield from emit_vertex(v1)
+                    yield from emit_vertex(vlast)
 
-                for v in normal:
-                    yield v
+                if i == 0:
+                    # Store the first vertex
+                    v1 = vcurrent
 
-                for v in pos:
-                    yield v
-
-                # Triangulation when more than 3 elements is present
-                if triangulate:
+                if (collected_faces is not None) and (i >= 2):
+                    if i == 2:
+                        # Append the first triangle face in usual order (i.e. as specified in the Wavefront file)
+                        collected_faces.append([v1.idx, vlast.idx, vcurrent.idx])
                     if i >= 3:
-                        # Emit vertex 1 and 3 triangulating when a 4th vertex is specified
-                        for v in v1:
-                            yield v
-
-                        for v in vlast:
-                            yield v
-
-                    if i == 0:
-                        # Store the first vertex
-                        v1 = uv + color + normal + pos
-
-                    # Store the last vertex
-                    vlast = uv + color + normal + pos
+                        # Triangulate the remaining part of the face by putting the current, the first
+                        # and the last parsed vertex in that order as a new face.
+                        # This order coincides deliberately with the order from vertex yielding above.
+                        collected_faces.append([vcurrent.idx, v1.idx, vlast.idx])
 
             # Break out of the loop when there are no more f statements
+
             try:
                 self.next_line()
             except StopIteration:
