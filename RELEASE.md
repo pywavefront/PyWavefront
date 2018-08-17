@@ -1,6 +1,7 @@
 To release:
 * Verify pass in CircleCI
-* Update `CHANGELOG.md`
+* Update `CHANGELOG.md` from merged PRs
+* Update contributors in `README.md`
 * Update version in `setup.py`
 * `git push origin master`
 * Create/activate virtualenv: `pip install twine`
