@@ -396,8 +396,8 @@ class ObjParser(Parser):
                     idx = v_index,
                     pos = self.wavefront.vertices[v_index][0:3] if has_colors else self.wavefront.vertices[v_index],
                     color = self.wavefront.vertices[v_index][3:] if has_colors else (),
-                    uv = self.tex_coords[t_index] if has_vt else (),
-                    normal = self.normals[n_index] if has_vn else ()
+                    uv = self.tex_coords[t_index] if has_vt and t_index < len(self.tex_coords) else (),
+                    normal = self.normals[n_index] if has_vn and n_index < len(self.normals) else ()
                 )
 
                 yield from emit_vertex(vcurrent)
