@@ -183,7 +183,7 @@ class ObjParser(Parser):
 
         # Since list() also consumes StopIteration we need to sanity check the line
         # to make sure the parser advances
-        if self.values[0] == "vt":
+        if self.values and self.values[0] == "vt":
             self.next_line()
 
     def consume_texture_coordinates(self):
