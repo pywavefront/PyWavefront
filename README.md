@@ -179,6 +179,7 @@ to request an invitation. Ensure you leave the subject line intact!
 * Jerek Shoemaker
 * Kurt Yoder
 * Marxlp
+* Mathieu Lamarre
 * Patrik Huber
 * Sérgio Agostinho
 * Zohar Jackson

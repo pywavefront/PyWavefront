@@ -1,5 +1,8 @@
 Change Log
 
+## 1.0.2
+* Fix two parsing IndexErrors - PR #84
+
 ## 1.0.1
 * Release only for Python3, not universal - Fixes #79
 
