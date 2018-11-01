@@ -70,3 +70,17 @@ class TestNoObjectNoMaterial(TestNoMaterial):
         self.mesh_names = [None]
         self.material_names = ["default0"]
         self.meshes = pywavefront.Wavefront(prepend_dir('simple_no_object_no_mtl.obj'))
+
+class TestZeroFaceNormaIndex(TestWavefront):
+    def setUp(self):
+        # reset the obj file to new file with no mtl line
+        self.mesh_names = ['Simple', 'SimpleB']
+        self.material_names = ['Material.simple', 'Material2.simple']
+        self.meshes = pywavefront.Wavefront(prepend_dir('simple_zero_indices.obj'))
+
+class TestExtraSpace(TestWavefront):
+    def setUp(self):
+        # reset the obj file to new file with no mtl line
+        self.mesh_names = ['Simple', 'SimpleB']
+        self.material_names = ['Material.simple', 'Material2.simple']
+        self.meshes = pywavefront.Wavefront(prepend_dir('simple_extra_empty_lines.obj'))
