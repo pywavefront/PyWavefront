@@ -1,5 +1,8 @@
 Change Log
 
+## 1.0.3
+* Fix vertex format exceptions - PR #86
+
 ## 1.0.2
 * Fix two parsing IndexErrors - PR #84
 

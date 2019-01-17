@@ -6,6 +6,8 @@ To release:
 * Update `CHANGELOG.md` from merged PRs
 * Update contributors in `README.md`
 * Update version in `setup.py`
+* `git add -A && git commit -v`
+    * Use commit message 'Prepare for release x.y.z'
 * `git push origin master`
 * Create/activate virtualenv, and `pip install twine`
     * **MUST** be Python 3.7 or later!
