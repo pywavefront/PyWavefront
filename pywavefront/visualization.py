@@ -80,7 +80,7 @@ def draw_material(material, face=GL_FRONT_AND_BACK):
 
     vertex_format = VERTEX_FORMATS.get(material.vertex_format)
     if not vertex_format:
-        raise ValueError("Vertex format {} not supported by pyglet".format(vertex_format))
+        raise ValueError("Vertex format {} not supported by pyglet".format(material.vertex_format))
 
     glPushClientAttrib(GL_CLIENT_VERTEX_ARRAY_BIT)
     glPushAttrib(GL_CURRENT_BIT | GL_ENABLE_BIT | GL_LIGHTING_BIT)
