@@ -2,18 +2,15 @@ import os
 import unittest
 
 import pywavefront.material
-
-
-def prepend_dir(file):
-    return os.path.join(os.path.dirname(__file__), file)
+from utils import fixture
 
 
 class TestMaterial(unittest.TestCase):
     def setUp(self):
         # Append current path to locate files
-        self.material = pywavefront.material.Material(prepend_dir('material'))
-        self.material.set_texture(prepend_dir('4x4.png'))
-        self.material.set_texture_ambient(prepend_dir('4x4.png'))
+        self.material = pywavefront.material.Material(fixture('material'))
+        self.material.set_texture(fixture('4x4.png'))
+        self.material.set_texture_ambient(fixture('4x4.png'))
 
     def testSetTexture(self):
         """Running set_texture should set a texture."""
@@ -22,8 +19,8 @@ class TestMaterial(unittest.TestCase):
         self.assertEqual(self.material.texture_ambient.__class__,
                          pywavefront.texture.Texture)
 
-        self.assertEqual(self.material.texture.path, prepend_dir('4x4.png'))
-        self.assertEqual(self.material.texture_ambient.path, prepend_dir('4x4.png'))
+        self.assertEqual(self.material.texture.path, fixture('4x4.png'))
+        self.assertEqual(self.material.texture_ambient.path, fixture('4x4.png'))
 
     def testUnsetTexture(self):
         """Running unset_texture should set texture to None."""

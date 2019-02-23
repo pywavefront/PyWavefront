@@ -1,20 +1,24 @@
-import os
-import unittest
-import mock
-from io import BytesIO
 import json
+import os
+import mock
+import unittest
+
 from datetime import datetime
+from io import BytesIO
+
 from pywavefront import ObjParser, Wavefront
 from pywavefront.parser import Parser
 from pywavefront.exceptions import PywavefrontException
 from pywavefront.cache import cache_name, meta_name
+
+from utils import fixture
 
 
 @mock.patch('pywavefront.parser.Parser.auto_post_parse', new=False)
 class CacheTest(unittest.TestCase):
     """Create and load cache for a specific obj file"""
     maxDiff = None
-    obj_file = 'simple.obj'
+    obj_file = fixture('simple.obj')
     create_materials = False
 
     def load_obj(self, filename, fake_io=None):
@@ -88,27 +92,27 @@ class CacheTest(unittest.TestCase):
 
 @mock.patch('pywavefront.parser.Parser.auto_post_parse', new=False)
 class CacheTestNoMaterials(CacheTest):
-    obj_file = 'simple_no_mtl.obj'
+    obj_file = fixture('simple_no_mtl.obj')
 
 
 @mock.patch('pywavefront.parser.Parser.auto_post_parse', new=False)
 class CacheTestSimpleColors(CacheTest):
-    obj_file = 'simple_colors.obj'
+    obj_file = fixture('simple_colors.obj')
 
 
 @mock.patch('pywavefront.parser.Parser.auto_post_parse', new=False)
 class CacheTestNegativeIndices(CacheTest):
-    obj_file = 'simple_negative_indices.obj'
+    obj_file = fixture('simple_negative_indices.obj')
 
 
 @mock.patch('pywavefront.parser.Parser.auto_post_parse', new=False)
 class CacheTestNoObjNoMtl(CacheTest):
-    obj_file = 'simple_no_object_no_mtl.obj'
+    obj_file = fixture('simple_no_object_no_mtl.obj')
 
 
 @mock.patch('pywavefront.parser.Parser.auto_post_parse', new=False)
 class CacheTestUnknownMtl(CacheTest):
-    obj_file = 'simple_unknown_usemtl.obj'
+    obj_file = fixture('simple_unknown_usemtl.obj')
     create_materials = True
 
 

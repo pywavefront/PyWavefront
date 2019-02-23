@@ -5,14 +5,13 @@ import pywavefront.parser
 from pywavefront.exceptions import PywavefrontException
 from pywavefront.material import MaterialParser
 
-def prepend_dir(file):
-    return os.path.join(os.path.dirname(__file__), file)
+from utils import fixture
 
 
 class TestParsers(unittest.TestCase):
     def setUp(self):
         # Append current path to locate files
-        meshes = pywavefront.Wavefront(prepend_dir('simple.obj'))
+        meshes = pywavefront.Wavefront(fixture('simple.obj'))
         self.mesh1 = meshes.mesh_list[0]
         self.mesh2 = meshes.mesh_list[1]
 
@@ -47,7 +46,7 @@ class TestParsers(unittest.TestCase):
 class TestParserCollectFaces(unittest.TestCase):
     """Test collecting (possibly triangulated) faces"""
     def setUp(self):
-        self.meshes = pywavefront.Wavefront(prepend_dir('arbitrary-faces.obj'), collect_faces=True).meshes
+        self.meshes = pywavefront.Wavefront(fixture('arbitrary-faces.obj'), collect_faces=True).meshes
 
     def testTrianglesOnlyFaces(self):
         self.assertTrue(self.meshes['triangleOnly'].has_faces)
@@ -75,7 +74,7 @@ class NegativeIndices(TestParsers):
     """Run all tests with negative indices"""
     def setUp(self):
         # Append current path to locate files
-        meshes = pywavefront.Wavefront(prepend_dir('simple_negative_indices.obj'))
+        meshes = pywavefront.Wavefront(fixture('simple_negative_indices.obj'))
         self.mesh1 = meshes.mesh_list[0]
         self.mesh2 = meshes.mesh_list[1]
 
@@ -84,7 +83,7 @@ class TestParserGz(TestParsers):
     """Run all tests is TestParsers for gzip file as well"""
     def setUp(self):
         # Append current path to locate files
-        meshes = pywavefront.Wavefront(prepend_dir('simple.obj.gz'))
+        meshes = pywavefront.Wavefront(fixture('simple.obj.gz'))
         self.mesh1 = meshes.mesh_list[0]
         self.mesh2 = meshes.mesh_list[1]
 
@@ -95,11 +94,11 @@ class TestParserMissingMaterials(unittest.TestCase):
     def test_missing_material_error(self):
         """Parser should crash if `create_materials` is not set"""
         with self.assertRaises(IOError):
-            pywavefront.Wavefront(prepend_dir('simple_missing_material.obj'))
+            pywavefront.Wavefront(fixture('simple_missing_material.obj'))
 
     def test_missing_material_create(self):
         """Parser should handle missing materials if `create_materials` is set"""
-        pywavefront.Wavefront(prepend_dir('simple_missing_material.obj'), create_materials=True)
+        pywavefront.Wavefront(fixture('simple_missing_material.obj'), create_materials=True)
 
 
 class TestParserVertexVariants(unittest.TestCase):
@@ -107,7 +106,7 @@ class TestParserVertexVariants(unittest.TestCase):
     def testObjNoNormals(self):
         """Parse obj without normals"""
         # tests v, vt and f
-        meshes = pywavefront.Wavefront(prepend_dir('simple_vt.obj'))
+        meshes = pywavefront.Wavefront(fixture('simple_vt.obj'))
         self.mesh1 = meshes.mesh_list[0]
         self.mesh2 = meshes.mesh_list[1]
 
@@ -125,7 +124,7 @@ class TestParserVertexVariants(unittest.TestCase):
 
     def testObjNoUVs(self):
         """Parse object with no uvs"""
-        meshes = pywavefront.Wavefront(prepend_dir('simple_normals.obj'))
+        meshes = pywavefront.Wavefront(fixture('simple_normals.obj'))
         self.mesh1 = meshes.mesh_list[0]
         self.mesh2 = meshes.mesh_list[1]
 
@@ -142,7 +141,7 @@ class TestParserVertexVariants(unittest.TestCase):
         self.assertEqual(self.mesh2.materials[0].vertex_format, "N3F_V3F")
 
     def testObjOnlyPositions(self):
-        meshes = pywavefront.Wavefront(prepend_dir('simple_positions.obj'))
+        meshes = pywavefront.Wavefront(fixture('simple_positions.obj'))
         self.mesh1 = meshes.mesh_list[0]
         self.mesh2 = meshes.mesh_list[1]
 
@@ -159,7 +158,7 @@ class TestParserVertexVariants(unittest.TestCase):
         self.assertEqual(self.mesh2.materials[0].vertex_format, "V3F")
 
     def testObjColors(self):
-        meshes = pywavefront.Wavefront(prepend_dir('simple_colors.obj'))
+        meshes = pywavefront.Wavefront(fixture('simple_colors.obj'))
         self.mesh1 = meshes.mesh_list[0]
         self.mesh2 = meshes.mesh_list[1]
 
@@ -178,7 +177,7 @@ class TestParserVertexVariants(unittest.TestCase):
 
 class TestMtlParser(unittest.TestCase):
     def setUp(self):
-        parser = MaterialParser(prepend_dir('simple_parsetest.mtl'))
+        parser = MaterialParser(fixture('simple_parsetest.mtl'))
         self.materials = parser.materials
         self.material1 = self.materials['Material.simple']
         self.material2 = self.materials['Material2.simple']
@@ -217,12 +216,12 @@ class TestMtlParser(unittest.TestCase):
         self.assertEqual(self.material1.optical_density, 0.75)
 
     def testTextures(self):
-        self.assertEqual(self.material1.texture.path, prepend_dir('kd.png'))
-        self.assertEqual(self.material1.texture_ambient.path, prepend_dir('ka.png'))
-        self.assertEqual(self.material1.texture_specular_color.path, prepend_dir('ks.png'))
-        self.assertEqual(self.material1.texture_specular_highlight.path, prepend_dir('ns.png'))
-        self.assertEqual(self.material1.texture_alpha.path, prepend_dir('d.png'))
-        self.assertEqual(self.material1.texture_bump.path, prepend_dir('bump.png'))
+        self.assertEqual(self.material1.texture.path, fixture('kd.png'))
+        self.assertEqual(self.material1.texture_ambient.path, fixture('ka.png'))
+        self.assertEqual(self.material1.texture_specular_color.path, fixture('ks.png'))
+        self.assertEqual(self.material1.texture_specular_highlight.path, fixture('ns.png'))
+        self.assertEqual(self.material1.texture_alpha.path, fixture('d.png'))
+        self.assertEqual(self.material1.texture_bump.path, fixture('bump.png'))
 
 
 class TestParserFailure(unittest.TestCase):
@@ -230,11 +229,11 @@ class TestParserFailure(unittest.TestCase):
     def testMissingParseFunction(self):
         """Attempting to parse with a missing parse function should raise an exception."""
         # since no parse functions have been defined, this will always fail in strict mode
-        parser = pywavefront.parser.Parser(prepend_dir('simple.obj'), strict=True)
+        parser = pywavefront.parser.Parser(fixture('simple.obj'), strict=True)
         self.assertRaises(PywavefrontException, parser.parse)
 
     def testMissingParsedFile(self):
         """Attempting to read a non-exiting file should raise an exception."""
         file_name = 'doesnotexist.obj'
-        parser = pywavefront.parser.Parser(prepend_dir(file_name))
+        parser = pywavefront.parser.Parser(fixture(file_name))
         self.assertRaises(IOError, parser.parse)

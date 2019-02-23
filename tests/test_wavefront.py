@@ -2,17 +2,14 @@ import os
 import unittest
 
 import pywavefront
-
-
-def prepend_dir(file):
-    return os.path.join(os.path.dirname(__file__), file)
+from utils import fixture
 
 
 class TestWavefront(unittest.TestCase):
     def setUp(self):
         self.mesh_names = ['Simple', 'SimpleB']
         self.material_names = ['Material.simple', 'Material2.simple']
-        self.meshes = pywavefront.Wavefront(prepend_dir('simple.obj'))
+        self.meshes = pywavefront.Wavefront(fixture('simple.obj'))
 
     def testMaterials(self):
         """Ensure parsed wavefront materials match known values."""
@@ -49,7 +46,7 @@ class TestBrokenWavefront(unittest.TestCase):
         """Referencing an unknown material with usemtl should raise an exception."""
         self.assertRaises(pywavefront.PywavefrontException,
                           pywavefront.Wavefront,
-                          prepend_dir('simple_unknown_usemtl.obj'))
+                          fixture('simple_unknown_usemtl.obj'))
 
 
 class TestNoMaterial(TestWavefront):
@@ -57,7 +54,7 @@ class TestNoMaterial(TestWavefront):
         # reset the obj file to new file with no mtl line
         self.mesh_names = ['Simple', 'SimpleB']
         self.material_names = ["default0"]
-        self.meshes = pywavefront.Wavefront(prepend_dir('simple_no_mtl.obj'))
+        self.meshes = pywavefront.Wavefront(fixture('simple_no_mtl.obj'))
 
     def testMeshMaterialVertices(self):
         """Mesh vertices should have known values."""
@@ -69,18 +66,18 @@ class TestNoObjectNoMaterial(TestNoMaterial):
         # reset the obj file to new file with no mtl line
         self.mesh_names = [None]
         self.material_names = ["default0"]
-        self.meshes = pywavefront.Wavefront(prepend_dir('simple_no_object_no_mtl.obj'))
+        self.meshes = pywavefront.Wavefront(fixture('simple_no_object_no_mtl.obj'))
 
 class TestZeroFaceNormaIndex(TestWavefront):
     def setUp(self):
         # reset the obj file to new file with no mtl line
         self.mesh_names = ['Simple', 'SimpleB']
         self.material_names = ['Material.simple', 'Material2.simple']
-        self.meshes = pywavefront.Wavefront(prepend_dir('simple_zero_indices.obj'))
+        self.meshes = pywavefront.Wavefront(fixture('simple_zero_indices.obj'))
 
 class TestExtraSpace(TestWavefront):
     def setUp(self):
         # reset the obj file to new file with no mtl line
         self.mesh_names = ['Simple', 'SimpleB']
         self.material_names = ['Material.simple', 'Material2.simple']
-        self.meshes = pywavefront.Wavefront(prepend_dir('simple_extra_empty_lines.obj'))
+        self.meshes = pywavefront.Wavefront(fixture('simple_extra_empty_lines.obj'))

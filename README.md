@@ -161,9 +161,18 @@ The following presumes you are using [Blender](http://www.blender.org/) to gener
 
 All tests can be found in the `tests` directory. To run the tests:
 
-```
+```bash
+# Install pywavefront in develop mode
+python setup.py develop
+
+# Install required packages for running tests
 pip install -r test-requirements.txt
+
+# Run all tests
 pytest
+
+# Optionally specific tests modules can be runned sepeartely
+pytest tests/test_parser.py
 ```
 
 ## Community
