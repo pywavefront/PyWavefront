@@ -13,7 +13,6 @@ setup(
     long_description_content_type='text/markdown',
     license='BSD',
     classifiers=[
-        'Development Status :: 4 - Beta',
         'Environment :: Plugins',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: BSD License',
