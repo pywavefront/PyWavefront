@@ -9,6 +9,8 @@ MANIFEST
 *.swp
 
 # virtualenvs
+env
+.env
 .venv
 .venv2
 .venv3

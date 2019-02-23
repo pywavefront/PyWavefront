@@ -159,11 +159,12 @@ The following presumes you are using [Blender](http://www.blender.org/) to gener
 
 ## Tests
 
-All tests can be found in the `test` directory. To run the tests:
+All tests can be found in the `tests` directory. To run the tests:
 
-* Install nose: `pip install nose`
-* Change to the top-level directory, e.g. `PyWavefront`, the directory that contains this `README` file.
-* Run `nosetests`
+```
+pip install -r test-requirements.txt
+pytest
+```
 
 ## Community
 

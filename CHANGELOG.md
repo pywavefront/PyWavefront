@@ -1,5 +1,7 @@
 Change Log
 
+Release history on Github: https://github.com/pywavefront/PyWavefront/releases
+
 ## 1.0.3
 * Fix vertex format exceptions - PR #86
 
