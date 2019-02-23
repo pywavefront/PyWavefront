@@ -167,8 +167,7 @@ All tests can be found in the `test` directory. To run the tests:
 
 ## Community
 
-Slack: [channel](https://pywavefront.slack.com/). [Email the admins](mailto:pywavefront+slack@gmail.com?subject=Please%20send%20me%20an%20invitation%20to%20the%20PyWavefront%20Slack%20channel&body=Thanks!)
-to request an invitation. Ensure you leave the subject line intact!
+PyWavefront Discord server: https://discord.gg/nMNjbn
 
 ## Owners & Maintainers
 
