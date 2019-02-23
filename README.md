@@ -1,5 +1,5 @@
 [![pypi](https://img.shields.io/pypi/v/PyWavefront.svg)](https://pypi.org/project/PyWavefront/)
-[![CircleCI](https://circleci.com/gh/greenmoss/PyWavefront.svg?style=svg)](https://circleci.com/gh/greenmoss/PyWavefront)
+[![CircleCI](https://circleci.com/gh/pywavefront/PyWavefront.svg?style=svg)](https://circleci.com/gh/greenmoss/PyWavefront)
 
 PyWavefront
 ===========
