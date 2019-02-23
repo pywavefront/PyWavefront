@@ -2,7 +2,9 @@
 [![CircleCI](https://circleci.com/gh/pywavefront/PyWavefront.svg?style=svg)](https://circleci.com/gh/pywavefront/PyWavefront)
 
 <div align="center">
-[![preview](https://github.com/pywavefront/PyWavefront/raw/master/extras/logo.png)](#readme)
+
+[![preview](https://raw.githubusercontent.com/pywavefront/PyWavefront/master/extras/logo.png)](#readme)
+
 </div>
 
 PyWavefront
