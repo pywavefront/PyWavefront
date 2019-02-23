@@ -1,12 +1,12 @@
 [![pypi](https://img.shields.io/pypi/v/PyWavefront.svg)](https://pypi.org/project/PyWavefront/)
-[![CircleCI](https://circleci.com/gh/pywavefront/PyWavefront.svg?style=svg)](https://circleci.com/gh/greenmoss/PyWavefront)
+[![CircleCI](https://circleci.com/gh/pywavefront/PyWavefront.svg?style=svg)](https://circleci.com/gh/pywavefront/PyWavefront)
 
 PyWavefront
 ===========
 
 PyWavefront reads Wavefront 3D object files (`something.obj`, `something.obj.gz`
 and `something.mtl`) and generates interleaved vertex data for each material ready for rendering.
-Python 3.4+ is supported in PyWavefront 1.0.0+. An older [`python2` branch](https://github.com/greenmoss/PyWavefront/tree/python2) is still provided for Python 2.7.x, however, only fixes and no new features will be backported. A simple (optional) visualization module is also
+Python 3.4+ is supported in PyWavefront 1.0.0+. An older [`python2` branch](https://github.com/pywavefront/PyWavefront/tree/python2) is still provided for Python 2.7.x, however, only fixes and no new features will be backported. A simple (optional) visualization module is also
 provided for rendering the object(s). The interleaved data can also be used by
 more modern renderers thought VBOs or VAOs.
 
@@ -16,7 +16,7 @@ We currently don't support parameter space vertices, line elements or smoothing 
 Create an issue or pull request on github if needed features are missing.
 
 The package is on [pypi](https://pypi.org/project/PyWavefront/)
-or can be cloned on [github](https://github.com/greenmoss/PyWavefront).
+or can be cloned on [github](https://github.com/pywavefront/PyWavefront).
 
 ```
 pip install PyWavefront
@@ -36,7 +36,7 @@ A more complex example
 * `strict` (Default: `False`) will raise an exception if unsupported features are found in the obj or mtl file
 * `encoding` (Default: `utf-8`) of the obj and mtl file(s)
 * `create_materials` (Default: `False`) will create materials if mtl file is missing or obj file references non-existing materials
-* `collect_faces` (Default: `False`) will collect triangle face data for every mesh. In case faces with more than three vertices are specified they will be triangulated. See the documentation of `ObjParser#consume_faces()` in [`obj.py`](https://github.com/greenmoss/PyWavefront/blob/master/pywavefront/obj.py).
+* `collect_faces` (Default: `False`) will collect triangle face data for every mesh. In case faces with more than three vertices are specified they will be triangulated. See the documentation of `ObjParser#consume_faces()` in [`obj.py`](https://github.com/pywavefront/PyWavefront/blob/master/pywavefront/obj.py).
 * `parse` (Default: `True`) decides if parsing should start immediately.
 * `cache` (Default: `False`) writes the parsed geometry to a binary file    for faster loading in the future
 
@@ -170,6 +170,11 @@ All tests can be found in the `test` directory. To run the tests:
 Slack: [channel](https://pywavefront.slack.com/). [Email the admins](mailto:pywavefront+slack@gmail.com?subject=Please%20send%20me%20an%20invitation%20to%20the%20PyWavefront%20Slack%20channel&body=Thanks!)
 to request an invitation. Ensure you leave the subject line intact!
 
+## Owners & Maintainers
+
+* Einar Forselv (@einarf)
+* Kurt Yoder (@greenmoss)
+
 ## Contributors
 
 * ComFreek
@@ -184,6 +189,13 @@ to request an invitation. Ensure you leave the subject line intact!
 * Patrik Huber
 * Sérgio Agostinho
 * Zohar Jackson
+
+## Project History
+
+PyWavefront was originally started by @greenmoss (Kurt Yoder) in 2013.
+He was the sole maintainer of the project until February 2019 when
+the PyWavefront Maintainers organization was created adding @einarf
+(Einar Forselv) as an additional owner and maintainer of the project.
 
 License
 -------
