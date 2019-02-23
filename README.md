@@ -1,6 +1,10 @@
 [![pypi](https://img.shields.io/pypi/v/PyWavefront.svg)](https://pypi.org/project/PyWavefront/)
 [![CircleCI](https://circleci.com/gh/pywavefront/PyWavefront.svg?style=svg)](https://circleci.com/gh/pywavefront/PyWavefront)
 
+<div align="center">
+[![preview](https://github.com/pywavefront/PyWavefront/raw/master/extras/logo.png)](#readme)
+</div>
+
 PyWavefront
 ===========
 
