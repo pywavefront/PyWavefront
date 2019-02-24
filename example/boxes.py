@@ -24,12 +24,12 @@ from pywavefront import visualization, Wavefront
 
 window = pyglet.window.Window(width=1280, height=720)
 
-box1 = Wavefront('box/box-V3F.obj')
-box2 = Wavefront('box/box-C3F_V3F.obj')
-box3 = Wavefront('box/box-N3F_V3F.obj')
-box4 = Wavefront('box/box-T2F_V3F.obj')
-box5 = Wavefront('box/box-T2F_C3F_V3F.obj')
-box6 = Wavefront('box/box-T2F_N3F_V3F.obj')
+box1 = Wavefront('data/box/box-V3F.obj')
+box2 = Wavefront('data/box/box-C3F_V3F.obj')
+box3 = Wavefront('data/box/box-N3F_V3F.obj')
+box4 = Wavefront('data/box/box-T2F_V3F.obj')
+box5 = Wavefront('data/box/box-T2F_C3F_V3F.obj')
+box6 = Wavefront('data/box/box-T2F_N3F_V3F.obj')
 
 rotation = 0.0
 lightfv = ctypes.c_float * 4

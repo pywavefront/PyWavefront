@@ -12,7 +12,7 @@ from pywavefront import visualization
 from pywavefront import Wavefront
 
 rotation = 0.0
-meshes = Wavefront('earth.obj')
+meshes = Wavefront('data/earth.obj')
 window = pyglet.window.Window(1024, 720, caption='Demo', resizable=True)
 lightfv = ctypes.c_float * 4
 label = pyglet.text.Label(

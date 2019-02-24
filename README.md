@@ -147,13 +147,10 @@ pywavefront.configure_logging(
 )
 ```
 
-### Example Scripts
+### Examples
 
-The `example` directory contains some basic examples using the `visualization` module
-
-* `pyglet_demo.py` : Simple textured globe
-* `pyglet_demo2.py` : Higher resolution textured globe
-* `pyglet_demo_boxes.py` : Boxes demonstrating supported vertex formats of the visualization module
+The  [examples](https://github.com/pywavefront/PyWavefront/tree/master/example)
+directory contains some basic examples using the `visualization` module and further instructions on how to run them.
 
 ### Generating a Wavefront file with Blender
 
@@ -183,7 +180,7 @@ pytest tests/test_parser.py
 
 ## Community
 
-PyWavefront Discord server: https://discord.gg/nMNjbn
+PyWavefront Discord server : https://discord.gg/nMNjbn
 
 ## Owners & Maintainers
 
@@ -195,9 +192,7 @@ PyWavefront Discord server: https://discord.gg/nMNjbn
 * ComFreek
 * Daniel Coelho
 * dav92lee
-* Einar Forselv
 * Jerek Shoemaker
-* Kurt Yoder
 * Marxlp
 * Mathieu Lamarre
 * Oliv4945
@@ -215,4 +210,4 @@ the PyWavefront Maintainers organization was created adding @einarf
 License
 -------
 
-PyWavefront is BSD-licensed; see file `LICENSE`.
+PyWavefront is [BSD-licensed](https://github.com/pywavefront/PyWavefront/blob/master/LICENSE)

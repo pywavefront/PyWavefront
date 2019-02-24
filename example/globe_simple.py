@@ -12,7 +12,7 @@ from pywavefront import visualization
 import pywavefront
 
 rotation = 0
-meshes = pywavefront.Wavefront('uv_sphere.obj')
+meshes = pywavefront.Wavefront('data/uv_sphere.obj')
 window = pyglet.window.Window()
 lightfv = ctypes.c_float * 4
 
