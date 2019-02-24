@@ -12,20 +12,30 @@ PyWavefront
 
 PyWavefront reads Wavefront 3D object files (`something.obj`, `something.obj.gz`
 and `something.mtl`) and generates interleaved vertex data for each material ready for rendering.
-Python 3.4+ is supported in PyWavefront 1.0.0+. An older [`python2` branch](https://github.com/pywavefront/PyWavefront/tree/python2) is still provided for Python 2.7.x, however, only fixes and no new features will be backported. A simple (optional) visualization module is also
-provided for rendering the object(s). The interleaved data can also be used by
+
+* Python 3.4+ is supported in 1.x versions
+* Python 2.7 is supported in 0.x versions
+
+A simple (optional) visualization module is also provided for
+rendering the object(s). The interleaved data can also be used by
 more modern renderers thought VBOs or VAOs.
 
-Currently the most commonly used features in [the defined specification](https://en.wikipedia.org/wiki/Wavefront_.obj_file) has
-been implemented. Positions, texture coordinates, normals, vertex color and material parsing.
-We currently don't support parameter space vertices, line elements or smoothing groups.
-Create an issue or pull request on github if needed features are missing.
+Currently the most commonly used features in [the specification](https://en.wikipedia.org/wiki/Wavefront_.obj_file) has
+been implemented:
+
+* Positions
+* Texture Coordinates
+* Normals
+* Vertex Color
+* Material parsing
+
+We currently don't support parameter space vertices, line elements or smoothing groups. Create an issue or pull request on github if needed features are missing.
 
 The package is on [pypi](https://pypi.org/project/PyWavefront/)
 or can be cloned on [github](https://github.com/pywavefront/PyWavefront).
 
 ```
-pip install PyWavefront
+pip install pywavefront
 ```
 
 ## Usage
@@ -184,20 +194,22 @@ PyWavefront Discord server : https://discord.gg/nMNjbn
 
 ## Owners & Maintainers
 
-* Einar Forselv (@einarf)
-* Kurt Yoder (@greenmoss)
+* Einar Forselv ([@einarf](https://github.com/einarf)) - Main Contact
+* Kurt Yoder ([@greenmoss](https://github.com/greenmoss/)) - Backup
 
 ## Contributors
 
-* ComFreek
-* Daniel Coelho
-* dav92lee
-* Jerek Shoemaker
-* Marxlp
+In alphabetical order:
+
+* [ComFreek](https://github.com/ComFreek)
+* Daniel Coelho [1danielcoelho](https://github.com/1danielcoelho)
+* [@dav92lee](https://github.com/dav92lee)
+* Jerek Shoemaker ([intrepid94](https://github.com/intrepid94))
+* [Marxlp](https://github.com/Marxlp)
 * Mathieu Lamarre
-* Oliv4945
-* Patrik Huber
-* Sérgio Agostinho
+* [Oliv4945](https://github.com/Oliv4945)
+* Patrik Huber ([patrikhuber](https://github.com/patrikhuber))
+* Sérgio Agostinho ([SergioRAgostinho](https://github.com/SergioRAgostinho))
 * Zohar Jackson
 
 ## Project History

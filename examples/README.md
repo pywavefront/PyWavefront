@@ -3,6 +3,10 @@
 ## Requirements
 
 ```bash
+# Install pywavefront in dev mode if you dont have pywavefront installed
+python setup.py develop
+
+# Enter the examples directory and install requirements
 cd examples
 pip install -r requirements.txt
 
