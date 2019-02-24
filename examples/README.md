@@ -7,7 +7,7 @@ cd examples
 pip install -r requirements.txt
 
 # Run an example
-python.exe pyglet_demo_boxes.py
+python.exe boxes.py
 ```
 
 ## Boxes

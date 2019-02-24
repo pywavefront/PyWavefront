@@ -149,7 +149,7 @@ pywavefront.configure_logging(
 
 ### Examples
 
-The  [examples](https://github.com/pywavefront/PyWavefront/tree/master/example)
+The  [examples](https://github.com/pywavefront/PyWavefront/tree/master/examples)
 directory contains some basic examples using the `visualization` module and further instructions on how to run them.
 
 ### Generating a Wavefront file with Blender
