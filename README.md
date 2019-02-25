@@ -38,6 +38,8 @@ or can be cloned on [github](https://github.com/pywavefront/PyWavefront).
 pip install pywavefront
 ```
 
+Also check out the [roadmap](https://github.com/pywavefront/PyWavefront/blob/master/ROADMAP.md) for future plans.
+
 ## Usage
 
 Basic example loading an obj file:
