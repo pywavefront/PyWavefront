@@ -192,7 +192,7 @@ pytest tests/test_parser.py
 
 ## Community
 
-PyWavefront Discord server : https://discord.gg/nMNjbn
+PyWavefront Discord server : https://discord.gg/h3Rh4QN
 
 ## Owners & Maintainers
 
