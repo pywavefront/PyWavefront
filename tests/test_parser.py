@@ -9,11 +9,13 @@ from utils import fixture
 
 
 class TestParsers(unittest.TestCase):
+
     def setUp(self):
         # Append current path to locate files
         meshes = pywavefront.Wavefront(fixture('simple.obj'))
         self.mesh1 = meshes.mesh_list[0]
         self.mesh2 = meshes.mesh_list[1]
+        self.maxDiff = None
 
     def testObjName(self):
         """Parsing an obj file with known names should set those names."""
@@ -42,6 +44,7 @@ class TestParsers(unittest.TestCase):
         material2 = self.mesh2.materials[0]
         self.assertEqual(material1.name, 'Material.simple')
         self.assertEqual(material2.name, 'Material2.simple')
+
 
 class TestParserCollectFaces(unittest.TestCase):
     """Test collecting (possibly triangulated) faces"""
@@ -102,6 +105,7 @@ class TestParserMissingMaterials(unittest.TestCase):
 
 
 class TestParserVertexVariants(unittest.TestCase):
+    maxDiff = None
 
     def testObjNoNormals(self):
         """Parse obj without normals"""
@@ -173,6 +177,27 @@ class TestParserVertexVariants(unittest.TestCase):
             0.0, 1.0, 0.0, 1.0, 0.0, 0.0, 1.0, -0.0, 1.0, 0.0, -1.0])
 
         self.assertEqual(self.mesh2.materials[0].vertex_format, "T2F_C3F_N3F_V3F")
+
+    def test_undefined_uvs(self):
+        """obj file were some uv entries are undefiend"""
+        meshes = pywavefront.Wavefront(fixture('simple_missing_uv.obj'))
+        self.mesh2 = meshes.mesh_list[1]
+
+        self.assertEqual(self.mesh2.materials[0].vertices, [
+            1.0, 0.0, 0.0, 1.0, -0.0, -1.0, 0.0, 1.0,
+            0.0, 0.0, 0.0, 1.0, -0.0, 1.0, 0.0, 1.0,
+            0.0, 1.0, 0.0, 1.0, -0.0, 1.0, 0.0, -1.0,
+
+            10.0, 11.0, 0.0, 1.0, -0.0, -1.0, 0.0, 1.0,
+            10.0, 11.0, 0.0, 1.0, -0.0, 1.0, 0.0, 1.0,
+            10.0, 11.0, 0.0, 1.0, -0.0, 1.0, 0.0, -1.0,
+
+            1.0, 0.0, 0.0, 1.0, -0.0, -1.0, 0.0, 1.0,
+            0.0, 0.0, 0.0, 1.0, -0.0, 1.0, 0.0, 1.0,
+            0.0, 1.0, 0.0, 1.0, -0.0, 1.0, 0.0, -1.0,
+        ])
+
+        self.assertEqual(self.mesh2.materials[0].vertex_format, "T2F_N3F_V3F")
 
 
 class TestMtlParser(unittest.TestCase):

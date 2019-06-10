@@ -378,7 +378,11 @@ class ObjParser(Parser):
             for i, v in enumerate(self.values[1:]):
                 parts = v.split('/')
                 v_index = (int(parts[0]) - 1)
-                t_index = (int(parts[1]) - 1) if has_vt else None
+                # uv field might be blank
+                try:
+                    t_index = (int(parts[1]) - 1) if has_vt else None
+                except ValueError:
+                    t_index = 0
                 n_index = (int(parts[2]) - 1) if has_vn else None
 
                 # Resolve negative index lookups
