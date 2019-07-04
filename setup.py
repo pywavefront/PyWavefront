@@ -1,6 +1,6 @@
 from setuptools import setup
 
-VERSION = '1.0.4'
+VERSION = '1.0.5'
 
 setup(
     name='PyWavefront',
@@ -24,6 +24,10 @@ setup(
         'Natural Language :: English',
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
         'Topic :: Multimedia :: Graphics :: 3D Rendering',
         'Topic :: Software Development :: Libraries :: Python Modules',
     ],
