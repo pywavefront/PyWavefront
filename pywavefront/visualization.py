@@ -85,6 +85,7 @@ def draw_material(material, face=GL_FRONT_AND_BACK):
     glPushClientAttrib(GL_CLIENT_VERTEX_ARRAY_BIT)
     glPushAttrib(GL_CURRENT_BIT | GL_ENABLE_BIT | GL_LIGHTING_BIT)
     glEnable(GL_CULL_FACE)
+    glEnable(GL_DEPTH_TEST)
     glCullFace(GL_BACK)
 
     # Fall back to ambient texture if no diffuse
