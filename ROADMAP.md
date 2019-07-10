@@ -26,15 +26,19 @@ A `docs` branch was started a while ago and we should revive that.
 
 ## Improved Visualization
 
-To provide a modern cross-platform visualization system moving to 
-[ModernGL](https://github.com/cprogrammer1994/ModernGL) is probably
-the way to go using PyQt5 as the default rendering window.
+Pyglet has changed a lot lately with then 1.4 release and a 2.0
+release with shaders is in the works. We should definitley
+upgrade the viewer to support basic shaders even if we only
+stick with GL2.1.
 
-**It's still important to also keep a pyglet option as a lot of
-users would expect this to be present.**
+Possibly also provide a 3.3+ viewer with pyglet. A ModernGL
+alternative could also be nice.
 
-We can simply brush up the old pyglet visualitzation module and
-migrate that to using shaders when Pyglet 2.x is out.
+Support proper window resizing and camera so people can inspect
+their models. Maybe also expose things like fullscreen mode.
+
+We must not forget this library is popular because of the simple
+viewing capabilities.
 
 ## Introduce pywavefront Command
 
