@@ -126,17 +126,16 @@ def bind_texture(texture):
 
     glEnable(texture.image.target)
     glBindTexture(texture.image.target, texture.image.id)
-    gl.glTexParameterf(texture.image.target,
-                       gl.GL_TEXTURE_WRAP_S, gl.GL_CLAMP_TO_EDGE)
-    gl.glTexParameterf(texture.image.target,
-                       gl.GL_TEXTURE_WRAP_T, gl.GL_CLAMP_TO_EDGE)
+    glTexParameterf(texture.image.target, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE)
+    glTexParameterf(texture.image.target, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE)
 
 
 def load_image(name):
     """Load an image"""
-    image = pyglet.image.load(name).texture
-    verify_dimensions(image)
-    return image
+    image = pyglet.image.load(name)
+    texture = image.get_texture()
+    verify_dimensions(texture)
+    return texture
 
 
 def verify_dimensions(image):
