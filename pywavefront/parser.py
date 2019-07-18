@@ -35,7 +35,6 @@ import codecs
 import gzip
 import logging
 import os
-import sys
 
 from pywavefront.exceptions import PywavefrontException
 
@@ -79,22 +78,15 @@ class Parser:
         """
 
         if self.file_name.endswith(".gz"):
-            if sys.version_info.major == 3:
-                gz = gzip.open(self.file_name, mode='rt', encoding=self.encoding)
-            else:
-                gz = gzip.open(self.file_name, mode='rt')
+            gz = gzip.open(self.file_name, mode='rt', encoding=self.encoding)
 
             for line in gz.readlines():
                 yield line
 
             gz.close()
         else:
-            if sys.version_info.major == 3:
-                # Python 3 native `open` is much faster
-                file = open(self.file_name, mode='r', encoding=self.encoding)
-            else:
-                # Python 2 needs the codecs package to deal with encoding
-                file = codecs.open(self.file_name, mode='r', encoding=self.encoding)
+            # Python 3 native `open` is much faster
+            file = open(self.file_name, mode='r', encoding=self.encoding)
 
             for line in file:
                 yield line
