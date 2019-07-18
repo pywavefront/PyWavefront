@@ -2,6 +2,19 @@ Change Log
 
 Release history on Github: https://github.com/pywavefront/PyWavefront/releases
 
+## 1.1.0
+
+* Fixed an incompatibility issue related to image loading in pyglet 1.4.x
+* Texture instances now store the texture name as they apprear in the material
+  and an optional path parameter that represents the absolute path to the
+  texture.
+* Removed dead code related related to python 2/3 compatibility
+
+## 1.0.5
+
+* Visualization module should enable depth testing by default.
+  This is what most people need.
+
 ## 1.0.4
 
 * Faces with undefined texture coordinates will
