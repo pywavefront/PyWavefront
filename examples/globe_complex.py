@@ -2,6 +2,7 @@
 """This script shows another example of using the PyWavefront module."""
 # This example was created by intrepid94
 import ctypes
+import os
 import sys
 sys.path.append('..')
 
@@ -11,8 +12,11 @@ from pyglet.gl import *
 from pywavefront import visualization
 from pywavefront import Wavefront
 
+# Create absolute path from this module
+file_abspath = os.path.join(os.path.dirname(__file__), 'data/earth.obj')
+
 rotation = 0.0
-meshes = Wavefront('data/earth.obj')
+meshes = Wavefront(file_abspath)
 window = pyglet.window.Window(1024, 720, caption='Demo', resizable=True)
 lightfv = ctypes.c_float * 4
 label = pyglet.text.Label(

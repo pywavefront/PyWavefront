@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 """This script shows an example of using the PyWavefront module."""
 import ctypes
+import os
 import sys
 
 sys.path.append('..')
@@ -11,8 +12,11 @@ from pyglet.gl import *
 from pywavefront import visualization
 import pywavefront
 
+# Create absolute path from this module
+file_abspath = os.path.join(os.path.dirname(__file__), 'data/uv_sphere.obj')
+
 rotation = 0
-meshes = pywavefront.Wavefront('data/uv_sphere.obj')
+meshes = pywavefront.Wavefront(file_abspath)
 window = pyglet.window.Window()
 lightfv = ctypes.c_float * 4
 

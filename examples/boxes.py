@@ -16,20 +16,22 @@ Additional formats:
     C3F_N3F_V3F
     T2F_C3F_N3F_V3F
 """
-
 import ctypes
-from pyglet.gl import *
+import os
 
+from pyglet.gl import *
 from pywavefront import visualization, Wavefront
 
 window = pyglet.window.Window(width=1280, height=720)
 
-box1 = Wavefront('data/box/box-V3F.obj')
-box2 = Wavefront('data/box/box-C3F_V3F.obj')
-box3 = Wavefront('data/box/box-N3F_V3F.obj')
-box4 = Wavefront('data/box/box-T2F_V3F.obj')
-box5 = Wavefront('data/box/box-T2F_C3F_V3F.obj')
-box6 = Wavefront('data/box/box-T2F_N3F_V3F.obj')
+root_path = os.path.dirname(__file__)
+
+box1 = Wavefront(os.path.join(root_path, 'data/box/box-V3F.obj'))
+box2 = Wavefront(os.path.join(root_path,'data/box/box-C3F_V3F.obj'))
+box3 = Wavefront(os.path.join(root_path,'data/box/box-N3F_V3F.obj'))
+box4 = Wavefront(os.path.join(root_path,'data/box/box-T2F_V3F.obj'))
+box5 = Wavefront(os.path.join(root_path,'data/box/box-T2F_C3F_V3F.obj'))
+box6 = Wavefront(os.path.join(root_path,'data/box/box-T2F_N3F_V3F.obj'))
 
 rotation = 0.0
 lightfv = ctypes.c_float * 4
