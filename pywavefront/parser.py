@@ -50,7 +50,7 @@ def auto_consume(func):
     return inner
 
 
-class Parser(object):
+class Parser:
     """This defines a generalized parse dispatcher; all parse functions
     reside in subclasses."""
     auto_post_parse = True

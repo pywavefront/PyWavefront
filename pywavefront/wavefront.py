@@ -37,7 +37,7 @@ from pywavefront import ObjParser
 logger = logging.getLogger("pywavefront")
 
 
-class Wavefront(object):
+class Wavefront:
     # Can be used to override the parser when extending the class
     parser_cls = ObjParser
 

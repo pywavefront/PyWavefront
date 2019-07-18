@@ -116,7 +116,7 @@ class CacheTestUnknownMtl(CacheTest):
     create_materials = True
 
 
-class FakeFileExists(object):
+class FakeFileExists:
 
     def __init__(self, fake_io):
         self.fake_io = fake_io
@@ -125,7 +125,7 @@ class FakeFileExists(object):
         return self.fake_io.exists(value)
 
 
-class FakeIO(object):
+class FakeIO:
     """A collection of files written during a mock session"""
 
     def __init__(self):
@@ -154,7 +154,7 @@ class FakeIO(object):
     def __delitem__(self, name):
         del self.files[prepend_dir(name)]
 
-class FakeFile(object):
+class FakeFile:
     """Fake file object"""
 
     def __init__(self, name, mode):

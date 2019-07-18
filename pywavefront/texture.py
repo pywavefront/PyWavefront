@@ -34,7 +34,7 @@
 import os
 
 
-class Texture(object):
+class Texture:
     def __init__(self, name, path=None):
         # Treat path as part of a file uri always using forward slashes
         self._name = name

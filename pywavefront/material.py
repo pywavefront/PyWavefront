@@ -40,7 +40,7 @@ from pywavefront.texture import Texture
 logger = logging.getLogger("pywavefront")
 
 
-class Material(object):
+class Material:
     def __init__(self, name, is_default=False, has_faces=False):
         """
         Create a new material

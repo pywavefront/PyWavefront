@@ -56,7 +56,7 @@ def meta_name(file_name):
     return "{}.json".format(file_name)
 
 
-class CacheLoader(object):
+class CacheLoader:
     material_parser_cls = MaterialParser
 
     def __init__(self, file_name, wavefront, strict=False, create_materials=False, encoding='utf-8', parse=True, **kwargs):
@@ -130,7 +130,7 @@ class CacheLoader(object):
                 self.wavefront.materials[name] = material
 
 
-class CacheWriter(object):
+class CacheWriter:
 
     def __init__(self, file_name, wavefront):
         self.file_name = file_name
@@ -163,7 +163,7 @@ class CacheWriter(object):
         self.meta.write(meta_name(self.file_name))
 
 
-class Meta(object):
+class Meta:
     """
     Metadata for binary obj cache files
     """
