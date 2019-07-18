@@ -242,11 +242,17 @@ class TestMtlParser(unittest.TestCase):
 
     def testTextures(self):
         self.assertEqual(self.material1.texture.path, fixture('kd.png'))
+        self.assertEqual(self.material1.texture.name, 'kd.png')
         self.assertEqual(self.material1.texture_ambient.path, fixture('ka.png'))
+        self.assertEqual(self.material1.texture_ambient.name, 'ka.png')
         self.assertEqual(self.material1.texture_specular_color.path, fixture('ks.png'))
+        self.assertEqual(self.material1.texture_specular_color.name, 'ks.png')
         self.assertEqual(self.material1.texture_specular_highlight.path, fixture('ns.png'))
+        self.assertEqual(self.material1.texture_specular_highlight.name, 'ns.png')
         self.assertEqual(self.material1.texture_alpha.path, fixture('d.png'))
+        self.assertEqual(self.material1.texture_alpha.name, 'd.png')
         self.assertEqual(self.material1.texture_bump.path, fixture('bump.png'))
+        self.assertEqual(self.material1.texture_bump.name, 'bump.png')
 
 
 class TestParserFailure(unittest.TestCase):
