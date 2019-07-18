@@ -35,20 +35,39 @@ import os
 
 
 class Texture(object):
-    def __init__(self, path):
+    def __init__(self, name, path=None):
         # Treat path as part of a file uri always using forward slashes
-        self.path = path.replace('\\', os.path.sep)
+        self._name = name
+        self._path = path or name
+
+        # Unsed externtally by visualization
         self.image = None
+
+    @property
+    def name(self):
+        return self._name
+
+    @name.setter
+    def name(self, value):
+        self._name = value
+
+    @property
+    def path(self):
+        return self._path
+
+    @path.setter
+    def path(self, value):
+        self._path = value
 
     @property
     def image_name(self):
         """Wrap the old property name to not break compatibility"""
-        return self.path
+        return self._name
 
     @image_name.setter
     def image_name(self, value):
         """Wrap the old property name to not break compatibility"""
-        self.path = value
+        self._name = value
 
     def exists(self):
         return os.path.exists(self.path)

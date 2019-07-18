@@ -130,23 +130,23 @@ class Material(object):
     def set_emissive(self, values=None):
         self.emissive = self.pad_light(values or [])
 
-    def set_texture(self, path):
-        self.texture = Texture(path)
+    def set_texture(self, name, path=None):
+        self.texture = Texture(name, path)
 
-    def set_texture_ambient(self, path):
-        self.texture_ambient = Texture(path)
+    def set_texture_ambient(self, name, path=None):
+        self.texture_ambient = Texture(name, path)
 
-    def set_texture_specular_color(self, path):
-        self.texture_specular_color = Texture(path)
+    def set_texture_specular_color(self, name, path=None):
+        self.texture_specular_color = Texture(name, path)
 
-    def set_texture_specular_highlight(self, path):
-        self.texture_specular_highlight = Texture(path)
+    def set_texture_specular_highlight(self, name, path=None):
+        self.texture_specular_highlight = Texture(name, path)
 
-    def set_texture_alpha(self, path):
-        self.texture_alpha = Texture(path)
+    def set_texture_alpha(self, name, path=None):
+        self.texture_alpha = Texture(name, path)
 
-    def set_texture_bump(self, path):
-        self.texture_bump = Texture(path)
+    def set_texture_bump(self, name, path=None):
+        self.texture_bump = Texture(name, path)
 
     def unset_texture(self):
         self.texture = None
@@ -210,38 +210,44 @@ class MaterialParser(Parser):
     @auto_consume
     def parse_map_Kd(self):
         """Diffuse map"""
-        Kd = os.path.join(self.dir, " ".join(self.values[1:]))
-        self.this_material.set_texture(Kd)
+        name = "".join(self.values[1:])
+        path = os.path.join(self.dir, name)
+        self.this_material.set_texture(name, path)
 
     @auto_consume
     def parse_map_Ka(self):
         """Ambient map"""
-        Kd = os.path.join(self.dir, " ".join(self.values[1:]))
-        self.this_material.set_texture_ambient(Kd)
+        name = "".join(self.values[1:])
+        path = os.path.join(self.dir, name)
+        self.this_material.set_texture_ambient(name, path)
 
     @auto_consume
     def parse_map_Ks(self):
         """Specular color map"""
-        Kd = os.path.join(self.dir, " ".join(self.values[1:]))
-        self.this_material.set_texture_specular_color(Kd)
+        name = "".join(self.values[1:])
+        path = os.path.join(self.dir, name)
+        self.this_material.set_texture_specular_color(name, path)
 
     @auto_consume
     def parse_map_Ns(self):
         """Specular color map"""
-        Kd = os.path.join(self.dir, " ".join(self.values[1:]))
-        self.this_material.set_texture_specular_highlight(Kd)
+        name = "".join(self.values[1:])
+        path = os.path.join(self.dir, name)
+        self.this_material.set_texture_specular_highlight(name, path)
 
     @auto_consume
     def parse_map_d(self):
         """Alpha map"""
-        Kd = os.path.join(self.dir, " ".join(self.values[1:]))
-        self.this_material.set_texture_alpha(Kd)
+        name = "".join(self.values[1:])
+        path = os.path.join(self.dir, name)
+        self.this_material.set_texture_alpha(name, path)
 
     @auto_consume
     def parse_map_bump(self):
         """Bump map"""
-        Kd = os.path.join(self.dir, " ".join(self.values[1:]))
-        self.this_material.set_texture_bump(Kd)
+        name = "".join(self.values[1:])
+        path = os.path.join(self.dir, name)
+        self.this_material.set_texture_bump(name, path)
 
     def parse_bump(self):
         self.parse_map_bump()
