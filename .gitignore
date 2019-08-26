@@ -21,3 +21,7 @@ env
 
 # osx
 .DS_Store
+
+# local testing
+/data/
+/test.py
