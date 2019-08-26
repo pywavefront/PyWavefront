@@ -37,7 +37,7 @@ from pathlib import *
 import re
 
 class Texture:
-    def __init__(self, name, path=None):
+    def __init__(self, name, search_path):
         # Treat path as part of a file uri always using forward slashes
         self._name = name
         self._path = path or name
