@@ -266,5 +266,6 @@ class TestParserFailure(unittest.TestCase):
     def testMissingParsedFile(self):
         """Attempting to read a non-exiting file should raise an exception."""
         file_name = 'doesnotexist.obj'
-        parser = pywavefront.parser.Parser(fixture(file_name))
-        self.assertRaises(IOError, parser.parse)
+        with self.assertRaises(IOError):
+            parser = pywavefront.parser.Parser(fixture(file_name))
+            parser.parse()
