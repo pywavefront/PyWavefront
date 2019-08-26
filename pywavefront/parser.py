@@ -61,7 +61,7 @@ class Parser:
         :param file_name: Name and path of the file to read
         :param strict: Enable or disable strict mode
         """
-        self.file_name = Path(file_name)
+        self.file_name = Path(file_name).resolve()
         self.strict = strict
         self.encoding = encoding
         self.dir = Path(file_name).parent
