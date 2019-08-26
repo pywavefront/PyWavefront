@@ -210,37 +210,37 @@ class MaterialParser(Parser):
     @auto_consume
     def parse_map_Kd(self):
         """Diffuse map"""
-        name = "".join(self.values[1:])
+        name = self.line[self.line.find(' ') + 1:].strip()
         self.this_material.set_texture(name, self.dir)
 
     @auto_consume
     def parse_map_Ka(self):
         """Ambient map"""
-        name = "".join(self.values[1:])
+        name = self.line[self.line.find(' ') + 1:].strip()
         self.this_material.set_texture_ambient(name, self.dir)
 
     @auto_consume
     def parse_map_Ks(self):
         """Specular color map"""
-        name = "".join(self.values[1:])
+        name = self.line[self.line.find(' ') + 1:].strip()
         self.this_material.set_texture_specular_color(name, self.dir)
 
     @auto_consume
     def parse_map_Ns(self):
         """Specular color map"""
-        name = "".join(self.values[1:])
+        name = self.line[self.line.find(' ') + 1:].strip()
         self.this_material.set_texture_specular_highlight(name, self.dir)
 
     @auto_consume
     def parse_map_d(self):
         """Alpha map"""
-        name = "".join(self.values[1:])
+        name = self.line[self.line.find(' ') + 1:].strip()
         self.this_material.set_texture_alpha(name, self.dir)
 
     @auto_consume
     def parse_map_bump(self):
         """Bump map"""
-        name = "".join(self.values[1:])
+        name = self.line[self.line.find(' ') + 1:].strip()
         self.this_material.set_texture_bump(name, self.dir)
 
     def parse_bump(self):
