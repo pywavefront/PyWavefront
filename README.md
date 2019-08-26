@@ -213,6 +213,7 @@ In alphabetical order:
 * Patrik Huber ([patrikhuber](https://github.com/patrikhuber))
 * Sérgio Agostinho ([SergioRAgostinho](https://github.com/SergioRAgostinho))
 * Zohar Jackson
+* hkarrson ([hkarrson](https://github.com/hkarrson))
 
 ## Project History
 
