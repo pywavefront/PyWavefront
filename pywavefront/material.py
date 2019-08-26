@@ -32,7 +32,6 @@
 # POSSIBILITY OF SUCH DAMAGE.
 # ----------------------------------------------------------------------------
 import logging
-import os
 from pathlib import Path
 
 from pywavefront.parser import Parser, auto_consume
