@@ -18,6 +18,10 @@ The plan is to revamp the project structure and making the parse result a lot mo
 collect the actual data. We then provide methods for obtaining the data in
 various ways after the parse is done.
 
+Better resolve and locate textures referenced in materials. Right
+now the `Texture` class is a bit of a mess because of almost a
+decade of not breaking compatibility.
+
 ## Documentation
 
 Write proper docs using either readthedocs or github pages.
