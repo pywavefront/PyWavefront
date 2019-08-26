@@ -34,7 +34,6 @@
 import codecs
 import gzip
 import logging
-import os
 from pathlib import Path
 
 from pywavefront.exceptions import PywavefrontException
@@ -79,15 +78,16 @@ class Parser:
         """
 
         if self.file_name.suffix == ".gz":
-            gz = gzip.open(self.file_name, mode='rt', encoding=self.encoding)
+            # FIXME: Converting to str for now for py34 compatibility
+            gz = gzip.open(str(self.file_name), mode='rt', encoding=self.encoding)
 
             for line in gz.readlines():
                 yield line
 
             gz.close()
         else:
-            # Python 3 native `open` is much faster
-            file = open(self.file_name, mode='r', encoding=self.encoding)
+            # FIXME: Converting to str for now for py34 compatibility
+            file = open(str(self.file_name), mode='r', encoding=self.encoding)
 
             for line in file:
                 yield line
