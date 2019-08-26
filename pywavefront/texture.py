@@ -77,7 +77,8 @@ class Texture:
         try:
             first = next(locations)
         except StopIteration:
-            raise ValueError("Cannot locate texture in search path: {}".format(search_path))
+            raise ValueError("Cannot locate texture `{}` in search path: {}".format(
+                self._name, search_path))
 
         return str(first)
 
