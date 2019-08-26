@@ -32,10 +32,12 @@
 # POSSIBILITY OF SUCH DAMAGE.
 # ----------------------------------------------------------------------------
 import os
-
+import pywavefront
+from pathlib import *
+import re
 
 class Texture:
-    def __init__(self, name, path=None):
+    def __init__(self, name, search_path):
         # Treat path as part of a file uri always using forward slashes
         self._name = name
         self._path = path or name
@@ -51,9 +53,18 @@ class Texture:
     def name(self, value):
         self._name = value
 
+    def Find(self):
+        if not os.path.exists(self._path):
+        	for filename in Path(pywavefront.WFSearchDir).glob("**/*.*"):
+        		if re.sub('[^0-9a-zA-Z]+', '', str(os.path.basename(str(filename)))) == re.sub('[^0-9a-zA-Z]+', '', str(os.path.basename(self._path))):
+        			return str(filename)
+        return self._path
+
     @property
     def path(self):
-        return self._path
+        if hasattr(pywavefront, 'WFTextureFinder'):
+            return pywavefront.WFTextureFinder(self._path)
+        return self.Find()
 
     @path.setter
     def path(self, value):

@@ -33,6 +33,8 @@
 # ----------------------------------------------------------------------------
 import logging
 from pywavefront import ObjParser
+import pathlib
+import pywavefront
 
 logger = logging.getLogger("pywavefront")
 
@@ -66,6 +68,8 @@ class Wavefront:
         self.meshes = {}        # Name mapping
         self.vertices = []
         self.mesh_list = []     # Also includes anonymous meshes
+
+        pywavefront.WFSearchDir = str(pathlib.Path(self.file_name).parent)
 
         self.parser = self.parser_cls(
             self,
