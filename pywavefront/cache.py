@@ -37,23 +37,24 @@ Parser and metadata handler for cached binary versions of obj files
 import gzip
 import json
 import logging
-import os
 import struct
+import os
 from datetime import datetime
+from pathlib import Path
 
 from pywavefront.material import Material, MaterialParser
 
 logger = logging.getLogger("pywavefront")
 
 
-def cache_name(file_name):
+def cache_name(path):
     """Generate the name of the binary cache file"""
-    return "{}.bin".format(file_name)
+    return path.with_suffix(path.suffix + '.bin')
 
 
-def meta_name(file_name):
+def meta_name(path):
     """Generate the name of the meta file"""
-    return "{}.json".format(file_name)
+    return path.with_suffix(path.suffix + '.json')
 
 
 class CacheLoader:
@@ -61,16 +62,17 @@ class CacheLoader:
 
     def __init__(self, file_name, wavefront, strict=False, create_materials=False, encoding='utf-8', parse=True, **kwargs):
         self.wavefront = wavefront
-        self.file_name = file_name
-        self.path = os.path.dirname(file_name)
+        self.file_name = Path(file_name)
+        self.path = self.file_name.parent
         self.encoding = encoding
         self.strict = strict
-        self.dir = os.path.dirname(file_name)
+        self.dir = self.file_name.parent
         self.meta = None
 
     def parse(self):
-        meta_exists = os.path.exists(meta_name(self.file_name))
-        cache_exists = os.path.exists(cache_name(self.file_name))
+        # FIXME: We rely on os.path here because of mocking
+        meta_exists = os.path.exists(str(meta_name(self.file_name)))
+        cache_exists = os.path.exists(str(cache_name(self.file_name)))
 
         if not meta_exists or not cache_exists:
             # If both files are missing, things are normal
@@ -101,7 +103,8 @@ class CacheLoader:
 
     def _load_vertex_buffers(self):
         """Load each vertex buffer into each material"""
-        fd = gzip.open(cache_name(self.file_name), 'rb')
+        # FIXME: Coverting path to str to not break library mocking
+        fd = gzip.open(str(cache_name(self.file_name)), 'rb')
 
         for buff in self.meta.vertex_buffers:
 
@@ -120,11 +123,11 @@ class CacheLoader:
         for mtllib in self.meta.mtllibs:
             try:
                 materials = self.material_parser_cls(
-                    os.path.join(self.path, mtllib),
+                    self.path / mtllib,
                     encoding=self.encoding,
                     strict=self.strict).materials
             except IOError:
-                raise IOError("Failed to load mtl file:".format(os.path.join(self.path, mtllib)))
+                raise IOError("Failed to load mtl file:".format(self.path / mtllib))
 
             for name, material in materials.items():
                 self.wavefront.materials[name] = material
@@ -186,7 +189,7 @@ class Meta:
 
     @classmethod
     def from_file(cls, path):
-        with open(path, 'r') as fd:
+        with open(str(path), 'r') as fd:
             data = json.loads(fd.read())
 
         return cls(**data)
