@@ -33,7 +33,6 @@
 # ----------------------------------------------------------------------------
 from collections import namedtuple
 import logging
-import os
 import time
 
 from pywavefront.exceptions import PywavefrontException
@@ -212,7 +211,7 @@ class ObjParser(Parser):
         mtllib = " ".join(self.values[1:])
         try:
             materials = self.material_parser_cls(
-                os.path.join(self.dir, mtllib),
+                self.dir / mtllib,
                 encoding=self.encoding,
                 strict=self.strict,
                 collect_faces=self.collect_faces
