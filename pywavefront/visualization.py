@@ -122,7 +122,7 @@ def gl_light(lighting):
 def bind_texture(texture):
     """Draw a single texture"""
     if not getattr(texture, 'image', None):
-        texture.image = load_image(texture.path)
+        texture.image = load_image(texture.find())
 
     glEnable(texture.image.target)
     glBindTexture(texture.image.target, texture.image.id)
