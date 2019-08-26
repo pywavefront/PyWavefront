@@ -33,38 +33,50 @@
 # ----------------------------------------------------------------------------
 import os
 import pywavefront
-from pathlib import *
+from pathlib import Path
 import re
+
 
 class Texture:
     def __init__(self, name, search_path):
-        # Treat path as part of a file uri always using forward slashes
-        self._name = name
-        self._path = path or name
+        """Create a texture.
 
-        # Unsed externtally by visualization
+        Args:
+            name (str): The texture possibly with path as it appear in the material
+            search_path (str): Absolute or relative path the texture might be located.
+        """
+        self._name = name
+        self._search_path = search_path
+        self._path = Path(search_path, name)
+        # Unsed externally by visualization
         self.image = None
 
     @property
     def name(self):
+        """str: The texture path as it appears in the material"""
         return self._name
 
     @name.setter
     def name(self, value):
         self._name = value
 
-    def Find(self):
+    def find(self):
         if not os.path.exists(self._path):
-        	for filename in Path(pywavefront.WFSearchDir).glob("**/*.*"):
+        	for filename in Path(self._search_path).glob("**/*.*"):
         		if re.sub('[^0-9a-zA-Z]+', '', str(os.path.basename(str(filename)))) == re.sub('[^0-9a-zA-Z]+', '', str(os.path.basename(self._path))):
         			return str(filename)
         return self._path
 
+    # @property
+    # def path(self):
+    #     if hasattr(pywavefront, 'WFTextureFinder'):
+    #         return pywavefront.WFTextureFinder(self._path)
+    #     return self.Find()
+
     @property
     def path(self):
-        if hasattr(pywavefront, 'WFTextureFinder'):
-            return pywavefront.WFTextureFinder(self._path)
-        return self.Find()
+        """str: search_path + name"""
+        return str(self._path)
 
     @path.setter
     def path(self, value):
@@ -72,7 +84,9 @@ class Texture:
 
     @property
     def image_name(self):
-        """Wrap the old property name to not break compatibility"""
+        """Wrap the old property name to not break compatibility.
+        The value will always be the texture path as it appears in the material.
+        """
         return self._name
 
     @image_name.setter
@@ -81,4 +95,5 @@ class Texture:
         self._name = value
 
     def exists(self):
+        """bool: Does the texture exist?"""
         return os.path.exists(self.path)

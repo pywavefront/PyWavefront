@@ -1,5 +1,6 @@
 import os
 import unittest
+from pathlib import Path
 
 import pywavefront.material
 from utils import fixture
@@ -9,8 +10,8 @@ class TestMaterial(unittest.TestCase):
     def setUp(self):
         # Append current path to locate files
         self.material = pywavefront.material.Material(fixture('material'))
-        self.material.set_texture(fixture('4x4.png'))
-        self.material.set_texture_ambient(fixture('4x4.png'))
+        self.material.set_texture(fixture('4x4.png'), '')
+        self.material.set_texture_ambient(fixture('4x4.png'), '')
 
     def testSetTexture(self):
         """Running set_texture should set a texture."""
@@ -19,8 +20,8 @@ class TestMaterial(unittest.TestCase):
         self.assertEqual(self.material.texture_ambient.__class__,
                          pywavefront.texture.Texture)
 
-        self.assertEqual(self.material.texture.path, fixture('4x4.png'))
-        self.assertEqual(self.material.texture_ambient.path, fixture('4x4.png'))
+        self.assertEqual(self.material.texture.path, str(fixture('4x4.png')))
+        self.assertEqual(self.material.texture_ambient.path, str(fixture('4x4.png')))
 
     def testUnsetTexture(self):
         """Running unset_texture should set texture to None."""
@@ -69,5 +70,5 @@ class TestInvalidMaterial(unittest.TestCase):
     def test_missing_texture(self):
         """Running set_texture with a nonexistent file should raise an exception."""
         material = pywavefront.material.Material('material')
-        material.set_texture('missing.file.do.not.create')
+        material.set_texture('missing.file.do.not.create', '')
         self.assertFalse(material.texture.exists())

@@ -2,6 +2,7 @@ import json
 import os
 import mock
 import unittest
+from pathlib import Path
 
 from datetime import datetime
 from io import BytesIO
@@ -36,8 +37,8 @@ class CacheTest(unittest.TestCase):
                         scene = Wavefront(prepend_dir(filename), cache=True, create_materials=self.create_materials)
                     scene.parser.post_parse()
 
-        self.meta_file = self.obj_file + '.json'
-        self.cache_file = self.obj_file + '.bin'
+        self.meta_file = self.obj_file.with_suffix(self.obj_file.suffix + '.json')
+        self.cache_file = self.obj_file.with_suffix(self.obj_file.suffix + '.bin')
         return scene
 
     @property

@@ -35,6 +35,7 @@ import codecs
 import gzip
 import logging
 import os
+from pathlib import Path
 
 from pywavefront.exceptions import PywavefrontException
 
@@ -60,10 +61,10 @@ class Parser:
         :param file_name: Name and path of the file to read
         :param strict: Enable or disable strict mode
         """
-        self.file_name = file_name
+        self.file_name = Path(file_name)
         self.strict = strict
         self.encoding = encoding
-        self.dir = os.path.dirname(file_name)
+        self.dir = Path(file_name).parent
 
         self.dispatcher = self._build_dispatch_map()
         self.lines = self.create_line_generator()
@@ -77,7 +78,7 @@ class Parser:
         Should only yield non-empty lines
         """
 
-        if self.file_name.endswith(".gz"):
+        if self.file_name.suffix == ".gz":
             gz = gzip.open(self.file_name, mode='rt', encoding=self.encoding)
 
             for line in gz.readlines():
