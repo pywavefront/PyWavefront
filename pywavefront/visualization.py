@@ -38,6 +38,11 @@ from pywavefront import Wavefront
 from pywavefront.mesh import Mesh
 from pywavefront.material import Material
 
+# Mock the _nearest_pow2 method to allow for npot textures
+def same(v):
+    return v
+
+pyglet.image._nearest_pow2 = same
 
 VERTEX_FORMATS = {
     'V3F': GL_V3F,
@@ -134,7 +139,7 @@ def load_image(name):
     """Load an image"""
     image = pyglet.image.load(name)
     texture = image.get_texture()
-    verify_dimensions(texture)
+    # verify_dimensions(texture)
     return texture
 
 
