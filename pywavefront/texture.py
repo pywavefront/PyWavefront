@@ -31,9 +31,8 @@
 # ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 # ----------------------------------------------------------------------------
-import os
 import pywavefront
-from pathlib import Path
+from pathlib import Path, WindowsPath
 import re
 
 
@@ -46,8 +45,9 @@ class Texture:
             search_path (str): Absolute or relative path the texture might be located.
         """
         self._name = name
-        self._search_path = search_path
+        self._search_path = Path(search_path)
         self._path = Path(search_path, name)
+
         # Unsed externally by visualization
         self.image = None
 
@@ -60,18 +60,44 @@ class Texture:
     def name(self, value):
         self._name = value
 
-    def find(self):
-        if not os.path.exists(self._path):
-        	for filename in Path(self._search_path).glob("**/*.*"):
-        		if re.sub('[^0-9a-zA-Z]+', '', str(os.path.basename(str(filename)))) == re.sub('[^0-9a-zA-Z]+', '', str(os.path.basename(self._path))):
-        			return str(filename)
-        return self._path
+    def find(self, path=None):
+        """Find the texture in the configured search path
+        By default a search will be done in the same directory as
+        the obj file including all subdirectories if ``path`` does not exist.
+
+        Args:
+            path: Override the search path
+        """
+        if self.exists():
+            return self.path
+
+        search_path = path or self._search_path
+        locations = search_path.glob('**/{}'.format(self.file_name))
+        # Attempt to look up the first entry of the generator
+        try:
+            first = next(locations)
+        except StopIteration:
+            raise ValueError("Cannot locate texture in search path: {}".format(search_path))
+
+        return str(first)
 
     # @property
     # def path(self):
     #     if hasattr(pywavefront, 'WFTextureFinder'):
     #         return pywavefront.WFTextureFinder(self._path)
     #     return self.Find()
+
+    @property
+    def file_name(self):
+        """str: Obtains the file name of the texture.
+        Sometimes materials contains a relative or absolute path
+        to textures, something that often doesn't reflect the
+        textures real location.
+        """
+        if ':' in self._name or '\\' in self._name:
+            return WindowsPath(self._name).name
+
+        return Path(self._name).name
 
     @property
     def path(self):
@@ -96,4 +122,4 @@ class Texture:
 
     def exists(self):
         """bool: Does the texture exist?"""
-        return os.path.exists(self.path)
+        return self._path.exists()
