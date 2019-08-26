@@ -28,13 +28,13 @@ class CacheTest(unittest.TestCase):
             self.fake_io = FakeIO()
 
         if not fake_io:
-            scene = Wavefront(prepend_dir(filename), cache=True, create_materials=self.create_materials)
+            scene = Wavefront(filename, cache=True, create_materials=self.create_materials)
 
         with mock.patch("pywavefront.cache.gzip.open", new=self.fake_io):
             with mock.patch("pywavefront.cache.open", new=self.fake_io):
                 with mock.patch("pywavefront.cache.os.path.exists", new=self.fake_io.exisis):
                     if fake_io:
-                        scene = Wavefront(prepend_dir(filename), cache=True, create_materials=self.create_materials)
+                        scene = Wavefront(filename, cache=True, create_materials=self.create_materials)
                     scene.parser.post_parse()
 
         self.meta_file = self.obj_file.with_suffix(self.obj_file.suffix + '.json')
@@ -140,7 +140,7 @@ class FakeIO:
         if not fake_file:
             if 'w' in mode:
                 fake_file = FakeFile(name, mode)
-                self.files[name] = fake_file
+                self.files[str(name)] = fake_file
             else:
                 raise IOError("File not found: {}\n{}".format(name, self.files))
 
@@ -150,10 +150,10 @@ class FakeIO:
         return self.files.get(value) is not None
 
     def __getitem__(self, name):
-        return self.files[prepend_dir(name)]
+        return self.files[str(name)]
 
     def __delitem__(self, name):
-        del self.files[prepend_dir(name)]
+        del self.files[str(name)]
 
 class FakeFile:
     """Fake file object"""
@@ -200,7 +200,3 @@ class FakeFile:
     def json(self):
         d = self.contents().decode()
         return json.loads(d)
-
-
-def prepend_dir(file):
-    return os.path.join(os.path.dirname(__file__), file)
