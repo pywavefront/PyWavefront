@@ -41,6 +41,8 @@ logger = logging.getLogger("pywavefront")
 
 
 class Material:
+    texture_cls = Texture
+
     def __init__(self, name, is_default=False, has_faces=False):
         """
         Create a new material
@@ -131,22 +133,22 @@ class Material:
         self.emissive = self.pad_light(values or [])
 
     def set_texture(self, name, search_path):
-        self.texture = Texture(name, search_path)
+        self.texture = self.texture_cls(name, search_path)
 
     def set_texture_ambient(self, name, search_path):
-        self.texture_ambient = Texture(name, search_path)
+        self.texture_ambient = self.texture_cls(name, search_path)
 
     def set_texture_specular_color(self, name, search_path):
-        self.texture_specular_color = Texture(name, search_path)
+        self.texture_specular_color = self.texture_cls(name, search_path)
 
     def set_texture_specular_highlight(self, name, search_path):
-        self.texture_specular_highlight = Texture(name, search_path)
+        self.texture_specular_highlight = self.texture_cls(name, search_path)
 
     def set_texture_alpha(self, name, search_path):
-        self.texture_alpha = Texture(name, search_path)
+        self.texture_alpha = self.texture_cls(name, search_path)
 
     def set_texture_bump(self, name, search_path):
-        self.texture_bump = Texture(name, search_path)
+        self.texture_bump = self.texture_cls(name, search_path)
 
     def unset_texture(self):
         self.texture = None
