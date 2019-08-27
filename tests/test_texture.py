@@ -11,14 +11,20 @@ class TestTexture(unittest.TestCase):
 
     def testPathedImageName(self):
         """For Texture objects, the image name should be the last component of the path."""
-        my_texture = pywavefront.texture.Texture('4x4.png', search_path=utils.FIXTURE_PATH)
-        self.assertEqual(my_texture.path, str(utils.fixture('4x4.png')))
-        self.assertEqual(my_texture.name, '4x4.png')
+        texture = pywavefront.texture.Texture('4x4.png', search_path=utils.FIXTURE_PATH)
+        self.assertEqual(texture.path, str(utils.fixture('4x4.png')))
+        self.assertEqual(texture.name, '4x4.png')
+        self.assertTrue(texture)
+        self.assertEqual(texture.image_name, '4x4.png')
+        self.assertEqual(texture.file_name, '4x4.png')
+        self.assertTrue(os.path.exists(texture.find()))
 
     def testMissingFile(self):
         """Referencing a missing texture file should raise an exception."""
         texture = pywavefront.texture.Texture('missing.file.do.not.create', search_path='')
         self.assertFalse(texture.exists())
+        with self.assertRaises(FileNotFoundError):
+            texture.find()
 
     def testPathVsName(self):
         texture = pywavefront.texture.Texture('somefile', search_path=Path('path/to'))

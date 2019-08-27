@@ -67,17 +67,19 @@ class Texture:
 
         Args:
             path: Override the search path
+        Raises:
+            FileNotFoundError if not found
         """
         if self.exists():
             return self.path
 
         search_path = path or self._search_path
-        locations = search_path.glob('**/{}'.format(self.file_name))
+        locations = Path(search_path).glob('**/{}'.format(self.file_name))
         # Attempt to look up the first entry of the generator
         try:
             first = next(locations)
         except StopIteration:
-            raise ValueError("Cannot locate texture `{}` in search path: {}".format(
+            raise FileNotFoundError("Cannot locate texture `{}` in search path: {}".format(
                 self._name, search_path))
 
         return str(first)
@@ -101,7 +103,7 @@ class Texture:
 
     @path.setter
     def path(self, value):
-        self._path = value
+        self._path = Path(value)
 
     @property
     def image_name(self):
@@ -116,5 +118,5 @@ class Texture:
         self._name = value
 
     def exists(self):
-        """bool: Does the texture exist?"""
+        """bool: Does the texture exist"""
         return self._path.exists()
