@@ -32,7 +32,7 @@
 # POSSIBILITY OF SUCH DAMAGE.
 # ----------------------------------------------------------------------------
 import pywavefront
-from pathlib import Path, WindowsPath
+from pathlib import Path, PureWindowsPath
 import re
 
 
@@ -90,7 +90,7 @@ class Texture:
         textures real location.
         """
         if ':' in self._name or '\\' in self._name:
-            return WindowsPath(self._name).name
+            return PureWindowsPath(self._name).name
 
         return Path(self._name).name
 
