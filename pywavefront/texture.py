@@ -82,12 +82,6 @@ class Texture:
 
         return str(first)
 
-    # @property
-    # def path(self):
-    #     if hasattr(pywavefront, 'WFTextureFinder'):
-    #         return pywavefront.WFTextureFinder(self._path)
-    #     return self.Find()
-
     @property
     def file_name(self):
         """str: Obtains the file name of the texture.
