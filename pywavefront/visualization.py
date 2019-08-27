@@ -56,28 +56,28 @@ VERTEX_FORMATS = {
 }
 
 
-def draw(instance):
+def draw(instance, lighting_enabled=True, textures_enabled=True):
     """Generic draw function"""
     # Draw Wavefront instance
     if isinstance(instance, Wavefront):
-        draw_materials(instance.materials)
+        draw_materials(instance.materials, lighting_enabled=lighting_enabled, textures_enabled=textures_enabled)
     # Draw single material
     elif isinstance(instance, Material):
-        draw_material(instance)
+        draw_material(instance, lighting_enabled=lighting_enabled, textures_enabled=textures_enabled)
     # Draw dict of materials
     elif isinstance(instance, dict):
-        draw_materials(instance)
+        draw_materials(instance, lighting_enabled=lighting_enabled, textures_enabled=textures_enabled)
     else:
         raise ValueError("Cannot figure out how to draw: {}".format(instance))
 
 
-def draw_materials(materials):
+def draw_materials(materials, lighting_enabled=True, textures_enabled=True):
     """Draw a dict of meshes"""
     for name, material in materials.items():
-        draw_material(material)
+        draw_material(material, lighting_enabled=lighting_enabled, textures_enabled=textures_enabled)
 
 
-def draw_material(material, face=GL_FRONT_AND_BACK):
+def draw_material(material, face=GL_FRONT_AND_BACK, lighting_enabled=True, textures_enabled=True):
     """Draw a single material"""
     if material.gl_floats is None:
         material.gl_floats = (GLfloat * len(material.vertices))(*material.vertices)
@@ -93,23 +93,27 @@ def draw_material(material, face=GL_FRONT_AND_BACK):
     glEnable(GL_DEPTH_TEST)
     glCullFace(GL_BACK)
 
-    # Fall back to ambient texture if no diffuse
-    texture = material.texture or material.texture_ambient
-    if texture and material.has_uvs:
-        bind_texture(texture)
-    else:
-        glDisable(GL_TEXTURE_2D)
+    if textures_enabled:
+        # Fall back to ambient texture if no diffuse
+        texture = material.texture or material.texture_ambient
+        if texture and material.has_uvs:
+            bind_texture(texture)
+        else:
+            glDisable(GL_TEXTURE_2D)
 
-    glMaterialfv(face, GL_DIFFUSE, gl_light(material.diffuse))
-    glMaterialfv(face, GL_AMBIENT, gl_light(material.ambient))
-    glMaterialfv(face, GL_SPECULAR, gl_light(material.specular))
-    glMaterialfv(face, GL_EMISSION, gl_light(material.emissive))
-    glMaterialf(face, GL_SHININESS, min(128.0, material.shininess))
-    glEnable(GL_LIGHT0)
+    if lighting_enabled:	
+        glMaterialfv(face, GL_DIFFUSE, gl_light(material.diffuse))
+        glMaterialfv(face, GL_AMBIENT, gl_light(material.ambient))
+        glMaterialfv(face, GL_SPECULAR, gl_light(material.specular))
+        glMaterialfv(face, GL_EMISSION, gl_light(material.emissive))
+        glMaterialf(face, GL_SHININESS, min(128.0, material.shininess))
+        glEnable(GL_LIGHT0)
 
-    if material.has_normals:
-        glEnable(GL_LIGHTING)
-    else:
+        if material.has_normals:
+            glEnable(GL_LIGHTING)
+        else:
+            glDisable(GL_LIGHTING)
+    else:	
         glDisable(GL_LIGHTING)
 
     glInterleavedArrays(vertex_format, 0, material.gl_floats)
