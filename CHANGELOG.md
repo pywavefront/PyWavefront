@@ -1,6 +1,21 @@
-Change Log
+# Change Log
 
 Release history on Github: https://github.com/pywavefront/PyWavefront/releases
+
+## 1.2.0
+
+* Pywavefront is now using `pathlib` internally. `Path` instances can also
+  be passed to all parsers.
+* Bugfix: Texture paths in materials should no longer be mangled when
+  containing spaces or special characters. It should always be read
+  exactly as it appears in the file.
+* Texture: `file_name` property added as a more robust way to get
+  the texture file name without path. This should even work for
+  hardcoded windows path on Linux and OS X.
+* Texture: Added `find` method searching for the exact texture name in a directory
+  and all subdirectories. By default it will search from the obj file's location.
+* Visualization: `draw` methods now supports `lighting_enabled` and `textures_enabled`
+  making the user able to toggle on/off lighting and texturing.
 
 ## 1.1.0
 
