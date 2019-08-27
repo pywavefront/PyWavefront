@@ -52,7 +52,7 @@ class Wavefront:
         create_materials=False,
         collect_faces=False,
         parse=True,
-        cache=False
+        cache=False,
     ):
         """
         Create a Wavefront instance
@@ -68,8 +68,6 @@ class Wavefront:
         self.meshes = {}        # Name mapping
         self.vertices = []
         self.mesh_list = []     # Also includes anonymous meshes
-
-        pywavefront.WFSearchDir = str(pathlib.Path(self.file_name).parent)
 
         self.parser = self.parser_cls(
             self,
