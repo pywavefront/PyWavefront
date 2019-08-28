@@ -16,6 +16,7 @@ Release history on Github: https://github.com/pywavefront/PyWavefront/releases
   and all subdirectories. By default it will search from the obj file's location.
 * Visualization: `draw` methods now supports `lighting_enabled` and `textures_enabled`
   making the user able to toggle on/off lighting and texturing.
+* Visualization: Now works with NPOT textures (texture whose dimensions are   not powers of 2)
 
 ## 1.1.0
 
