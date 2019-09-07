@@ -37,6 +37,8 @@ from pywavefront.exceptions import PywavefrontException
 from pywavefront.obj import ObjParser
 from pywavefront.wavefront import Wavefront
 
+__version__ = '1.2.0'
+
 logger = logging.getLogger("pywavefront")
 log_handler = logging.StreamHandler()
 logger.addHandler(log_handler)
