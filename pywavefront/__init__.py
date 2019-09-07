@@ -48,6 +48,3 @@ def configure_logging(level, formatter=None):
 
     if formatter:
         log_handler.setFormatter(formatter)
-
-
-configure_logging(logging.ERROR, logging.Formatter('%(name)s-%(levelname)s: %(message)s'))
