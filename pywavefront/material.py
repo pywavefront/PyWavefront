@@ -180,23 +180,23 @@ class MaterialParser(Parser):
         self.materials[self.this_material.name] = self.this_material
 
     @auto_consume
-    def parse_kd(self):
+    def parse_Kd(self):
         self.this_material.set_diffuse(self.values[1:])
 
     @auto_consume
-    def parse_ka(self):
+    def parse_Ka(self):
         self.this_material.set_ambient(self.values[1:])
 
     @auto_consume
-    def parse_ks(self):
+    def parse_Ks(self):
         self.this_material.set_specular(self.values[1:])
 
     @auto_consume
-    def parse_ke(self):
+    def parse_Ke(self):
         self.this_material.set_emissive(self.values[1:])
 
     @auto_consume
-    def parse_ns(self):
+    def parse_Ns(self):
         self.this_material.shininess = float(self.values[1])
 
     @auto_consume
@@ -205,30 +205,30 @@ class MaterialParser(Parser):
         self.this_material.set_alpha(float(self.values[1]))
 
     @auto_consume
-    def parse_tr(self):
+    def parse_Tr(self):
         """Transparency (alternative)"""
         self.this_material.set_alpha(1.0 - float(self.values[1]))
 
     @auto_consume
-    def parse_map_kd(self):
+    def parse_map_Kd(self):
         """Diffuse map"""
         name = self.line[self.line.find(' ') + 1:].strip()
         self.this_material.set_texture(name, self.dir)
 
     @auto_consume
-    def parse_map_ka(self):
+    def parse_map_Ka(self):
         """Ambient map"""
         name = self.line[self.line.find(' ') + 1:].strip()
         self.this_material.set_texture_ambient(name, self.dir)
 
     @auto_consume
-    def parse_map_ks(self):
+    def parse_map_Ks(self):
         """Specular color map"""
         name = self.line[self.line.find(' ') + 1:].strip()
         self.this_material.set_texture_specular_color(name, self.dir)
 
     @auto_consume
-    def parse_map_ns(self):
+    def parse_map_Ns(self):
         """Specular color map"""
         name = self.line[self.line.find(' ') + 1:].strip()
         self.this_material.set_texture_specular_highlight(name, self.dir)
@@ -249,7 +249,7 @@ class MaterialParser(Parser):
         self.parse_map_bump()
 
     @auto_consume
-    def parse_ni(self):
+    def parse_Ni(self):
         self.this_material.optical_density = float(self.values[1])
 
     @auto_consume

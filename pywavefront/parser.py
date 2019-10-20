@@ -126,7 +126,7 @@ class Parser:
                     self.consume_line()
                     continue
 
-                self.dispatcher.get(self.values[0].lower(), self.parse_fallback)()
+                self.dispatcher.get(self.values[0], self.parse_fallback)()
         except StopIteration:
             pass
 
