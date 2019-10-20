@@ -240,13 +240,18 @@ class MaterialParser(Parser):
         self.this_material.set_texture_alpha(name, self.dir)
 
     @auto_consume
-    def parse_map_bump(self):
-        """Bump map"""
+    def parse_bump(self):
+        """Bump map (from the spec)"""
         name = self.line[self.line.find(' ') + 1:].strip()
         self.this_material.set_texture_bump(name, self.dir)
 
-    def parse_bump(self):
-        self.parse_map_bump()
+    def parse_map_bump(self):
+        """Bump map (variant)"""
+        self.parse_bump()
+
+    def parse_map_Bump(self):
+        """Bump map (variant)"""
+        self.parse_bump()
 
     @auto_consume
     def parse_Ni(self):
