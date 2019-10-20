@@ -202,7 +202,7 @@ class TestParserVertexVariants(unittest.TestCase):
 
 class TestMtlParser(unittest.TestCase):
     def setUp(self):
-        parser = MaterialParser(fixture('simple_parsetest.mtl'))
+        parser = MaterialParser(fixture('simple_parsetest.mtl'), strict=True)
         self.materials = parser.materials
         self.material1 = self.materials['Material.simple']
         self.material2 = self.materials['Material2.simple']
