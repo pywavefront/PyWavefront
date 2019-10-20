@@ -41,4 +41,4 @@ class TestTexture(unittest.TestCase):
         self.assertEqual(texture.image_name, 'test2')
 
         texture.path = "some/path"
-        self.assertEqual(texture.path, 'some/path')
+        self.assertEqual(texture.path, str(Path('some/path')))
