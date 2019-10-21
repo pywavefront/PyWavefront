@@ -91,7 +91,7 @@ class TextureOptionsParser:
                 if func:
                     func()
                 else:
-                    self._options.name = item + ' '.join(list(self._gen))
+                    self._options.name = ' '.join([item] + list(self._gen))
         except StopIteration:
             pass
 
