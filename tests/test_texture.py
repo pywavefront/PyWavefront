@@ -42,3 +42,35 @@ class TestTexture(unittest.TestCase):
 
         texture.path = "some/path"
         self.assertEqual(texture.path, str(Path('some/path')))
+
+    def test_options(self):
+        params = [
+            '-blendu on',
+            '-blendv on',
+            '-bm 1.0',
+            '-boost 0.0',
+            '-cc off',
+            '-clamp off',
+            '-imfchan l',
+            '-mm 0.0 1.0',
+            '-o 0.0 0.0 0.0',
+            '-s 1.0 1.0 1.0',
+            '-t 0.0 0.0 0.0',
+            '-texres 1024',
+            'path/to/sometexture.png',
+        ]
+        texture = pywavefront.texture.Texture(' '.join(params) , '')
+        opts = texture.options
+        self.assertEqual(opts.name, 'path/to/sometexture.png')
+        self.assertEqual(opts.blendu, 'on')
+        self.assertEqual(opts.blendv, 'on')
+        self.assertEqual(opts.bm, 1.0)
+        self.assertEqual(opts.boost, 0.0)
+        self.assertEqual(opts.cc, 'off')
+        self.assertEqual(opts.clamp, 'off')
+        self.assertEqual(opts.imfchan, 'l')
+        self.assertEqual(opts.mm, (0.0, 1.0))
+        self.assertEqual(opts.o, (0.0, 0.0, 0.0))
+        self.assertEqual(opts.s, (1.0, 1.0, 1.0))
+        self.assertEqual(opts.t, (0.0, 0.0, 0.0))
+        self.assertEqual(opts.texres, '1024')
