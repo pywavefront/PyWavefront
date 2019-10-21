@@ -31,9 +31,147 @@
 # ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 # ----------------------------------------------------------------------------
+# See: http://paulbourke.net/dataformats/mtl/
+
 import pywavefront
 from pathlib import Path, PureWindowsPath
 import re
+
+class TextureOptions:
+
+    def __init__(self):
+        """Set up options with sane defaults"""
+        self.name = "default"
+        self.blendu = "on"
+        self.blendv = "on"
+        self.bm = 1.0
+        self.boost = 0.0
+        self.cc = "off"
+        self.clamp = "off"
+        self.imfchan = "l"
+        self.mm = (0.0, 1.0)
+        self.o = (0.0, 0.0, 0.0)
+        self.s = (1.0, 1.0, 1.0)
+        self.t = (0.0, 0.0, 0.0)
+        self.texres = None
+
+
+class TextureOptionsParser:
+
+    def __init__(self, line):
+        self._line = line
+        self._gen = None
+        self._options = TextureOptions()
+        self._dispatch = {
+            '-blendu': self.parse_blendu,
+            '-blendv': self.parse_blendv,
+            '-bm': self.parse_bm,
+            '-boost': self.parse_boost,
+            '-cc': self.parse_cc,
+            '-clamp': self.parse_clamp,
+            '-imfchan': self.parse_imfchan,
+            '-mm': self.parse_mm,
+            '-o': self.parse_o,
+            '-s': self.parse_s,
+            '-t': self.parse_t,
+            '-texres': self.parse_texres,
+        }
+
+    def parse(self):
+        def create_generator():
+            for t in self._line.split():
+                yield t
+
+        self._gen = create_generator()
+
+        try:
+            while True:
+                item = next(self._gen)
+                func = self._dispatch.get(item, None)
+                if func:
+                    print(func)
+                    func()
+                else:
+                    self._options.name = ' '.join(list(self._gen))
+        except StopIteration:
+            pass
+
+        return self._options
+
+    def parse_blendu(self):
+        """The -blendu option turns texture blending in the horizontal direction 
+        (u direction) on or off.  The default is on.
+        """
+        self._options.blendu = next(self._gen)
+
+    def parse_blendv(self):
+        """The -blendv option turns texture blending in the vertical direction (v 
+        direction) on or off.  The default is on.
+        """
+        self._options.blendv = next(self._gen)
+
+    def parse_bm(self):
+        """The -bm option specifies a bump multiplier"""
+        self._options.bm = float(next(self._gen))
+
+    def parse_boost(self):
+        """The -boost option increases the sharpness, or clarity, of mip-mapped 
+        texture files
+        """
+        self._options.boost = float(next(self._gen))
+
+    def parse_cc(self):
+        """The -cc option turns on color correction for the texture"""
+        self._options.cc = next(self._gen)
+
+    def parse_clamp(self):
+        """The -clamp option turns clamping on or off."""
+        self._options.clamp = next(self._gen)
+
+    def parse_imfchan(self):
+        """The -imfchan option specifies the channel used to create a scalar or 
+        bump texture.
+        """
+        self._options.imfchan = next(self._gen)
+
+    def parse_mm(self):
+        """The -mm option modifies the range over which scalar or color texture 
+        values may vary
+        """
+        base = float(next(self._gen))
+        gain = float(next(self._gen))
+        self._options.mm = base, gain
+
+    def parse_o(self):
+        """The -o option offsets the position of the texture map on the surface by 
+        shifting the position of the map origin.
+        """
+        u = float(next(self._gen))
+        v = float(next(self._gen))
+        w = float(next(self._gen))
+        self._options.o = u, v, w
+
+    def parse_s(self):
+        """The -s option scales the size of the texture pattern on the textured 
+        surface by expanding or shrinking the pattern
+        """
+        u = float(next(self._gen))
+        v = float(next(self._gen))
+        w = float(next(self._gen))
+        self._options.s = u, v, w
+
+    def parse_t(self):
+        """The -t option turns on turbulence for textures."""
+        u = float(next(self._gen))
+        v = float(next(self._gen))
+        w = float(next(self._gen))
+        self._options.t = u, v, w
+
+    def parse_texres(self):
+        """The -texres option specifies the resolution of texture created when an 
+        image is used.
+        """
+        self._options.imfchan = next(self._gen)
 
 
 class Texture:
@@ -44,9 +182,11 @@ class Texture:
             name (str): The texture possibly with path as it appear in the material
             search_path (str): Absolute or relative path the texture might be located.
         """
-        self._name = name
+        # The parsed name from the material might contain options
+        self._options = TextureOptionsParser(name).parse()
+        self._name = self._options.name
         self._search_path = Path(search_path)
-        self._path = Path(search_path, name)
+        self._path = Path(search_path, self.name)
 
         # Unsed externally by visualization
         self.image = None
@@ -59,6 +199,11 @@ class Texture:
     @name.setter
     def name(self, value):
         self._name = value
+
+    @property
+    def options(self) -> TextureOptions:
+        """TextureOptions: Options for this texture"""
+        return self._options
 
     def find(self, path=None):
         """Find the texture in the configured search path
