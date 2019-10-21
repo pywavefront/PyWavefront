@@ -29,13 +29,15 @@ label = pyglet.text.Label(
 
 @window.event
 def on_resize(width, height):
+    viewport_width, viewport_height = window.get_framebuffer_size()
+    glViewport(0, 0, viewport_width, viewport_height)
+
     glMatrixMode(GL_PROJECTION)
     glLoadIdentity()
     gluPerspective(40.0, float(width) / height, 1.0, 100.0)
     glEnable(GL_DEPTH_TEST)
     glMatrixMode(GL_MODELVIEW)
     return True
-
 
 @window.event
 def on_draw():
@@ -67,7 +69,6 @@ def on_draw():
     glRotatef(0, 0, 1, 0)
 
     visualization.draw(meshes)
-
 
 def update(dt):
     global rotation

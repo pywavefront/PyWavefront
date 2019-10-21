@@ -22,7 +22,7 @@ import os
 from pyglet.gl import *
 from pywavefront import visualization, Wavefront
 
-window = pyglet.window.Window(width=1280, height=720)
+window = pyglet.window.Window(width=1280, height=720, resizable=True)
 
 root_path = os.path.dirname(__file__)
 
@@ -39,6 +39,9 @@ lightfv = ctypes.c_float * 4
 
 @window.event
 def on_resize(width, height):
+    viewport_width, viewport_height = window.get_framebuffer_size()
+    glViewport(0, 0, viewport_width, viewport_height)
+
     glMatrixMode(GL_PROJECTION)
     glLoadIdentity()
     gluPerspective(45., float(width)/height, 1., 100.)

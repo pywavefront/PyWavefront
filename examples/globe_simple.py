@@ -17,12 +17,15 @@ file_abspath = os.path.join(os.path.dirname(__file__), 'data/uv_sphere.obj')
 
 rotation = 0
 meshes = pywavefront.Wavefront(file_abspath)
-window = pyglet.window.Window()
+window = pyglet.window.Window(resizable=True)
 lightfv = ctypes.c_float * 4
 
 
 @window.event
 def on_resize(width, height):
+    viewport_width, viewport_height = window.get_framebuffer_size()
+    glViewport(0, 0, viewport_width, viewport_height)
+
     glMatrixMode(GL_PROJECTION)
     glLoadIdentity()
     gluPerspective(60., float(width)/height, 1., 100.)
