@@ -89,10 +89,9 @@ class TextureOptionsParser:
                 item = next(self._gen)
                 func = self._dispatch.get(item, None)
                 if func:
-                    print(func)
                     func()
                 else:
-                    self._options.name = ' '.join(list(self._gen))
+                    self._options.name = item + ' '.join(list(self._gen))
         except StopIteration:
             pass
 
@@ -171,7 +170,7 @@ class TextureOptionsParser:
         """The -texres option specifies the resolution of texture created when an 
         image is used.
         """
-        self._options.imfchan = next(self._gen)
+        self._options.texres = next(self._gen)
 
 
 class Texture:
@@ -179,14 +178,14 @@ class Texture:
         """Create a texture.
 
         Args:
-            name (str): The texture possibly with path as it appear in the material
+            name (str): The texture name possibly with path and options as it appear in the material
             search_path (str): Absolute or relative path the texture might be located.
         """
         # The parsed name from the material might contain options
         self._options = TextureOptionsParser(name).parse()
         self._name = self._options.name
         self._search_path = Path(search_path)
-        self._path = Path(search_path, self.name)
+        self._path = Path(search_path, self._name)
 
         # Unsed externally by visualization
         self.image = None
