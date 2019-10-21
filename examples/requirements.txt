@@ -1,1 +1,2 @@
-pyglet~=1.3.2
+pyglet<2
+
