@@ -10,8 +10,8 @@ class TestMaterial(unittest.TestCase):
     def setUp(self):
         # Append current path to locate files
         self.material = pywavefront.material.Material(fixture('material'))
-        self.material.set_texture(fixture('4x4.png'), '')
-        self.material.set_texture_ambient(fixture('4x4.png'), '')
+        self.material.set_texture(str(fixture('4x4.png')), '')
+        self.material.set_texture_ambient(str(fixture('4x4.png')), '')
 
     def testSetTexture(self):
         """Running set_texture should set a texture."""
