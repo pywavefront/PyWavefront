@@ -4,6 +4,7 @@ Release history on Github: https://github.com/pywavefront/PyWavefront/releases
 
 ## 1.3.0
 
+* Textures will now use `GL_REPEAT` by default (as the specificiation suggests)
 * Added support for parsing texture options in materials.
   The following options are parsed: `blendu`, `blendv`, `bm`, `boost`, `cc`,
   `clamp`, `imfchan`, `mm`, `o`, `s`, `t`, `texres`
