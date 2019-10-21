@@ -135,8 +135,12 @@ def bind_texture(texture):
 
     glEnable(texture.image.target)
     glBindTexture(texture.image.target, texture.image.id)
-    glTexParameterf(texture.image.target, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE)
-    glTexParameterf(texture.image.target, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE)
+    if texture.options.clamp == "on":
+        glTexParameterf(texture.image.target, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE)
+        glTexParameterf(texture.image.target, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE)
+    else:
+        glTexParameterf(texture.image.target, GL_TEXTURE_WRAP_S, GL_REPEAT)
+        glTexParameterf(texture.image.target, GL_TEXTURE_WRAP_T, GL_REPEAT)
 
 
 def load_image(name):
