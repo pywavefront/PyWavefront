@@ -2,6 +2,16 @@
 
 Release history on Github: https://github.com/pywavefront/PyWavefront/releases
 
+## 1.3.0
+
+* Added support for parsing texture options in materials.
+  The following options are parsed: `blendu`, `blendv`, `bm`, `boost`, `cc`,
+  `clamp`, `imfchan`, `mm`, `o`, `s`, `t`, `texres`
+* Added `options` property to `Texture` class
+* visualization now respect the `clamp` option. If `on` the texture will use
+  `GL_CLAMP_TO_EDGE`. Otherwise `GL_REPEAT` will be used.
+* All example windows can now be resized
+
 ## 1.2.0
 
 * Pywavefront is now using `pathlib` internally. `Path` instances can also
