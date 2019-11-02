@@ -7,8 +7,7 @@
 
 </div>
 
-PyWavefront
-===========
+# PyWavefront
 
 PyWavefront reads Wavefront 3D object files (`something.obj`, `something.obj.gz`
 and `something.mtl`) and generates interleaved vertex data for each material ready for rendering.
@@ -28,13 +27,15 @@ been implemented:
 * Normals
 * Vertex Color
 * Material parsing
+* Texture and texture parameters
 
-We currently don't support parameter space vertices, line elements or smoothing groups. Create an issue or pull request on github if needed features are missing.
+We currently don't support parameter space vertices, line elements or smoothing groups.
+Create an issue or pull request on github if needed features are missing.
 
 The package is on [pypi](https://pypi.org/project/PyWavefront/)
 or can be cloned on [github](https://github.com/pywavefront/PyWavefront).
 
-```
+```bash
 pip install pywavefront
 ```
 
@@ -82,7 +83,7 @@ for name, material in scene.materials.items():
 When ``cache=True`` the interleaved vertex data is written
 as floats to a ``.bin`` file after the file is loaded. A json
 file is also generated describing the contents of the binary file.
-The binary file will be loaded the next time we attept to load
+The binary file will be loaded the next time we attempt to load
 the obj file reducing the loading time significantly.
 
 Tests have shown loading time reduction by 10 to 100 times
@@ -91,7 +92,7 @@ depending on the size and structure of the original obj file.
 Loading ``myfile.obj`` will generate the following files in the
 same directory.
 
-```
+```txt
 myfile.obj.bin
 myfile.obj.json
 ```
@@ -123,12 +124,13 @@ Json file example:
 ```
 
 These files will **not be recreated until you delete them**.
-The bin file is also compessed with gzip to greatly reduce size.
+The bin file is also compressed with gzip to greatly reduce size.
 
 ## Visualization
 
 [Pyglet](http://www.pyglet.org/) is required to use the visualization module.
-```
+
+```bash
 pip install pyglet
 ```
 
@@ -162,13 +164,15 @@ pywavefront.configure_logging(
 ### Examples
 
 The  [examples](https://github.com/pywavefront/PyWavefront/tree/master/examples)
-directory contains some basic examples using the `visualization` module and further instructions on how to run them.
+directory contains some basic examples using the `visualization` module and further
+instructions on how to run them.
 
 ### Generating a Wavefront file with Blender
 
 The following presumes you are using [Blender](http://www.blender.org/) to generate your mesh:
 
-* Using Blender, create a mesh with a UV-mapped texture. The UV-mapping is important! If it is working properly, you will see the texture applied within Blender's 3d view.
+* Using Blender, create a mesh with a UV-mapped texture. The UV-mapping is important!
+  If it is working properly, you will see the texture applied within Blender's 3d view.
 * Export the mesh from Blender using the Wavefront format, including normals.
 * Reference your `*.obj` file as in the pywavefront example above.
 
@@ -186,7 +190,7 @@ pip install -r test-requirements.txt
 # Run all tests
 pytest
 
-# Optionally specific tests modules can be runned sepeartely
+# Optionally specific tests modules can be runned separately
 pytest tests/test_parser.py
 ```
 
