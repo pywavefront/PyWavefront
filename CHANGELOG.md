@@ -2,6 +2,11 @@
 
 Release history on Github: https://github.com/pywavefront/PyWavefront/releases
 
+## 1.3.1
+
+* visualization: objects without lighting will now have their ambient
+  color set using `glColor`.
+
 ## 1.3.0
 
 * Textures will now use `GL_REPEAT` by default (as the specificiation suggests)
