@@ -101,20 +101,18 @@ def draw_material(material, face=GL_FRONT_AND_BACK, lighting_enabled=True, textu
         else:
             glDisable(GL_TEXTURE_2D)
 
-    if lighting_enabled:	
+    
+    if lighting_enabled and material.has_normals:
         glMaterialfv(face, GL_DIFFUSE, gl_light(material.diffuse))
         glMaterialfv(face, GL_AMBIENT, gl_light(material.ambient))
         glMaterialfv(face, GL_SPECULAR, gl_light(material.specular))
         glMaterialfv(face, GL_EMISSION, gl_light(material.emissive))
         glMaterialf(face, GL_SHININESS, min(128.0, material.shininess))
         glEnable(GL_LIGHT0)
-
-        if material.has_normals:
-            glEnable(GL_LIGHTING)
-        else:
-            glDisable(GL_LIGHTING)
-    else:	
+        glEnable(GL_LIGHTING)
+    else:
         glDisable(GL_LIGHTING)
+        glColor4f(*material.ambient)
 
     glInterleavedArrays(vertex_format, 0, material.gl_floats)
     glDrawArrays(GL_TRIANGLES, 0, int(material.triangle_count))
