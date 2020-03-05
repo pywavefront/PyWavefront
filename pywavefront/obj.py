@@ -382,7 +382,10 @@ class ObjParser(Parser):
                     t_index = (int(parts[1]) - 1) if has_vt else None
                 except ValueError:
                     t_index = 0
-                n_index = (int(parts[2]) - 1) if has_vn else None
+                try:
+                    n_index = (int(parts[2]) - 1) if has_vn else None
+                except ValueError:
+                    n_index = 0
 
                 # Resolve negative index lookups
                 if v_index < 0:
