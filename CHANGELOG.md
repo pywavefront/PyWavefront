@@ -2,6 +2,10 @@
 
 Release history on Github: https://github.com/pywavefront/PyWavefront/releases
 
+## 1.3.2
+
+* Property handle face lines with unspecified normal index such as `1/2/`
+
 ## 1.3.1
 
 * visualization: objects without lighting will now have their ambient
