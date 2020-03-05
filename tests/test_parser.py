@@ -179,7 +179,7 @@ class TestParserVertexVariants(unittest.TestCase):
         self.assertEqual(self.mesh2.materials[0].vertex_format, "T2F_C3F_N3F_V3F")
 
     def test_undefined_uvs(self):
-        """obj file were some uv entries are undefiend"""
+        """obj file were some uv entries are undefined"""
         meshes = pywavefront.Wavefront(fixture('simple_missing_uv.obj'))
         self.mesh2 = meshes.mesh_list[1]
 
@@ -191,6 +191,27 @@ class TestParserVertexVariants(unittest.TestCase):
             10.0, 11.0, 0.0, 1.0, -0.0, -1.0, 0.0, 1.0,
             10.0, 11.0, 0.0, 1.0, -0.0, 1.0, 0.0, 1.0,
             10.0, 11.0, 0.0, 1.0, -0.0, 1.0, 0.0, -1.0,
+
+            1.0, 0.0, 0.0, 1.0, -0.0, -1.0, 0.0, 1.0,
+            0.0, 0.0, 0.0, 1.0, -0.0, 1.0, 0.0, 1.0,
+            0.0, 1.0, 0.0, 1.0, -0.0, 1.0, 0.0, -1.0,
+        ])
+
+        self.assertEqual(self.mesh2.materials[0].vertex_format, "T2F_N3F_V3F")
+
+    def test_undefined_normals(self):
+        """obj file were some uv entries are undefined"""
+        meshes = pywavefront.Wavefront(fixture('simple_missing_normal.obj'))
+        self.mesh2 = meshes.mesh_list[1]
+
+        self.assertEqual(self.mesh2.materials[0].vertices, [
+            1.0, 0.0, 0.0, 1.0, 0.0, -1.0, 0.0, 1.0,
+            0.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0,
+            0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, -1.0,
+
+            1.0, 0.0, 20, 21, 22, -1.0, 0.0, 1.0,
+            0.0, 0.0, 20, 21, 22,  1.0, 0.0, 1.0,
+            0.0, 1.0, 20, 21, 22,  1.0, 0.0, -1.0,
 
             1.0, 0.0, 0.0, 1.0, -0.0, -1.0, 0.0, 1.0,
             0.0, 0.0, 0.0, 1.0, -0.0, 1.0, 0.0, 1.0,
