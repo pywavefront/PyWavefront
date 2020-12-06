@@ -139,6 +139,8 @@ class ObjParser(Parser):
             try:
                 self.next_line()
             except StopIteration:
+                self.line = None
+                self.values = None
                 break
 
             if not self.values:
