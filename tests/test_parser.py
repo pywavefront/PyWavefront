@@ -126,6 +126,14 @@ class TestParserVertexVariants(unittest.TestCase):
 
         self.assertEqual(self.mesh2.materials[0].vertex_format, "T2F_V3F")
 
+    def testOnlyOneVertex(self):
+        meshes = pywavefront.Wavefront(fixture('simple_one_vertex.obj'))
+        self.vertices = meshes.vertices
+        self.meshes = meshes.mesh_list
+
+        self.assertEqual(1, len(self.meshes))
+        self.assertEqual(1, len(self.vertices))
+
     def testObjNoUVs(self):
         """Parse object with no uvs"""
         meshes = pywavefront.Wavefront(fixture('simple_normals.obj'))
