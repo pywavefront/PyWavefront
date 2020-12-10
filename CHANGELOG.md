@@ -2,6 +2,10 @@
 
 Release history on Github: https://github.com/pywavefront/PyWavefront/releases
 
+## 1.3.3
+
+* Support objects with one vertex statement
+
 ## 1.3.2
 
 * Properly handle face lines with unspecified normal index such as `1/2/`
