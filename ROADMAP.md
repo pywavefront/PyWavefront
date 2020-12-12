@@ -5,7 +5,7 @@
 
 PyWavefront is used by projects and people from both data science and pure 3D
 rendering. Providing visualisation capabilities also seems to be important for
-a lot of users. There are ties to [pyglet](https://bitbucket.org/pyglet/pyglet/wiki/Home)
+a lot of users. There are ties to [pyglet](https://github.com/pyglet/pyglet)
 we probably should not break.
 
 Currently the project mainly has 3D rendering in mind. We see that in the parser
