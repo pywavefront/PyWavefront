@@ -61,7 +61,12 @@ A more complex example
 
 ```python
 import pywavefront
-scene = pywavefront.Wavefront('something.obj', strict=True, encoding="iso-8859-1", parse=False)
+scene = pywavefront.Wavefront(
+    'something.obj',
+    strict=True,
+    encoding="iso-8859-1",
+    parse=False,
+)
 scene.parse()  # Explicit call to parse() needed when parse=False
 
 # Iterate vertex data collected in each material
