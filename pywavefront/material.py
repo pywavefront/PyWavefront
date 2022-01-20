@@ -84,6 +84,9 @@ class Material:
         self.vertex_format = ""
         self.vertices = []
 
+        # Default to not collect faces by material
+        self.faces = None
+
         self.gl_floats = None
 
     @property

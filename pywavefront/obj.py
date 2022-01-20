@@ -272,6 +272,7 @@ class ObjParser(Parser):
         collected_faces = []
         consumed_vertices = self.consume_faces(collected_faces if self.collect_faces else None)
         self.material.vertices += list(consumed_vertices)
+        self.material.faces = collected_faces if self.collect_faces else None
 
         if self.collect_faces:
             self.mesh.faces += list(collected_faces)
