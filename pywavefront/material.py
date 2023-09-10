@@ -54,6 +54,14 @@ class Material:
         self.ambient = [.2, .2, .2, 1.]
         self.specular = [0., 0., 0., 1.]
         self.emissive = [0., 0., 0., 1.]
+        self.roughness = 0.
+        self.metallic = 0.
+        self.sheen = 0.
+        self.clearcoat_thickness = 0.
+        self.clearcoat_roughness = 0.
+        self.anisotropy = 0.
+        self.anisotropy_rotation = 0.
+
         self.transparency = 1.0
         self.shininess = 0.
         self.optical_density = 1.0
@@ -77,6 +85,11 @@ class Material:
         self.texture_specular_highlight = None
         self.texture_alpha = None
         self.texture_bump = None
+        self.texture_roughness = None
+        self.texture_metallic = None
+        self.texture_sheen = None
+        self.texture_emissive = None
+        self.texture_normal = None
 
         self.is_default = is_default
 
@@ -132,6 +145,27 @@ class Material:
     def set_emissive(self, values=None):
         self.emissive = self.pad_light(values or [])
 
+    def set_roughness(self, value):
+        self.roughness = value
+
+    def set_metallic(self, value):
+        self.metallic = value
+
+    def set_sheen(self, value):
+        self.metallic = value
+
+    def set_clearcoat_thickness(self, value):
+        self.clearcoat_thickness = value
+
+    def set_clearcoat_roughness(self, value):
+        self.clearcoat_roughness = value
+
+    def set_anisotropy(self, value):
+        self.anisotropy = value
+
+    def set_anisotropy_rotation(self, value):
+        self.anisotropy_rotation = value
+
     def set_texture(self, name, search_path):
         self.texture = self.texture_cls(name, search_path)
 
@@ -149,6 +183,21 @@ class Material:
 
     def set_texture_bump(self, name, search_path):
         self.texture_bump = self.texture_cls(name, search_path)
+
+    def set_texture_roughness(self, name, search_path):
+        self.texture_roughness = self.texture_cls(name, search_path)
+
+    def set_texture_metallic(self, name, search_path):
+        self.texture_metallic = self.texture_cls(name, search_path)
+
+    def set_texture_sheen(self, name, search_path):
+        self.texture_sheen = self.texture_cls(name, search_path)
+
+    def set_texture_emissive(self, name, search_path):
+        self.texture_emissive = self.texture_cls(name, search_path)
+
+    def set_texture_normal(self, name, search_path):
+        self.texture_normal = self.texture_cls(name, search_path)
 
     def unset_texture(self):
         self.texture = None
@@ -210,6 +259,41 @@ class MaterialParser(Parser):
         self.this_material.set_alpha(1.0 - float(self.values[1]))
 
     @auto_consume
+    def parse_Pr(self):
+        """PBR: Roughness"""
+        self.this_material.set_roughness(self.values[1])
+
+    @auto_consume
+    def parse_Pm(self):
+        """PBR: Metallic"""
+        self.this_material.set_metallic(self.values[1])
+
+    @auto_consume
+    def parse_Ps(self):
+        """PBR: Sheen"""
+        self.this_material.set_sheen(self.values[1])
+
+    @auto_consume
+    def parse_Pc(self):
+        """PBR: Clearcoat"""
+        self.this_material.set_clearcoat_thickness(self.values[1])
+
+    @auto_consume
+    def parse_Pcr(self):
+        """PBR: Clearcoat Roughness"""
+        self.this_material.set_clearcoat_roughness(self.values[1])
+
+    @auto_consume
+    def parse_aniso(self):
+        """PBR: Anisotropy"""
+        self.this_material.set_anisotropy(self.values[1])
+
+    @auto_consume
+    def parse_anisor(self):
+        """PBR: Anisotropy rotation"""
+        self.this_material.set_anisotropy_rotation(self.values[1])
+
+    @auto_consume
     def parse_map_Kd(self):
         """Diffuse map"""
         name = self.line[self.line.find(' ') + 1:].strip()
@@ -252,6 +336,36 @@ class MaterialParser(Parser):
     def parse_map_Bump(self):
         """Bump map (variant)"""
         self.parse_bump()
+
+    @auto_consume
+    def parse_map_Pr(self):
+        """PBR: Roughness map"""
+        name = self.line[self.line.find(' ') + 1:].strip()
+        self.this_material.set_texture_roughness(name, self.dir)
+
+    @auto_consume
+    def parse_map_Pm(self):
+        """PBR: Metallic map"""
+        name = self.line[self.line.find(' ') + 1:].strip()
+        self.this_material.set_texture_metallic(name, self.dir)
+
+    @auto_consume
+    def parse_map_Ps(self):
+        """PBR: Sheen map"""
+        name = self.line[self.line.find(' ') + 1:].strip()
+        self.this_material.set_texture_sheen(name, self.dir)
+
+    @auto_consume
+    def parse_map_Ke(self):
+        """PBR: Emissive map"""
+        name = self.line[self.line.find(' ') + 1:].strip()
+        self.this_material.set_texture_emissive(name, self.dir)
+
+    @auto_consume
+    def parse_map_norm(self):
+        """PBR: Normal map"""
+        name = self.line[self.line.find(' ') + 1:].strip()
+        self.this_material.set_texture_normal(name, self.dir)
 
     @auto_consume
     def parse_Ni(self):
