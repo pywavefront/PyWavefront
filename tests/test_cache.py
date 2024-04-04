@@ -1,6 +1,6 @@
 import json
 import os
-import mock
+from unittest import mock
 import unittest
 from pathlib import Path
 
