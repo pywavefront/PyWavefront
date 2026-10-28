@@ -53,7 +53,8 @@ scene = pywavefront.Wavefront('something.obj')
 A more complex example
 
 * `strict` (Default: `False`) will raise an exception if unsupported features are found in the obj or mtl file
-* `encoding` (Default: `utf-8`) of the obj and mtl file(s)
+* `encoding` (Default: `utf-8`) of the obj and mtl file(s).
+  UTF-8 files with or without a byte-order mark are accepted automatically.
 * `create_materials` (Default: `False`) will create materials if mtl file is missing or obj file references non-existing materials
 * `collect_faces` (Default: `False`) will collect triangle face data for every mesh. In case faces with more than three vertices are specified they will be triangulated. See the documentation of `ObjParser#consume_faces()` in [`obj.py`](https://github.com/pywavefront/PyWavefront/blob/master/pywavefront/obj.py).
 * `parse` (Default: `True`) decides if parsing should start immediately.

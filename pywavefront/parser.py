@@ -77,9 +77,14 @@ class Parser:
         Should only yield non-empty lines
         """
 
+        encoding = self.encoding
+        if encoding and codecs.lookup(encoding).name == 'utf-8':
+            # Consume a UTF-8 signature at the start, preserving U+FEFF in content.
+            encoding = 'utf-8-sig'
+
         if self.file_name.suffix == ".gz":
             # FIXME: Converting to str for now for py34 compatibility
-            gz = gzip.open(str(self.file_name), mode='rt', encoding=self.encoding)
+            gz = gzip.open(str(self.file_name), mode='rt', encoding=encoding)
 
             for line in gz.readlines():
                 yield line
@@ -87,7 +92,7 @@ class Parser:
             gz.close()
         else:
             # FIXME: Converting to str for now for py34 compatibility
-            file = open(str(self.file_name), mode='r', encoding=self.encoding)
+            file = open(str(self.file_name), mode='r', encoding=encoding)
 
             for line in file:
                 yield line
