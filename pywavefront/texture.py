@@ -34,6 +34,7 @@
 # See: http://paulbourke.net/dataformats/mtl/
 
 import pywavefront
+from itertools import chain
 from pathlib import Path, PureWindowsPath
 import re
 
@@ -145,26 +146,33 @@ class TextureOptionsParser:
         """The -o option offsets the position of the texture map on the surface by 
         shifting the position of the map origin.
         """
-        u = float(next(self._gen))
-        v = float(next(self._gen))
-        w = float(next(self._gen))
-        self._options.o = u, v, w
+        self._options.o = self._parse_vector(0.0)
 
     def parse_s(self):
         """The -s option scales the size of the texture pattern on the textured 
         surface by expanding or shrinking the pattern
         """
-        u = float(next(self._gen))
-        v = float(next(self._gen))
-        w = float(next(self._gen))
-        self._options.s = u, v, w
+        self._options.s = self._parse_vector(1.0)
 
     def parse_t(self):
         """The -t option turns on turbulence for textures."""
-        u = float(next(self._gen))
-        v = float(next(self._gen))
-        w = float(next(self._gen))
-        self._options.t = u, v, w
+        self._options.t = self._parse_vector(0.0)
+
+    def _parse_vector(self, default):
+        """Read required u and optional v/w, preserving the following token."""
+        values = [float(next(self._gen))]
+        for _ in range(2):
+            try:
+                item = next(self._gen)
+            except StopIteration:
+                break
+            try:
+                values.append(float(item))
+            except ValueError:
+                self._gen = chain([item], self._gen)
+                break
+
+        return tuple(values) + (default,) * (3 - len(values))
 
     def parse_texres(self):
         """The -texres option specifies the resolution of texture created when an 
