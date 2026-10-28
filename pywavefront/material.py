@@ -181,19 +181,27 @@ class MaterialParser(Parser):
 
     @auto_consume
     def parse_Kd(self):
-        self.this_material.set_diffuse(self.values[1:])
+        self._parse_color(self.this_material.set_diffuse)
 
     @auto_consume
     def parse_Ka(self):
-        self.this_material.set_ambient(self.values[1:])
+        self._parse_color(self.this_material.set_ambient)
 
     @auto_consume
     def parse_Ks(self):
-        self.this_material.set_specular(self.values[1:])
+        self._parse_color(self.this_material.set_specular)
 
     @auto_consume
     def parse_Ke(self):
-        self.this_material.set_emissive(self.values[1:])
+        self._parse_color(self.this_material.set_emissive)
+
+    def _parse_color(self, setter):
+        """Preserve material opacity when a color statement omits alpha."""
+        values = self.values[1:]
+        if len(values) < 4:
+            values = self.this_material.pad_light(values)
+            values[3] = self.this_material.transparency
+        setter(values)
 
     @auto_consume
     def parse_Ns(self):
