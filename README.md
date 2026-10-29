@@ -91,6 +91,9 @@ file is also generated describing the contents of the binary file.
 The binary file will be loaded the next time we attempt to load
 the obj file reducing the loading time significantly.
 
+With ``create_materials=True``, cached loading tolerates missing material
+libraries just like OBJ parsing, using default materials for their vertices.
+
 Tests have shown loading time reduction by 10 to 100 times
 depending on the size and structure of the original obj file.
 

@@ -66,6 +66,7 @@ class CacheLoader:
         self.path = self.file_name.parent
         self.encoding = encoding
         self.strict = strict
+        self.create_materials = create_materials
         self.dir = self.file_name.parent
         self.meta = None
 
@@ -127,6 +128,8 @@ class CacheLoader:
                     encoding=self.encoding,
                     strict=self.strict).materials
             except IOError:
+                if self.create_materials:
+                    continue
                 raise IOError("Failed to load mtl file:".format(self.path / mtllib))
 
             for name, material in materials.items():
